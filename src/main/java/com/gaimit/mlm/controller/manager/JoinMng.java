@@ -1,5 +1,6 @@
 package com.gaimit.mlm.controller.manager;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.WebHelper;
+import com.gaimit.mlm.model.Library;
+import com.gaimit.mlm.service.LibraryService;
 import com.gaimit.mlm.service.ManagerService;
 
 @Controller
@@ -25,6 +28,9 @@ public class JoinMng {
 	@Autowired
 	ManagerService managerService;
 	
+	@Autowired
+	LibraryService libraryService;
+	
 	@RequestMapping(value="/manager/join_mng.do")
 	public ModelAndView doRun(Locale locale, Model model, 
 			HttpServletRequest request, HttpServletResponse response) {	
@@ -36,8 +42,18 @@ public class JoinMng {
 		// 로그인 중이라면 이 페이지를 동작시켜서는 안된다.
 		if (web.getSession("loginInfo") != null) {
 			return web.redirect(web.getRootPath() + "/index.do", "이미 로그인 하셨습니다.");
-		}	
-
+		}
+		
+		Library library = new Library();
+		
+		List<Library> libList = null;
+		try {
+			libList = libraryService.getLibraryList(library);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		model.addAttribute("libList", libList);
 		
 		return new ModelAndView("manager/join_mng");
 	}

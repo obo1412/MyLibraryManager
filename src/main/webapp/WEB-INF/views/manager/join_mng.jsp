@@ -48,11 +48,12 @@
         <div class="form-group">
             <label for='library_name' class="col-md-2">도서관 이름*</label>
             <div class="col-md-4">
-                <select name="idLib" class="form-control">
-                	<option value="">--도서관이름을 선택하세요--</option>
-                	<option value="1">1선택 지에임</option>
-                	<option value="2">2선택 수원문화사</option>
-                </select>
+            	<select name="idLib" class="form-control">
+            		<option value="">--도서관이름을 선택하세요--</option>
+            		<c:forEach var="l" items="${libList}">
+	             		<option value="${l.idLib}">(${l.locLib}) ${l.nameLib}</option>
+	             	</c:forEach>
+	            </select>
             </div>
         </div>
 
