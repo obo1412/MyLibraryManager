@@ -116,10 +116,8 @@
 	<!-- 일련번호에 의한 회원정보 조회 -->
 	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, name, user_id, user_pw, email, gender,
-			DATE_FORMAT(birthdate, '%Y-%m-%d') AS birthdate,
-			tel, postcode, addr1, addr2, profile_img, reg_date, edit_date
+			id, id_lib, id_code, name, phone, level
 		FROM member
-		WHERE id=#{id}
+		WHERE name=#{name} AND id_lib=#{idLib}
 	</select>
 </mapper>
