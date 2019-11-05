@@ -135,12 +135,39 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return result;
 	}
+	
+	@Override
+	public List<Member> getMemberListByLibAndName(Member member) throws Exception {
+		List<Member> result = null;
+		try {
+			result = sqlSession.selectList("MemberMapper.selectMemberListByLibAndName", member);
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("조회된 데이터가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
 
 	@Override
 	public int getMemberCount(Member member) throws Exception {
 		int result = 0;
 		try {
 			result = sqlSession.selectOne("MemberMapper.selectMemberCount", member);
+		} catch (Exception e) {
+			throw new Exception("데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
+	public int getMemberCountByNameAndIdLib(Member member) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("MemberMapper.selectMemberCountByNameAndIdLib", member);
 		} catch (Exception e) {
 			throw new Exception("데이터 조회에 실패했습니다.");
 		}

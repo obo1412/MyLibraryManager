@@ -14,5 +14,13 @@ public interface BookService {
 	 */
 	public List<Book> getBookList(Book book) throws Exception;
 	
+	/**
+	 * 
+	 * @param book id_book
+	 * @return book 테이블의 컬럼 전체
+	 * @throws Exception
+	 */
+	public Book getBookitem(Book book) throws Exception;
+	
 	
 }

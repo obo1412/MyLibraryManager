@@ -19,12 +19,14 @@ import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Book;
+import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.service.BrwService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class BrwBook {
+public class BookListBrwd {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -43,8 +45,11 @@ public class BrwBook {
 	@Autowired
 	BookService bookService;
 	
+	@Autowired
+	BrwService brwService;
+	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/book/brw_book.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/book_list_brwd.do", method = RequestMethod.GET)
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -62,19 +67,19 @@ public class BrwBook {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
-		String searchName = web.getString("search-name", "");
-		
 		// 파라미터를 저장할 Beans
 		Member member = new Member();
 		member.setIdLib(idLib);
-		member.setName(searchName);
 		
 		Book book = new Book();
 		book.setIdLibBook(idLib);
 		
+		Borrow brw = new Borrow();
+		brw.setIdLibBrw(idLib);
+		
 		// 검색어 파라미터 받기 + Beans 설정
-		/*String keyword = web.getString("keyword", "");
-		member.setName(keyword);*/
+		String keyword = web.getString("keyword", "");
+		member.setName(keyword);
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
@@ -95,55 +100,20 @@ public class BrwBook {
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
-		List<Member> list = null;
-		List<Book> bookList = null;
-		Member item = null;
-		int CountMember = 0;
-		
-		String memberName = member.getName();
+		List<Borrow> brwList = null;
 		try {
-			//책대여를 위한 회원조회
-			if(!(memberName.equals(""))) {
-				CountMember = memberService.getMemberCountByNameAndIdLib(member);
-				if(CountMember == 1) {
-					if(!(memberName.equals(""))) {
-						item = memberService.selectMember(member);
-					}
-				} else if(CountMember > 1) {
-					list = memberService.getMemberListByLibAndName(member);
-				}
-			}		
-			//책대여를 위한 회원조회 끝
-			
-			bookList = bookService.getBookList(book);
-			
+			brwList = brwService.getBorrowList(brw);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		if(item != null) {
-			int memberId = item.getId();
-			String name = item.getName();
-			String idCode = item.getIdCode();
-			String phone = item.getPhone();
-			
-			model.addAttribute("memberId", memberId);
-			model.addAttribute("name", name);
-			model.addAttribute("idCode", idCode);
-			model.addAttribute("phone", phone);
-		}
-		
-		if(list != null) {
-			model.addAttribute("list", list);
-		}
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("CountMember", CountMember);
-		model.addAttribute("bookList", bookList);
-		/*model.addAttribute("keyword", keyword);*/
+		model.addAttribute("brwList", brwList);
+		model.addAttribute("keyword", keyword);
 		model.addAttribute("page", page);
 		
-		return new ModelAndView("book/brw_book");
+		return new ModelAndView("book/book_list_brwd");
 	}	
 }

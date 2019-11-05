@@ -23,10 +23,16 @@
 					<a href="${pageContext.request.contextPath}/member/member_list.do">회원 목록</a>
 				</li>
 				<li>
-					<a href="${pageContext.request.contextPath}/book/book_list.do">도서 목록</a>
+					<a href="${pageContext.request.contextPath}/book/book_list.do">전체<br>도서목록</a>
 				</li>
 				<li>
-					<a href="${pageContext.request.contextPath}/book/brw_book.do">도서<br>대출/반납</a>
+					<a href="${pageContext.request.contextPath}/book/brw_book.do">도서<br>대출하기</a>
+				</li>
+				<li>
+					<a href="${pageContext.request.contextPath}/book/book_list_brwd.do">대출된<br>도서목록</a>
+				</li>
+				<li>
+					<a href="${pageContext.request.contextPath}/book/return_book.do">도서<br>반납하기</a>
 				</li>
 			</ul>
 			<!-- //사이트 메뉴 -->

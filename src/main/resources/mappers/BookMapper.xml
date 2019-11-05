@@ -34,4 +34,12 @@
 		FROM book
 		ORDER BY id_book ASC
 	</select>
+	
+	<select id="selectBook" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
+		SELECT
+			id_book, id_lib_book, id_code_book, name_book, writer_book,
+			publisher_book,	price_book, reg_date_book
+		FROM book
+		WHERE id_lib_book = #{idLibBook} AND id_code_book = #{idCodeBook}
+	</select>
 </mapper>

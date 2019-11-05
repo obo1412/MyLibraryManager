@@ -1,6 +1,6 @@
 package com.gaimit.mlm.model;
 
-public class Book {
+public class Book extends Member{
 	private int idBook;
 	private int idLibBook;
 	private String idCodeBook;

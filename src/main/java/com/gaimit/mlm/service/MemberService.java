@@ -51,11 +51,27 @@ public interface MemberService {
 	public List<Member> getMemberListByLib(Member member) throws Exception;
 	
 	/**
+	 * 
+	 * @param member 이름과 도서관번호
+	 * @return 이름과 도서관 번호가 일치하는 회원 목록
+	 * @throws Exception
+	 */
+	public List<Member> getMemberListByLibAndName(Member member) throws Exception;
+	
+	/**
 	 * 회원수 조회(아이디)
 	 * @param member - 회원 id 개수 조회
 	 * @throws Exception
 	 */
 	public int getMemberCount(Member member) throws Exception;
+	
+	/**
+	 * 
+	 * @param member 회원 이름과 도서관id
+	 * @return
+	 * @throws Exception
+	 */
+	public int getMemberCountByNameAndIdLib(Member member) throws Exception;
 	
 	/**
 	 * 로그인

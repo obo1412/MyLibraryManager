@@ -39,7 +39,7 @@ public class MemberList {
 	ManagerService managerService;
 	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/member/member_list.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/member/member_list.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -57,9 +57,14 @@ public class MemberList {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
+		String MemberName = web.getString("name", "");
+		
+		
+		
 		// 파라미터를 저장할 Beans
 		Member member = new Member();
 		member.setIdLib(idLib);
+		member.setName(MemberName);
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		String keyword = web.getString("keyword", "");
@@ -86,7 +91,11 @@ public class MemberList {
 		// 조회 결과를 저장하기 위한 객체
 		List<Member> list = null;
 		try {
-			list = memberService.getMemberListByLib(member);
+			/*if(MemberName.equals("")) {*/
+				list = memberService.getMemberListByLib(member);
+			/*} else {
+				list = memberService.getMemberListByLibAndName(member);
+			}*/
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
