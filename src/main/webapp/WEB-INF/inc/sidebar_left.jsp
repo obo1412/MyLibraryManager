@@ -34,6 +34,9 @@
 				<li>
 					<a href="${pageContext.request.contextPath}/book/return_book.do">도서<br>반납하기</a>
 				</li>
+				<li>
+					<a href="${pageContext.request.contextPath}/book/reg_book.do">도서<br>등록하기</a>
+				</li>
 			</ul>
 			<!-- //사이트 메뉴 -->
 			
