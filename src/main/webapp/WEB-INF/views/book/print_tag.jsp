@@ -31,11 +31,21 @@
 	</style>
 </head>
 <body>
+	<!-- MeadCo ScriptX -->
+	<!-- <object id=factory style="display:none"
+		classid="clsid:1663ed61-23eb-11d2-b92f-008048fdd814"
+		codebase="http://www.meadroid.com/scriptx/ScriptX.cab#Version=6,1,429,14">
+	</object> -->
+
 	<%@ include file="/WEB-INF/inc/topbar.jsp"%>
 	<%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
 <div class='container con-left'>
-    <h1>책 등록하기</h1>
+    <h1>인쇄 페이지</h1>
+    <!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
     
+    <button class="btn btn-danger" id="print">
+		<i class="glyphicon glyphicon-question-sign">인쇄</i>
+	</button>
     <form class="form-horizontal search-box" name="search-mbr-form" id="search-mbr-form" method="post"
     	action="${pageContext.request.contextPath}/book/search_book.do">
     	<div class="form-group">
@@ -84,7 +94,7 @@
 	            <label for='isbn13' class="col-md-4 control-label">ISBN 13</label>
 	            <div class="col-md-5">
 	                <input type="text" name="isbn13" id="isbn13" class="form-control" placeholder="ISBN 13자리"
-	                	value="${json.item[0].isbn13}"/>
+	                	value="${isbn13}"/>
 	            </div>
 	        </div>
 	        
@@ -92,7 +102,7 @@
 	            <label for='isbn10' class="col-md-4 col-md-offset-1 control-label">ISBN 10</label>
 	            <div class="col-md-5">
 	                <input type="text" name="isbn10" id="isbn10" class="form-control" placeholder="ISBN 10자리"
-	                	value="${json.item[0].isbn}"/>
+	                	value="${isbn10}"/>
 	            </div>
 	        </div>
 	    </div>
@@ -101,16 +111,14 @@
 	        <div class="form-group">
 	            <label for='bookCateg' class="col-md-4 control-label">도서 분류</label>
 	            <div class="col-md-5">
-	                <input type="text" name="bookCateg" id="bookCateg" class="form-control"
-	                	value="${json.item[0].categoryName}"/>
+	                <input type="text" name="bookCateg" id="bookCateg" class="form-control"/>
 	            </div>
 	        </div>
 	        
 	        <div class="form-group">
 	            <label for='categCode' class="col-md-4 col-md-offset-1 control-label">분류 기호</label>
 	            <div class="col-md-5">
-	                <input type="text" name="categCode" id="categCode" class="form-control"
-	                	value="${json.item[0].categoryId}"/>
+	                <input type="text" name="categCode" id="categCode" class="form-control"/>
 	            </div>
 	        </div>
 	    </div>
@@ -119,8 +127,7 @@
 	        <div class="form-group">
 	            <label for='bookName' class="col-md-4 control-label">도서명</label>
 	            <div class="col-md-3">
-	                <input type="text" name="bookName" id="bookName" class="form-control"
-	                	placeholder="도서이름" value="${json.item[0].title}"/>
+	                <input type="text" name="bookName" id="bookName" class="form-control" placeholder="도서이름"/>
 	            </div>
 	        </div>
         </div>
@@ -129,16 +136,14 @@
 	        <div class="form-group">
 	            <label for='author' class="col-md-4 control-label">저자명</label>
 	            <div class="col-md-5">
-	                <input type="text" name="author" id="author" class="form-control"
-	                	value="${json.item[0].author}"/>
+	                <input type="text" name="author" id="author" class="form-control"/>
 	            </div>
 	        </div>
 	        
 	        <div class="form-group">
 	            <label for='authorCode' class="col-md-4 col-md-offset-1 control-label">저자 기호</label>
 	            <div class="col-md-5">
-	                <input type="text" name="authorCode" id="authorCode" class="form-control"
-	                	value=""/>
+	                <input type="text" name="authorCode" id="authorCode" class="form-control"/>
 	            </div>
 	        </div>
 	    </div>
@@ -147,16 +152,14 @@
 	        <div class="form-group">
 	            <label for='publisher' class="col-md-4 control-label">출판사</label>
 	            <div class="col-md-5">
-	                <input type="text" name="publisher" id="publisher" class="form-control"
-	                	value="${json.item[0].publisher}"/>
+	                <input type="text" name="publisher" id="publisher" class="form-control"/>
 	            </div>
 	        </div>
 	        
 	        <div class="form-group">
 	            <label for='pubDate' class="col-md-4 col-md-offset-1 control-label">출판일</label>
 	            <div class="col-md-5">
-	                <input type="text" name="pubDate" id="pubDate" class="form-control"
-	                	value="${json.item[0].pubDate}"/>
+	                <input type="text" name="pubDate" id="pubDate" class="form-control"/>
 	            </div>
 	        </div>
 	    </div>
@@ -167,12 +170,10 @@
 			</div>
 			<div class="form-inline">
 				<div class="form-control" style="border: 1px solid black; width:100px; height:130px;">
-					<img id="bookCover" src="${json.item[0].cover}"/>
+					<img id="bookCover"/>
 				</div>
 				<textarea class="txt-box form-control custom-control col-md-7 col-md-offset-1" name='bookDesc' 
-					id="bookDesc" style="resize:none; height: 130px; width:60%;">
-					${json.item[0].description}
-				</textarea>
+					id="bookDesc" style="resize:none; height: 130px; width:60%;"></textarea>
 			</div>
 		</div>
 
@@ -187,9 +188,13 @@
     <!-- 회원정보, 도서정보 끝 -->
 </div>
 
+
 <%@ include file="/WEB-INF/inc/footer.jsp"%>
 <%@ include file="/WEB-INF/inc/script-common.jsp" %>
 </body>
+
+
+
 <script type="text/javascript">
 
 $(function() {
@@ -199,7 +204,15 @@ $(function() {
 		
 	});
 	
- 	/* $("#btn-search-bookinfo").click(function(e) {
+	$( "#print" ).click(function(){
+        if( navigator.userAgent.indexOf("MSIE") > 0 ){
+         printPage();
+        } else if( navigator.userAgent.indexOf("Chrome") > 0){
+            window.print();
+        }
+   });
+	
+ 	$("#btn-search-bookinfo").click(function(e) {
  		e.preventDefault();
 		
 		var bKeyword = $("#search-book-info").val();
@@ -207,7 +220,7 @@ $(function() {
 		var ttb;
 		
 		
-		$.get("http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?itemIdType=ISBN13&output=js&Version=20131101"
+		$.post("http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?itemIdType=ISBN13&output=js&Version=20131101"
 				+"&ItemId="+bKeyword +'&ttbkey=ttbanfyanfy991303001',
 			 function(json) {
 			$("#isbn13").val(json.item[0].isbn13);
@@ -224,7 +237,7 @@ $(function() {
 			
 		});
 		
-	}); */
+	});
 	
 /* 	var CountMember = ${CountMember};
 	console.log(CountMember);

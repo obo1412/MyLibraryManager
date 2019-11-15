@@ -1,9 +1,17 @@
 package com.gaimit.mlm.controller.book;
 
 
-import java.util.List;
+import java.io.BufferedReader;
+
+
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Locale;
 
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +23,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
-
-import com.gaimit.mlm.model.Member;
-import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Book;
+import com.gaimit.mlm.model.Manager;
+import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.BookService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class RegBook {
+public class SearchBook {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -44,7 +51,7 @@ public class RegBook {
 	BookService bookService;
 	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/book/reg_book.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/search_book.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -63,12 +70,11 @@ public class RegBook {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
-		String searchName = web.getString("search-name", "");
+		String isbn = web.getString("search-book-info", "");
 		
 		// 파라미터를 저장할 Beans
 		Member member = new Member();
 		member.setIdLib(idLib);
-		member.setName(searchName);
 		
 		Book book = new Book();
 		book.setIdLibBook(idLib);
@@ -94,18 +100,45 @@ public class RegBook {
 		member.setLimitStart(page.getLimitStart());
 		member.setListCount(page.getListCount());
 		
-		/** 3) Service를 통한 SQL 수행 */
+		/** 3) url openapi 수신 */
 		// 조회 결과를 저장하기 위한 객체
 		
+		
+		JSONObject json = new JSONObject();
+		try {
+			String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbanfyanfy991303001&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
+			String apiUrlItem = null;
+			if(isbn.length() == 13) {
+				apiUrlItem = apiUrl+"&itemIdType=ISBN13"+"&ItemId="+ isbn;
+			} else if(isbn.length() == 10) {
+				apiUrlItem = apiUrl+"&itemIdType=ISBN"+"&ItemId="+ isbn;
+			}
+			URL url = new URL(apiUrlItem);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"UTF-8"));
+			
+			String result = br.readLine();
+			
+			br.close();
+
+			JSONParser jsonParser = new JSONParser();
+			json = (JSONObject) jsonParser.parse(result);
+		} catch(Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
 		
 		
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
+		model.addAttribute("json", json);
 		model.addAttribute("page", page);
 		model.addAttribute("ttbKey", ttbKey);
 		
 		return new ModelAndView("book/reg_book");
-	}	
+	}
 }

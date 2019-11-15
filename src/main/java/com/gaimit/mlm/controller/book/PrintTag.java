@@ -24,7 +24,7 @@ import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class RegBook {
+public class PrintTag {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -44,7 +44,7 @@ public class RegBook {
 	BookService bookService;
 	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/book/reg_book.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/print_tag.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -106,6 +106,6 @@ public class RegBook {
 		model.addAttribute("page", page);
 		model.addAttribute("ttbKey", ttbKey);
 		
-		return new ModelAndView("book/reg_book");
+		return new ModelAndView("book/print_tag");
 	}	
 }
