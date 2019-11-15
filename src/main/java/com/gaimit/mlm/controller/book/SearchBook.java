@@ -137,7 +137,6 @@ public class SearchBook {
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("json", json);
 		model.addAttribute("page", page);
-		model.addAttribute("ttbKey", ttbKey);
 		
 		return new ModelAndView("book/reg_book");
 	}
