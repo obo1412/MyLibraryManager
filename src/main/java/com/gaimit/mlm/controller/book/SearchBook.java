@@ -2,13 +2,14 @@ package com.gaimit.mlm.controller.book;
 
 
 import java.io.BufferedReader;
-
-
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,6 +21,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
@@ -58,7 +62,6 @@ public class SearchBook {
 		web.init();
 		
 		int idLib = 0;
-		String ttbKey = "ttbanfyanfy991303001";
 		
 		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
@@ -101,19 +104,19 @@ public class SearchBook {
 		member.setListCount(page.getListCount());
 		
 		/** 3) url openapi 수신 */
-		// 조회 결과를 저장하기 위한 객체
-		
-		
-		JSONObject json = new JSONObject();
+		// 알라딘 api 에서 json 수신
+		JSONObject jsonAladin = new JSONObject();
 		try {
 			String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbanfyanfy991303001&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
-			String apiUrlItem = null;
+			/*String apiKey = "?ttbkey=ttbanfyanfy991303001";*/
+			String apiUrlItem = apiUrl;
+			String apiUrlFull = null;
 			if(isbn.length() == 13) {
-				apiUrlItem = apiUrl+"&itemIdType=ISBN13"+"&ItemId="+ isbn;
+				apiUrlFull = apiUrlItem + "&itemIdType=ISBN13"+"&ItemId="+ isbn;
 			} else if(isbn.length() == 10) {
-				apiUrlItem = apiUrl+"&itemIdType=ISBN"+"&ItemId="+ isbn;
+				apiUrlFull = apiUrlItem +"&itemIdType=ISBN"+"&ItemId="+ isbn;
 			}
-			URL url = new URL(apiUrlItem);
+			URL url = new URL(apiUrlFull);
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();
 			con.setRequestMethod("GET");
 			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
@@ -125,17 +128,84 @@ public class SearchBook {
 			br.close();
 
 			JSONParser jsonParser = new JSONParser();
-			json = (JSONObject) jsonParser.parse(result);
+			jsonAladin = (JSONObject) jsonParser.parse(result);
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
+		// 서지정보에서 api 수신
+		JSONObject jsonSeoji = new JSONObject();
+		try {
+			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=6debf14330e5866f7c50d47a9c84ae8f&result_style=json&page_no=1&page_size=1";
+			String apiUrlFull = null;
+			if(isbn.length() == 13) {
+				apiUrlFull = apiUrl + "&isbn="+ isbn;
+			} else if(isbn.length() == 10) {
+				apiUrlFull = apiUrl +"&isbn="+ isbn;
+			}
+			URL url = new URL(apiUrlFull);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"UTF-8"));
+			
+			String result = br.readLine();
+			
+			br.close();
+
+			JSONParser jsonParser = new JSONParser();
+			jsonSeoji = (JSONObject) jsonParser.parse(result);
+		} catch(Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
 		
+		//국립중앙도서관 아래 api검색
+		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
+		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
+		ArrayList<String> xmlClassNoArray = new ArrayList<String>();
+		try {
+			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn";
+			String apiUrlFull = null;
+			if(isbn.length() == 13) {
+				apiUrlFull = apiUrl + "&isbnCode="+ isbn;
+			} else if(isbn.length() == 10) {
+				apiUrlFull = apiUrl +"&isbnCode="+ isbn;
+			}
+			URL url = new URL(apiUrlFull);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc =builder.parse(con.getInputStream());
+			
+			NodeList nodeList = doc.getElementsByTagName("item");
+			for(int i =0; i<nodeList.getLength(); i++) {
+				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
+					node=node.getNextSibling()) {
+					if(node.getNodeName().equals("class_no")) {
+						
+						xmlClassNoArray.add(node.getTextContent());
+
+					}
+				}
+			}
+				
+		} catch(Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		//ArrayList<String>은 get(index)과 set(index, 인자)로 컨트롤된다.
+		/*xmlClassNoArray.set(0, "asdfa");
+		System.out.println(xmlClassNoArray.get(0));*/
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
-		model.addAttribute("json", json);
+		model.addAttribute("jsonAladin", jsonAladin);
+		model.addAttribute("jsonSeoji", jsonSeoji);
+		model.addAttribute("xmlClassNoArray", xmlClassNoArray);
 		model.addAttribute("page", page);
 		
 		return new ModelAndView("book/reg_book");
