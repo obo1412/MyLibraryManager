@@ -40,9 +40,11 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
 	    <property name="url" 
-	     value="jdbc:log4jdbc:mysql://localhost:3306/mlmdb?characterEncoding=UTF8"/>
+	     value="jdbc:log4jdbc:mysql://106.245.77.130:3306/finebook4?characterEncoding=UTF8"/>
+	     <!-- 원래는 주소부분에 localhost:3306 -->
 		<property name="username" value="root" />
-		<property name="password" value="root" />
+		<!-- <property name="password" value="root" /> -->
+		<property name="password" value="@yunhee0818" />
 	</bean>
 	
 	<!-- MyBatis SqlSessionFactory 객체 설정 : config.xml의 역할 수행 -->
