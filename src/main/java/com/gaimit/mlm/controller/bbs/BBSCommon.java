@@ -19,10 +19,10 @@ public class BBSCommon {
 		if (category != null) {
 			if (category.equals("notice")) {
 				bbsName = "공지사항";
-			} else if (category.equals("free")) {
+			/*} else if (category.equals("free")) {
 				bbsName = "자유게시판";
 			} else if (category.equals("gallery")) {
-				bbsName = "갤러리";
+				bbsName = "갤러리";*/
 			} else if (category.equals("qna")) {
 				bbsName = "질문/답변";
 			}

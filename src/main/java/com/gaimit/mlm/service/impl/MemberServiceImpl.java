@@ -71,7 +71,7 @@ public class MemberServiceImpl implements MemberService {
 				throw new NullPointerException();
 			}*/
 		} catch (NullPointerException e) {
-			throw new Exception("이미 가입된 번호 입니다.");
+			throw new Exception("존재하는 초기 회원번호가 없습니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 			throw new Exception("아이디 키를 가져오는데 실패했습니다.");

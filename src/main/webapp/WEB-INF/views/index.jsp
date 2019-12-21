@@ -6,70 +6,33 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp" %>
+
 <style type="text/css">
-/** 메인페이지 > 최근게시물 > 제목 영역 */
-.article-item .page-header {
-	margin-bottom: 0px;
-	border-bottom: 0px;
-}
 
-/** 메인페이지 > 최근게시물 > 제목 영역 > 제목 텍스트 */
-.article-item h4 {
-	font-weight: bold;
-	margin-bottom: 0;
-}
-
-/** 메인페이지 > 최근게시물 > 제목 우측의 more 버튼 */
-.article-item .btn {
-	margin-bottom: -15px;
-}
-
-/** 메인페이지 > 최근게시물 > 글 목록 > 링크 */
-.article-item .list-group-item a {
-	display: block;
-	color: #222;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-/** 케러셀 영역의 전체 높이 지정 */
-#carousel {
-	height: 80%;
-}
-
-/** 핸드폰 사이즈에서는 케러셀이 화면을 가득 채움 */
-@media (max-width: 767px) {
-	#carousel {
-		height: 100%;
-	}
-}
-
-/** 케러셀의 각 영역 높이가 케러셀 안에서 가득 차도록 구성 */
-#carousel .item, #carousel .carousel-inner {
-	height: 100%;
-}
-
-/** 케러셀 이미지 */
-#carousel .img {
-	height: 100%;
-	background-size: cover;
-	background-position: center center;
-}
 </style>
 
 </head>
 <body>
 <%@ include file="/WEB-INF/inc/topbar.jsp" %>
-<%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
 
 <!-- 최신 게시물 목록 영역 -->
-<div class="container content-box">
-	로그인시 미납 책 목록
-	현재 상태 표기 각종 정보 수집
+<div id="wrapper">
+<%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
+	<div id="content-wrapper">
+		<div class="container-fluid">
+		<p>게시판 활성화 완료, ui 수정 필요</p>
+		<p>member, manager DB테이블 수정 중</p>
+		<p>도서 등록하기/ 도서테이블 별도, 도서관 별 도서테이블 참조 형식</p>
+		<p>댓글 기능 수정 필요</p>
+		
+		
+		<p>로그인시 미납 책 목록</p>
+		<p>현재 상태 표기 각종 정보 수집</p>
+		</div> <!-- container-fluid 종료 -->
+		<%@ include file="/WEB-INF/inc/footer.jsp" %>	
+	</div>
 </div>
 
-<%@ include file="/WEB-INF/inc/footer.jsp" %>
 <%@ include file="/WEB-INF/inc/script-common.jsp" %>
 </body>
 </html>

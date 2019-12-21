@@ -76,6 +76,7 @@ public class JoinOkMng {
 		String userPwMng = paramMap.get("user_pw");
 		String userPwReMng = paramMap.get("user_pw_re");
 		String nameMng = paramMap.get("name");
+		String emailMng = paramMap.get("email");
 		String idLibMng = paramMap.get("idLib");
 		
 		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
@@ -83,6 +84,7 @@ public class JoinOkMng {
 		logger.debug("userPwMng=" + userPwMng);
 		logger.debug("userPwReMng=" + userPwReMng);
 		logger.debug("nameMng=" + nameMng);
+		logger.debug("emailMng=" + emailMng);
 		logger.debug("idLibMng=" + idLibMng);
 		
 		//본래 int 파라미터인 것을 변환
@@ -134,13 +136,13 @@ public class JoinOkMng {
 		}
 
 		// 이메일 검사
-	/*	if (!regex.isValue(email)) {
+		if (!regex.isValue(emailMng)) {
 			return web.redirect(null, "이메일을 입력하세요.");
 		}
 
-		if (!regex.isEmail(email)) {
+		if (!regex.isEmail(emailMng)) {
 			return web.redirect(null, "이메일의 형식이 잘못되었습니다.");
-		}*/
+		}
 
 		// 연락처 검사
 		/*if (!regex.isValue(phone)) {
@@ -185,6 +187,7 @@ public class JoinOkMng {
 		manager.setUserIdMng(userIdMng);
 		manager.setUserPwMng(userPwReMng);
 		manager.setNameMng(nameMng);
+		manager.setEmailMng(emailMng);
 		manager.setIdLibMng(idLibMngInt);
 
 		/** (8) Service를 통한 데이터베이스 저장 처리 */

@@ -10,6 +10,7 @@
 		<result property="userIdMng" column="user_id_mng"/>
 		<result property="userPwMng" column="user_pw_mng"/>
 		<result property="nameMng" column="name_mng"/>
+		<result property="emailMng" column="email_mng"/>
 
 	</resultMap>
 	
@@ -47,16 +48,16 @@
 	<!-- 회원정보를 저장한다 : 가입 -->
 	<insert id="insertManager" parameterType="com.gaimit.mlm.model.Manager" useGeneratedKeys="true" keyProperty="id_mng">
 		INSERT INTO manager (
-			id_lib_mng, user_id_mng, user_pw_mng, name_mng
+			id_lib_mng, user_id_mng, user_pw_mng, name_mng, email_mng
 		) VALUES (
-			#{idLibMng}, #{userIdMng}, password(#{userPwMng}), #{nameMng}
+			#{idLibMng}, #{userIdMng}, password(#{userPwMng}), #{nameMng}, #{emailMng}
 		)
 	</insert>
 	
 	<!-- 아이디와 비밀번호가 일치하는 회원정보를 조회한다. -->
 	<select id="selectLoginInfo" parameterType="com.gaimit.mlm.model.Manager" resultMap="manager">
 		SELECT
-			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng
+			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng, email_mng
 		FROM manager
 		WHERE user_id_mng=#{userIdMng} AND user_pw_mng=password(#{userPwMng})
 		ORDER BY id_mng DESC

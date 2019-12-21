@@ -49,11 +49,16 @@ public class Join {
 	
 
 		/** (8) Service를 통한 데이터베이스 저장 처리 */
-		int lastId = 0;
+		Integer lastId = new Integer(0);
 		try {
-			lastId = memberService.selectLastJoinedId();
+				lastId = memberService.selectLastJoinedId();
 		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
+			// lastId 초기값이 null 이라서 NPE 을 빼버림
+			/*return web.redirect(null, e.getLocalizedMessage());*/
+		}
+		
+		if(lastId.equals(null)) {
+			lastId = 0;
 		}
 		
 		model.addAttribute("lastId", lastId);

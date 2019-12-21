@@ -82,8 +82,8 @@ public class ManagerServiceImpl implements ManagerService {
 	@Override
 	public void insertManager(Manager manager) throws Exception {
 		// 아이디 중복검사 및 이메일 중복검사 호출
-		/*selectUserIdCount(member);
-		selectEmailCount(member);*/
+		/*selectUserIdCount(manager);
+		selectEmailCount(manager);*/
 
 		// 데이터 저장처리 = 가입
 		// not null로 설정된 값이 설정되지 않았다면 예외 발생됨.
