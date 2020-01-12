@@ -2,25 +2,23 @@ package com.gaimit.mlm.model;
 
 public class Book extends Member{
 	private int idBook;
-	private int idLibBook;
 	private String idCodeBook;
 	private String nameBook;
 	private String writerBook;
 	private String publisherBook;
+	private String pubDateBook;
 	private String priceBook;
-	private String regDateBook;
+	private String isbn13Book;
+	private String callNoBook;
+	private String classCodeBook;
+	private String classificationBook;
+	private String descriptionBook;
 	
 	public int getIdBook() {
 		return idBook;
 	}
 	public void setIdBook(int idBook) {
 		this.idBook = idBook;
-	}
-	public int getIdLibBook() {
-		return idLibBook;
-	}
-	public void setIdLibBook(int idLibBook) {
-		this.idLibBook = idLibBook;
 	}
 	public String getIdCodeBook() {
 		return idCodeBook;
@@ -46,22 +44,56 @@ public class Book extends Member{
 	public void setPublisherBook(String publisherBook) {
 		this.publisherBook = publisherBook;
 	}
+	public String getPubDateBook() {
+		return pubDateBook;
+	}
+	public void setPubDateBook(String pubDateBook) {
+		this.pubDateBook = pubDateBook;
+	}
 	public String getPriceBook() {
 		return priceBook;
 	}
 	public void setPriceBook(String priceBook) {
 		this.priceBook = priceBook;
 	}
-	public String getRegDateBook() {
-		return regDateBook;
+	public String getIsbn13Book() {
+		return isbn13Book;
 	}
-	public void setRegDateBook(String regDateBook) {
-		this.regDateBook = regDateBook;
+	public void setIsbn13Book(String isbn13Book) {
+		this.isbn13Book = isbn13Book;
+	}
+	public String getCallNoBook() {
+		return callNoBook;
+	}
+	public void setCallNoBook(String callNoBook) {
+		this.callNoBook = callNoBook;
+	}
+	public String getClassCodeBook() {
+		return classCodeBook;
+	}
+	public void setClassCodeBook(String classCodeBook) {
+		this.classCodeBook = classCodeBook;
+	}
+	public String getClassificationBook() {
+		return classificationBook;
+	}
+	public void setClassificationBook(String classificationBook) {
+		this.classificationBook = classificationBook;
+	}
+	public String getDescriptionBook() {
+		return descriptionBook;
+	}
+	public void setDescriptionBook(String descriptionBook) {
+		this.descriptionBook = descriptionBook;
 	}
 	@Override
 	public String toString() {
-		return "Book [idBook=" + idBook + ", idLibBook=" + idLibBook + ", idCodeBook=" + idCodeBook + ", nameBook="
-				+ nameBook + ", writerBook=" + writerBook + ", publisherBook=" + publisherBook + ", priceBook="
-				+ priceBook + ", regDateBook=" + regDateBook + "]";
+		return "Book [idBook=" + idBook + ", idCodeBook=" + idCodeBook + ", nameBook=" + nameBook + ", writerBook="
+				+ writerBook + ", publisherBook=" + publisherBook + ", pubDateBook=" + pubDateBook + ", priceBook="
+				+ priceBook + ", isbn13Book=" + isbn13Book + ", callNoBook=" + callNoBook + ", classCodeBook="
+				+ classCodeBook + ", classificationBook=" + classificationBook + ", descriptionBook=" + descriptionBook
+				+ "]";
 	}
+	
+	
 }

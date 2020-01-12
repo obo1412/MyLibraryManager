@@ -22,18 +22,14 @@ import com.gaimit.helper.RegexHelper;
 import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BookHeld;
-import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.BookHeldService;
-import com.gaimit.mlm.service.BrwService;
-import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class BrwBookOk {
+public class RegBookOk {
 	/** (1) 사용하고자 하는 Helper + Service 객체 선언 */
 	// --> import org.apache.logging.log4j.Logger;
-	Logger logger = LoggerFactory.getLogger(BrwBookOk.class);
+	Logger logger = LoggerFactory.getLogger(RegBookOk.class);
 	// --> import org.apache.ibatis.session.SqlSession;
 	@Autowired
 	SqlSession sqlSession;
@@ -46,17 +42,11 @@ public class BrwBookOk {
 	// --> import study.jsp.helper.UploadHelper;
 	@Autowired
 	UploadHelper upload;
-	// --> import study.jsp.mysite.service.MemberService;
-	@Autowired
-	MemberService memberService;
 	
 	@Autowired
 	BookHeldService bookHeldService;
-	
-	@Autowired
-	BrwService brwService;
 
-	@RequestMapping(value = "/book/brw_book_ok.do")
+	@RequestMapping(value = "/book/reg_book_ok.do")
 	public ModelAndView doRun(Locale locale, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -64,11 +54,6 @@ public class BrwBookOk {
 		web.init();
 
 		/** (3) 로그인 여부 검사 */
-		// 로그인 중이라면 이 페이지를 동작시켜서는 안된다.
-		/*if (web.getSession("loginInfo") != null) {
-			return web.redirect(web.getRootPath() + "/index.do", "이미 로그인 하셨습니다.");
-		}*/
-		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
 		int idLib = 0;
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
@@ -92,43 +77,76 @@ public class BrwBookOk {
 		// UploadHelper에서 텍스트 형식의 파라미터를 분류한 Map을 리턴받아서 값을 추출한다.
 		Map<String, String> paramMap = upload.getParamMap();
 				
-		/** brw_book에서 전달받은 member 파라미터를 Beans 객체에 담는다. */
-		String StrMemberId = paramMap.get("memberId");
-		int memberId = Integer.parseInt(StrMemberId);
+		/** reg_book에서 전달받은 book, bookheld 파라미터를 Beans 객체에 담는다. */
+		String isbn13 = paramMap.get("isbn13");
+		String isbn10 = paramMap.get("isbn10");
+		String bookCateg = paramMap.get("bookCateg");
+		String categCode = paramMap.get("categCode");
+		String bookName = paramMap.get("bookName");
+		String author = paramMap.get("author");
+		String authorCode = paramMap.get("authorCode");
+		String publisher = paramMap.get("publisher");
+		String pubDate = paramMap.get("pubDate");
+		String bookDesc = paramMap.get("bookDesc");
 		
-		//위에서 받은 파라미터를 이용하여, 해당 도서관에 사용자가 있는지 체크
-		// 추후에 이름과 id코드도 받아와서 이 사용자가 맞는지 확인해야될 듯.
-		Member member = new Member();
-		member.setId(memberId);
-		member.setIdLib(idLib);
 		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
-		logger.debug("memberId=" + memberId);
-		logger.debug("idLib=" + idLib);
+		logger.debug("isbn13=" + isbn13);
+		logger.debug("isbn10=" + isbn10);
+		logger.debug("bookCateg=" + bookCateg);
+		logger.debug("categCode=" + categCode);
+		logger.debug("bookName=" + bookName);
+		logger.debug("author=" + author);
+		logger.debug("authorCode=" + authorCode);
+		logger.debug("publisher=" + publisher);
+		logger.debug("pubDate=" + pubDate);
+		logger.debug("bookDesc=" + bookDesc);
 		
-		// 그 id를 가진 멤버가 있는지 확인.
-		int memberCount = 0;
+		//book, bookHeld insert 위한 정보 수집
+		BookHeld bookHeld = new BookHeld();
+		BookHeld callIdBook = null;
+		
+		//manager로부터 도서관번호 부여.
+		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setIsbn13Book(isbn13);
+		bookHeld.setIdCodeBook("tempValue");
+		bookHeld.setNameBook(bookName);
+		bookHeld.setWriterBook(author);
+		bookHeld.setPublisherBook(publisher);
+		bookHeld.setPubDateBook(pubDate);
+		bookHeld.setPriceBook("tempValue");
+		bookHeld.setCallNoBook("temp");
+		bookHeld.setClassCodeBook("temp");
+		bookHeld.setClassificationBook("temp");
+		bookHeld.setDescriptionBook(bookDesc);
+		
+		
 		try {
-			memberCount = memberService.getMemberCount(member);
+			int checkBookTable= bookHeldService.selectBookCount(bookHeld);
+			if (checkBookTable > 0) {
+				//id_book을 받아오기 위한 객체
+				callIdBook = bookHeldService.selectBookId(bookHeld);
+				//callIdBook에 id_book을 담고 bookHeld에 전달.
+				bookHeld.setBookIdBook(callIdBook.getIdBook());
+				bookHeld.setBarcode("abcd");
+				bookHeld.setLocalIdCode("abcd1234");
+				bookHeldService.insertBookHeld(bookHeld);
+			} else if (checkBookTable == 0) {
+				//book에 아예 없을 때
+				bookHeldService.insertBook(bookHeld);
+				//id_book을 받아오기 위한 객체
+				callIdBook = bookHeldService.selectBookId(bookHeld);
+				//callIdBook에 id_book을 담고 bookHeld에 전달.
+				bookHeld.setBookIdBook(callIdBook.getIdBook());
+				bookHeld.setBarcode("abcd");
+				bookHeld.setLocalIdCode("abcd1234");
+				bookHeldService.insertBookHeld(bookHeld);
+			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		//borrow insert를 위한 정보 수집
-		Borrow brw = new Borrow();
-		
-		//borrow를 위한 1차 정보 주입 
-		if(memberCount > 0) {
-			brw.setIdLibBrw(idLib);
-			brw.setIdMemberBrw(memberId);
-		}
-		
-		//brw_book.jsp 에서  책에 대한 파라미터 받기
-		String bookCode = paramMap.get("bookCode");
-
-		BookHeld bookHeld = new BookHeld();
-		bookHeld.setLibraryIdLib(idLib);
 		// bookHeld가 book을 상속받아서 아래 조건 성립됨.
-		bookHeld.setIdCodeBook(bookCode);
+		//bookHeld.setIdCodeBook(bookCode);
 		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
@@ -140,23 +158,9 @@ public class BrwBookOk {
 		
 		// 위 과정으로 도서정보가 나오면, 도서 대출을 위한 정보 수집 id_book
 		if(bookHeld != null) {
-			brw.setIdLibBrw(idLib);
-			brw.setIdBookBrw(bookHeld.getIdBook());
+			//brw.setIdLibBrw(idLib);
+			//brw.setIdBookBrw(bookHeld.getIdBook());
 		}
-		
-		//대출된 도서 결과를 저장하기 위한 객체
-		List<Borrow> list = null;
-		
-		// 대출도서 정보가 다모이면 borrow insert
-		try {
-			brwService.insertBorrow(brw);
-			list = brwService.getBorrowList(brw);
-		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		
-
-		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
 		
 
 		/** (6) 업로드 된 파일 정보 추출 */
@@ -175,9 +179,9 @@ public class BrwBookOk {
 		logger.debug("profileImg=" + profileImg);*/
 		
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("brwList", list);
+		//model.addAttribute("brwList", list);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
-		return web.redirect(web.getRootPath() + "/book/book_list_brwd.do", "도서대출이 완료되었습니다.");
+		return web.redirect(web.getRootPath() + "/book/reg_book.do", "도서 등록이 완료되었습니다.");
 	}
 }

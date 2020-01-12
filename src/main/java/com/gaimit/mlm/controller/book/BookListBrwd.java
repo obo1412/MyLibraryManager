@@ -18,9 +18,9 @@ import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Book;
+import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Borrow;
-import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.BrwService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
@@ -43,7 +43,7 @@ public class BookListBrwd {
 	ManagerService managerService;
 	
 	@Autowired
-	BookService bookService;
+	BookHeldService bookHeldService;
 	
 	@Autowired
 	BrwService brwService;
@@ -71,8 +71,8 @@ public class BookListBrwd {
 		Member member = new Member();
 		member.setIdLib(idLib);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
 		
 		Borrow brw = new Borrow();
 		brw.setIdLibBrw(idLib);
@@ -100,6 +100,8 @@ public class BookListBrwd {
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
+		
+		/*이하 부분 수정 완료된 것 아님. */
 		List<Borrow> brwList = null;
 		try {
 			brwList = brwService.getBorrowList(brw);

@@ -18,13 +18,13 @@ import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Book;
-import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class BookList {
+public class BookHeldList {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -41,10 +41,10 @@ public class BookList {
 	ManagerService managerService;
 	
 	@Autowired
-	BookService bookService;
+	BookHeldService bookHeldService;
 	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/book/book_list.do", method = RequestMethod.GET)
+	@RequestMapping(value = "/book/book_held_list.do", method = RequestMethod.GET)
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -66,8 +66,8 @@ public class BookList {
 		Member member = new Member();
 		member.setIdLib(idLib);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		String keyword = web.getString("keyword", "");
@@ -93,10 +93,10 @@ public class BookList {
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 		List<Member> list = null;
-		List<Book> bookList = null;
+		List<BookHeld> bookHeldList = null;
 		try {
 			list = memberService.getMemberListByLib(member);
-			bookList = bookService.getBookList(book);
+			bookHeldList = bookHeldService.getBookHeldList(bookHeld);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -105,10 +105,10 @@ public class BookList {
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		model.addAttribute("list", list);
-		model.addAttribute("bookList", bookList);
+		model.addAttribute("bookHeldList", bookHeldList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("page", page);
 		
-		return new ModelAndView("book/book_list");
-	}	
+		return new ModelAndView("book/book_held_list");
+	}
 }

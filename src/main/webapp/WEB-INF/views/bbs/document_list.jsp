@@ -37,7 +37,7 @@
 									<c:forEach var="document" items="${documentList}">
 										<tr>
 											<td class="text-center">${maxPageNo}</td>
-											<td><c:url var="readUrl" value="/bbs/document_read.do">
+											<td class="text-center"><c:url var="readUrl" value="/bbs/document_read.do">
 													<c:param name="category" value="${document.category}" />
 													<c:param name="document_id" value="${document.id}" />
 												</c:url> <a href="${readUrl}">${document.subject}</a></td>

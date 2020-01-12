@@ -57,7 +57,7 @@
 				</a>
 					<div class="dropdown-menu dropdown-menu-right"
 						aria-labelledby="alertsDropdown">
-						<form class="navbar-form navbar-right" method="post"
+						<form class="navbar-form navbar-right mr-3 ml-3" method="post"
 							action="${pageContext.request.contextPath}/manager/login_ok.do">
 							<div class="form-group">
 								<input type="text" name="user_id" placeholder="User Id"
@@ -115,7 +115,7 @@
 								src="${pageContext.request.contextPath}/
             			download.do?file=${cookie.profileThumbnail.value}"
 								class="img-circle" />
-						</c:if> <!-- 쿠키값에 따른 프로필 이미지 표시 끝 --> ${loginInfo.nameMng}님 <span
+						</c:if> <!-- 쿠키값에 따른 프로필 이미지 표시 끝 -->${loginInfo.nameLib}도서관/${loginInfo.nameMng}님 <span
 						class="caret"></span> <!-- <i class="fas fa-user fa-fw"></i>
 		          <span class="badge badge-danger">9+</span> -->
 				</a>

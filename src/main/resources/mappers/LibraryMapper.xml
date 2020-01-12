@@ -21,7 +21,7 @@
 	</select> -->
 
 
-	<!-- 선수(회원정보)목록 조회 -->
+	<!--도서관 목록 조회 -->
 	<select id="selectLibraryList" parameterType="com.gaimit.mlm.model.Library" resultMap="library">
 		SELECT
 			id_lib, name_lib, loc_lib

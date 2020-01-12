@@ -27,10 +27,10 @@ import org.w3c.dom.NodeList;
 
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
-import com.gaimit.mlm.model.Book;
+import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Member;
-import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
@@ -52,7 +52,7 @@ public class SearchBook {
 	ManagerService managerService;
 	
 	@Autowired
-	BookService bookService;
+	BookHeldService bookHeldService;
 	
 	/** 교수 목록 페이지 */
 	@RequestMapping(value = "/book/search_book.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -79,8 +79,8 @@ public class SearchBook {
 		Member member = new Member();
 		member.setIdLib(idLib);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");
@@ -134,7 +134,7 @@ public class SearchBook {
 		}
 		
 		// 서지정보에서 api 수신
-		JSONObject jsonSeoji = new JSONObject();
+		/*JSONObject jsonSeoji = new JSONObject();
 		try {
 			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=6debf14330e5866f7c50d47a9c84ae8f&result_style=json&page_no=1&page_size=1";
 			String apiUrlFull = null;
@@ -158,7 +158,7 @@ public class SearchBook {
 			jsonSeoji = (JSONObject) jsonParser.parse(result);
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
-		}
+		}*/
 		
 		//국립중앙도서관 아래 api검색
 		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
@@ -204,7 +204,7 @@ public class SearchBook {
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("jsonAladin", jsonAladin);
-		model.addAttribute("jsonSeoji", jsonSeoji);
+		//model.addAttribute("jsonSeoji", jsonSeoji);
 		model.addAttribute("xmlClassNoArray", xmlClassNoArray);
 		model.addAttribute("page", page);
 		

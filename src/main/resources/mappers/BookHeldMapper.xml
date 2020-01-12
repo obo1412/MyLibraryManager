@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BookHeldMapper">
+	<resultMap id="bookHeld" type="com.gaimit.mlm.model.BookHeld">
+		<!-- beans클래스에서 상속을 받았더라도, 맵퍼에선 명시해줘야한다. -->
+		<result property="idBook" column="id_book"/>
+		<result property="idCodeBook" column="id_code_book"/>
+		<result property="nameBook" column="name_book"/>
+		<result property="writerBook" column="writer_book"/>
+		<result property="publisherBook" column="publisher_book"/>
+		<result property="pubDateBook" column="pub_date_book"/>
+		<result property="priceBook" column="price_book"/>
+		<result property="isbn13Book" column="isbn13_book"/>
+		<result property="callNoBook" column="call_no_book"/>
+		<result property="classCodeBook" column="class_code_book"/>
+		<result property="classificationBook" column="classification_book"/>
+		<result property="descriptionBook" column="description_book"/>
+		
+		<!-- 이하 bookHeld 칼럼 -->
+		<result property="id" column="id"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="barcode" column="barcode"/>
+		<result property="localIdCode" column="local_id_code"/>
+		<result property="bookIdBook" column="book_id_book"/>
+		<result property="libraryIdLib" column="library_id_lib"/>
+	</resultMap>
+	
+	<!-- 아이디 중복검사를 수행한다 -->
+	<!-- <select id="selectUserIdCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
+		SELECT count(id) FROM member WHERE user_id=#{userId}
+	</select> -->
+	
+	<!-- 이메일 중복 검사를 수행한다 -->
+	<!-- <select id="selectEmailCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
+		SELECT count(id) FROM member WHERE email=#{email}
+	</select> -->
+
+
+	<!-- 선수(회원정보)목록 조회 -->
+	<select id="selectBookHeldList" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id, reg_date, barcode, local_id_code, book_id_book, library_id_lib,
+			name_book, writer_book
+		FROM book_held h
+		INNER JOIN book b
+		ON h.book_id_book = b.id_book
+		WHERE library_id_lib=#{libraryIdLib}
+		ORDER BY id ASC
+	</select>
+	
+	<select id="selectBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id, reg_date, barcode, local_id_code, book_id_book, library_id_lib
+		FROM book_held
+		WHERE library_id_lib=#{libraryIdLib} AND id=#{id}
+		<!-- WHERE id_lib_book = #{idLibBook} AND id_code_book = #{idCodeBook} -->
+	</select>
+	
+	<!-- 책 공통DB에 등록되어 있는지 확인 -->
+	<select id="selectBookCount" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			count(id_book)
+		FROM book
+		WHERE isbn13_book = #{isbn13Book}
+	</select>
+	
+	<select id="selectBookId" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id_book
+		FROM book
+		WHERE isbn13_book = #{isbn13Book}
+	</select>
+	
+	<insert id="insertBook" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id_book">
+		INSERT INTO book (
+			id_code_book, name_book, writer_book,
+			publisher_book, pub_date_book, price_book, isbn13_book, call_no_book,
+			class_code_book, classification_book, description_book
+		) VALUES (
+			#{idCodeBook}, #{nameBook}, #{writerBook},
+			#{publisherBook}, #{pubDateBook}, #{priceBook}, #{isbn13Book}, #{callNoBook},
+			#{classCodeBook}, #{classificationBook}, #{descriptionBook}
+		)
+	</insert>
+	
+	<insert id="insertBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO book_held (
+			reg_date, barcode, local_id_code, book_id_book, library_id_lib
+		) VALUES (
+			now(), #{barcode}, #{localIdCode}, #{bookIdBook}, #{libraryIdLib}
+		)
+	</insert>
+</mapper>

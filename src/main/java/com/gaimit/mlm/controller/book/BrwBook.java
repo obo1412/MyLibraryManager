@@ -69,8 +69,8 @@ public class BrwBook {
 		member.setIdLib(idLib);
 		member.setName(searchName);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		/*Book book = new Book();
+		book.setIdLibBook(idLib);*/
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");
@@ -81,17 +81,17 @@ public class BrwBook {
 		
 		/** 2) 페이지 번호 구현하기 */
 		// 전체 데이터 수 조회하기
-		int totalCount = 0;
+		/*int totalCount = 0;
 		try {
 			totalCount = memberService.getMemberCount(member);
 		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
-		}
+		}*/
 		
 		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		page.pageProcess(nowPage, totalCount, 10, 5);
+		/*page.pageProcess(nowPage, totalCount, 10, 5);
 		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());
+		member.setListCount(page.getListCount());*/
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
@@ -115,7 +115,7 @@ public class BrwBook {
 			}		
 			//책대여를 위한 회원조회 끝
 			
-			bookList = bookService.getBookList(book);
+			/*bookList = bookService.getBookList(book);*/
 			
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());

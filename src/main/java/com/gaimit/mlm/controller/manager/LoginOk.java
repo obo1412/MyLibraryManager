@@ -65,7 +65,9 @@ public class LoginOk {
 
 		/** (6) Service를 통한 회원 인증 */
 		Manager loginInfo = null;
-
+		
+		//도서관 명을 확인하기 위한 변수 선언 
+		
 		try {
 			// 아이디와 비밀번호가 일치하는 회원 정보를 조회하여 리턴한다.
 			loginInfo = managerService.selectLoginInfo(manager);

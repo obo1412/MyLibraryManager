@@ -1,7 +1,6 @@
 package com.gaimit.mlm.controller.book;
 
 
-import java.util.List;
 import java.util.Locale;
 
 //import org.slf4j.Logger;
@@ -18,8 +17,8 @@ import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Book;
-import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
@@ -41,7 +40,7 @@ public class RegBook {
 	ManagerService managerService;
 	
 	@Autowired
-	BookService bookService;
+	BookHeldService bookHeldService;
 	
 	/** 교수 목록 페이지 */
 	@RequestMapping(value = "/book/reg_book.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -51,7 +50,6 @@ public class RegBook {
 		web.init();
 		
 		int idLib = 0;
-		String ttbKey = "ttbanfyanfy991303001";
 		
 		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
@@ -70,8 +68,8 @@ public class RegBook {
 		member.setIdLib(idLib);
 		member.setName(searchName);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");
@@ -104,7 +102,7 @@ public class RegBook {
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("page", page);
-		model.addAttribute("ttbKey", ttbKey);
+		
 		
 		return new ModelAndView("book/reg_book");
 	}	

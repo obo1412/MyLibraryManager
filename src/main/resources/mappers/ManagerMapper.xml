@@ -11,6 +11,10 @@
 		<result property="userPwMng" column="user_pw_mng"/>
 		<result property="nameMng" column="name_mng"/>
 		<result property="emailMng" column="email_mng"/>
+		
+		<!-- 이하 도서관 칼럼 -->
+		<result property="nameLib" column="name_lib"/>
+		<result property="locLib" column="loc_lib"/>
 
 	</resultMap>
 	
@@ -57,8 +61,11 @@
 	<!-- 아이디와 비밀번호가 일치하는 회원정보를 조회한다. -->
 	<select id="selectLoginInfo" parameterType="com.gaimit.mlm.model.Manager" resultMap="manager">
 		SELECT
-			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng, email_mng
-		FROM manager
+			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng, email_mng,
+			name_lib, loc_lib
+		FROM manager m
+		INNER JOIN library l
+		ON m.id_lib_mng = l.id_lib
 		WHERE user_id_mng=#{userIdMng} AND user_pw_mng=password(#{userPwMng})
 		ORDER BY id_mng DESC
 		LIMIT 0, 1
@@ -102,11 +109,12 @@
 		WHERE id_mng=#{idMng}
 	</update>
 	
-	<!-- 일련번호에 의한 회원정보 조회 -->
-	<select id="selectManager" parameterType="com.gaimit.mlm.model.Manager" resultMap="manager">
+	<!-- 일련번호에 의한 회원정보 조회 도서관 정보 포함 -->
+	<select id="selectManagerAndLibrary" parameterType="com.gaimit.mlm.model.Manager" resultMap="manager">
 		SELECT
-			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng
+			id_mng, id_lib_mng, user_id_mng, user_pw_mng, name_mng, email_mng
 		FROM manager
 		WHERE id_mng=#{idMng}
 	</select>
+	
 </mapper>

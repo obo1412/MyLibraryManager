@@ -18,8 +18,8 @@ import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Book;
-import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
@@ -41,7 +41,7 @@ public class PrintTag {
 	ManagerService managerService;
 	
 	@Autowired
-	BookService bookService;
+	BookHeldService bookHeldService;
 	
 	/** 교수 목록 페이지 */
 	@RequestMapping(value = "/book/print_tag.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -70,8 +70,8 @@ public class PrintTag {
 		member.setIdLib(idLib);
 		member.setName(searchName);
 		
-		Book book = new Book();
-		book.setIdLibBook(idLib);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");

@@ -1,6 +1,6 @@
 package com.gaimit.mlm.model;
 
-public class Manager {
+public class Manager extends Library {
 	private int idMng;
 	private int idLibMng;
 	private String userIdMng;

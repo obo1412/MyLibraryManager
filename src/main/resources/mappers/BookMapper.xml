@@ -6,13 +6,17 @@
 <mapper namespace="BookMapper">
 	<resultMap id="book" type="com.gaimit.mlm.model.Book">
 		<result property="idBook" column="id_book"/>
-		<result property="idLibBook" column="id_lib_book"/>
 		<result property="idCodeBook" column="id_code_book"/>
 		<result property="nameBook" column="name_book"/>
 		<result property="writerBook" column="writer_book"/>
 		<result property="publisherBook" column="publisher_book"/>
+		<result property="pubDateBook" column="pub_date_book"/>
 		<result property="priceBook" column="price_book"/>
-		<result property="regDateBook" column="reg_date_book"/>
+		<result property="isbn13Book" column="isbn13_book"/>
+		<result property="callNoBook" column="call_no_book"/>
+		<result property="classCodeBook" column="class_code_book"/>
+		<result property="classificationBook" column="classification_book"/>
+		<result property="descriptionBook" column="description_book"/>
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -29,17 +33,20 @@
 	<!-- 선수(회원정보)목록 조회 -->
 	<select id="selectBookList" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
 		SELECT
-			id_book, id_lib_book, id_code_book, name_book, writer_book,
-			publisher_book,	price_book, reg_date_book
+			id_book,id_code_book, name_book, writer_book, 
+			publisher_book,	pub_date_book, price_book, isbn13_book, call_no_book,
+			class_code_book, classification_book, description_book
 		FROM book
 		ORDER BY id_book ASC
 	</select>
 	
 	<select id="selectBook" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
 		SELECT
-			id_book, id_lib_book, id_code_book, name_book, writer_book,
-			publisher_book,	price_book, reg_date_book
+			id_book, id_code_book, name_book, writer_book,
+			publisher_book, pub_date_book,	price_book, isbn13_book, call_no_book,
+			class_code_book, classification_book, description_book
 		FROM book
 		WHERE id_lib_book = #{idLibBook} AND id_code_book = #{idCodeBook}
 	</select>
+	
 </mapper>
