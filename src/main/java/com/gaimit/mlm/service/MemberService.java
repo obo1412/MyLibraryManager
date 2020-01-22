@@ -115,4 +115,48 @@ public interface MemberService {
 	 * @throws Exception
 	 */
 	public Member selectMember(Member member) throws Exception;
+	
+	/**
+	 * 고객 등급 목록 조회
+	 * @param member
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Member> selectGrade(Member member) throws Exception;
+	
+	/**
+	 * idLib와 phone으로 전화번호 중복 검사
+	 * @param member
+	 * @throws Exception
+	 */
+	public void selectPhoneCount(Member member) throws Exception;
+	
+	/**
+	 * idLib와 gradeId를 이용하여 등급 아이템 조회
+	 * @param member
+	 * @return
+	 * @throws Exception
+	 */
+	public Member getGradeItem(Member member) throws Exception;
+	
+	/**
+	 * gradeId와 idLib를 이용하여 등급 수정
+	 * @param member
+	 * @throws Exception
+	 */
+	public void updateGrade(Member member) throws Exception;
+	
+	/**
+	 * grade 추가
+	 * @param member
+	 * @throws Exception
+	 */
+	public void insertGrade(Member member) throws Exception;
+	
+	/**
+	 * grade 이름 중복검사
+	 * @param member
+	 * @throws Exception
+	 */
+	public void selectGradeNameCount(Member member) throws Exception;
 }

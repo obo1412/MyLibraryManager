@@ -11,6 +11,7 @@ import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 //import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.gaimit.helper.AuthorCode;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BookHeld;
@@ -44,6 +46,9 @@ public class SearchBook {
 	
 	@Autowired
 	PageHelper page;
+	
+	@Autowired
+	AuthorCode authorCode;
 	
 	@Autowired
 	MemberService memberService;
@@ -75,6 +80,9 @@ public class SearchBook {
 		
 		String isbn = web.getString("search-book-info", "");
 		
+		String barcodeHead = web.getString("barcodeHead");
+		String barcodeInit = barcodeHead;
+		
 		// 파라미터를 저장할 Beans
 		Member member = new Member();
 		member.setIdLib(idLib);
@@ -103,6 +111,10 @@ public class SearchBook {
 		member.setLimitStart(page.getLimitStart());
 		member.setListCount(page.getListCount());
 		
+		//알라딘api에서 저자이름을 가지고 올 변수 선언
+		String authorToCode = null;
+		String titleToCode = null;
+		
 		/** 3) url openapi 수신 */
 		// 알라딘 api 에서 json 수신
 		JSONObject jsonAladin = new JSONObject();
@@ -129,12 +141,32 @@ public class SearchBook {
 
 			JSONParser jsonParser = new JSONParser();
 			jsonAladin = (JSONObject) jsonParser.parse(result);
+			//json타입으로 값을 가져옴
+			
+			//json타입의 값인 jsonAladin에서 특정값을 가지고옴.
+			JSONArray itemArray = (JSONArray) jsonAladin.get("item");
+			JSONObject itemObj = (JSONObject) itemArray.get(0);
+			//item의 [0] <- 첫번째 값을 가져옴
+			Object authorObj = itemObj.get("author");
+			Object titleObj = itemObj.get("title");
+			
+			//authorToCode = (String)authorObj;
+			//위처럼도 casting만 바꾸는 방법도 있음.
+			authorToCode = String.valueOf(authorObj);
+			titleToCode = String.valueOf(titleObj);
+			
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
+		//알라딘 api 정보를 토대로 저자기호 만들기
+		String atcOut =
+				authorCode.authorCodeGen(authorToCode)
+				+ authorCode.titleFirstLetter(titleToCode);
+		
+		
 		
 		// 서지정보에서 api 수신
-		/*JSONObject jsonSeoji = new JSONObject();
+		JSONObject jsonSeoji = new JSONObject();
 		try {
 			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=6debf14330e5866f7c50d47a9c84ae8f&result_style=json&page_no=1&page_size=1";
 			String apiUrlFull = null;
@@ -158,7 +190,7 @@ public class SearchBook {
 			jsonSeoji = (JSONObject) jsonParser.parse(result);
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
-		}*/
+		}
 		
 		//국립중앙도서관 아래 api검색
 		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
@@ -200,11 +232,15 @@ public class SearchBook {
 		/*xmlClassNoArray.set(0, "asdfa");
 		System.out.println(xmlClassNoArray.get(0));*/
 		
+		
+		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
+		model.addAttribute("atcOut", atcOut);
+		model.addAttribute("barcodeInit", barcodeInit);
 		model.addAttribute("jsonAladin", jsonAladin);
-		//model.addAttribute("jsonSeoji", jsonSeoji);
+		model.addAttribute("jsonSeoji", jsonSeoji);
 		model.addAttribute("xmlClassNoArray", xmlClassNoArray);
 		model.addAttribute("page", page);
 		

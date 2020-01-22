@@ -3,14 +3,31 @@ package com.gaimit.helper;
 import java.util.regex.Pattern;
 
 public class RegexHelper {
+	// ----------- 싱글톤 객체 생성 시작 ----------
+	private static RegexHelper current = null;
 
+	public static RegexHelper getInstance() {
+		if (current == null) {
+			current = new RegexHelper();
+		}
+		return current;
+	}
 
+	public static void freeInstance() {
+		current = null;
+	}
+
+	private RegexHelper() {
+		super();
+	}
+	// ----------- 싱글톤 객체 생성 끝 ----------
+	
 	/**
-	 * 二쇱뼱吏� 臾몄옄�뿴�씠 怨듬갚�씠嫄곕굹 null�씤吏�瑜� 寃��궗
+	 * 주어진 문자열이 공백이거나 null인지를 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - 怨듬갚,null�씠 �븘�땺 寃쎌슦 true 由ы꽩
+	 *            - 검사할 문자열
+	 * @return boolean - 공백,null이 아닐 경우 true 리턴
 	 */
 	public boolean isValue(String str) {
 		boolean result = false;
@@ -21,11 +38,11 @@ public class RegexHelper {
 	}
 
 	/**
-	 * �닽�옄 紐⑥뼇�뿉 ���븳 �삎�떇 寃��궗
+	 * 숫자 모양에 대한 형식 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isNum(String str) {
 		boolean result = false;
@@ -36,11 +53,11 @@ public class RegexHelper {
 	}
 
 	/**
-	 * �쁺臾몄쑝濡쒕쭔 援ъ꽦�릺�뿀�뒗吏��뿉 ���븳 �삎�떇 寃��궗
+	 * 영문으로만 구성되었는지에 대한 형식 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isEng(String str) {
 		boolean result = false;
@@ -51,26 +68,26 @@ public class RegexHelper {
 	}
 
 	/**
-	 * �븳湲�濡쒕쭔 援ъ꽦�릺�뿀�뒗吏��뿉 ���븳 �삎�떇 寃��궗
+	 * 한글로만 구성되었는지에 대한 형식 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isKor(String str) {
 		boolean result = false;
 		if (isValue(str)) {
-			result = Pattern.matches("^[�꽦-�뀕媛�-�옡]*$", str);
+			result = Pattern.matches("^[ㄱ-ㅎ가-힣]*$", str);
 		}
 		return result;
 	}
 
 	/**
-	 * �쁺臾멸낵 �닽�옄濡쒕쭔 援ъ꽦�릺�뿀�뒗吏��뿉 ���븳 �삎�떇 寃��궗
+	 * 영문과 숫자로만 구성되었는지에 대한 형식 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isEngNum(String str) {
 		boolean result = false;
@@ -81,26 +98,26 @@ public class RegexHelper {
 	}
 
 	/**
-	 * �븳湲�怨� �닽�옄濡쒕쭔 援ъ꽦�릺�뿀�뒗吏��뿉 ���븳 �삎�떇 寃��궗
+	 * 한글과 숫자로만 구성되었는지에 대한 형식 검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isKorNum(String str) {
 		boolean result = false;
 		if (isValue(str)) {
-			result = Pattern.matches("^[�꽦-�뀕媛�-�옡0-9]*$", str);
+			result = Pattern.matches("^[ㄱ-ㅎ가-힣0-9]*$", str);
 		}
 		return result;
 	}
 
 	/**
-	 * �씠硫붿씪 �삎�떇�씤吏��뿉 ���븳 寃��궗.
+	 * 이메일 형식인지에 대한 검사.
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isEmail(String str) {
 		boolean result = false;
@@ -111,11 +128,11 @@ public class RegexHelper {
 	}
 
 	/**
-	 * "-"�뾾�씠 �빖�뱶�룿踰덊샇�씤吏��뿉 ���븳 �삎�떇寃��궗.
+	 * "-"없이 핸드폰번호인지에 대한 형식검사.
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isCellPhone(String str) {
 		boolean result = false;
@@ -126,11 +143,11 @@ public class RegexHelper {
 	}
 
 	/**
-	 * "-"�뾾�씠 �쟾�솕踰덊샇�씤吏��뿉 ���븳 �삎�떇寃��궗.
+	 * "-"없이 전화번호인지에 대한 형식검사.
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isTel(String str) {
 		boolean result = false;
@@ -141,11 +158,11 @@ public class RegexHelper {
 	}
 
 	/**
-	 * "-"�뾾�씠 二쇰�쇰쾲�샇�뿉 ���븳 �삎�떇寃��궗
+	 * "-"없이 주민번호에 대한 형식검사
 	 * 
 	 * @param str
-	 *            - 寃��궗�븷 臾몄옄�뿴
-	 * @return boolean - �삎�떇�뿉 留욎쓣 寃쎌슦 true, 留욎� �븡�쓣 寃쎌슦 false
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
 	 */
 	public boolean isJumin(String str) {
 		boolean result = false;
@@ -154,4 +171,6 @@ public class RegexHelper {
 		}
 		return result;
 	}
+	
+	
 }

@@ -9,16 +9,10 @@
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <style type="text/css">
 @media ( min-width : 768px) {
-	.upsideCard {
-		max-width:1000px;
+	.card {
 		float: left;
 		width: 49%;
 		margin-right: 0.2em;
-	}
-	
-	.bottomCard {
-		float:left;
-		width: 100%;
 	}
 }
 </style>
@@ -31,11 +25,10 @@
 		<div id="content-wrapper">
 
 			<div class="container-fluid">
-				<div class="card mb-3 upsideCard">
+				<div class="card mb-3">
 					<div class="card-header">
-						<h6>도서 대여하기</h6>
+						<h6>책 대여하기</h6>
 					</div>
-					
 					<div class="card-body">
 						<form class="form-horizontal" name="search-mbr-form"
 							id="search-mbr-form" method="post"
@@ -54,53 +47,16 @@
 								</div>
 							</div>
 
-<!-- 							<div class="form-group">
+							<div class="form-group">
 								<label for='search-state' class="col-md-12">검색 상태</label>
 								<p class="col-md-12" id="search-state"></p>
-							</div> -->
+							</div>
 						</form>
-						<div class="table-responsive">
-							<table class="table">
-								<tbody>
-									<c:choose>
-										<c:when test="${fn:length(list) > 0}">
-											<thead>
-												<tr>
-													<th class="info text-center">이름</th>
-													<th class="info text-center">회원코드</th>
-													<th class="info text-center">연락처</th>
-													<th class="info text-center">회원등급</th>
-													<th class="info text-center">선택</th>
-												</tr>
-											</thead>
-											<c:forEach var="item" items="${list}" varStatus="status">
-												<tr>
-													<td><c:url var="readUrl" value="/temp/temp.do">
-															<c:param name="id" value="${item.id}" />
-														</c:url> <a href="${readUrl}">${item.name}</a></td>
-													<td class="text-center">${item.idCode}</td>
-													<td class="text-center"><a href="#">${item.phone}</a></td>
-													<td class="text-center">${item.grade}</td>
-													<td class="test-center">
-														<button class="pick-user btn" id="${status.index}">선택
-														</button>
-													</td>
-												</tr>
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<tr>
-												<td colspan="8" class="text-center"
-													style="line-height: 30px;">조회된 데이터가 없습니다.</td>
-											</tr>
-										</c:otherwise>
-									</c:choose>
-								</tbody>
-							</table>
-						</div>
+
 
 						<!-- 회원정보, 도서정보 수집 시작 -->
 						<form class="form-horizontal" name="myform" method="post"
+							enctype="multipart/form-data"
 							action="${pageContext.request.contextPath}/book/brw_book_ok.do">
 
 							<input type="hidden" name="memberId" id="memberId"
@@ -115,6 +71,14 @@
 							</div>
 
 							<div class="form-group">
+								<label for='name' class="col-md-12">회원코드</label>
+								<div class="col-md-12">
+									<input type="tel" name="idCode" id="idCode"
+										class="form-control" value="${idCode}" />
+								</div>
+							</div>
+
+							<div class="form-group">
 								<label for='tel' class="col-md-12">연락처</label>
 								<div class="col-md-12">
 									<input type="tel" name="phone" id="phone" class="form-control"
@@ -123,23 +87,23 @@
 							</div>
 
 							<div class="form-group">
-								<label for='grade' class="col-md-12">회원 등급</label>
+								<label for='level' class="col-md-12">회원 등급</label>
 								<div class="col-md-12">
-									<input type="text" name="grade" id="grade" class="form-control"
-										value="${grade}" />
+									<input type="text" name="level" id="level" class="form-control"
+										placeholder="1~5" />
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label for='brwLimit' class="col-md-12">대여가능</label>
+								<label for='name' class="col-md-12">책 제목</label>
 								<div class="col-md-12">
-									<input type="text" name="brwLimit" id="brwLimit"
-										class="form-control" value="${brwLimit}"/>
+									<input type="text" name="bookName" id="bookName"
+										class="form-control" />
 								</div>
 							</div>
 
 							<div class="form-group">
-								<label for='name' class="col-md-12">대여중</label>
+								<label for='name' class="col-md-12">책 고유코드</label>
 								<div class="col-md-12">
 									<input type="text" name="bookCode" id="bookCode"
 										class="form-control" />
@@ -147,26 +111,18 @@
 							</div>
 
 							<div class="form-group">
-								<label for='dateLimit' class="col-md-12">대여기한</label>
+								<label for='bookInfo' class="col-md-12">책 관련정보</label>
 								<div class="col-md-12">
-									<input type="text" name="dateLimit" id="dateLimit"
-										class="form-control" value="${dateLimit}" />
-								</div>
-							</div>
-							
-							<div class="form-group">
-								<label for='barcodeBook' class="col-md-12">도서바코드</label>
-								<div class="col-md-12">
-									<input type="text" name="barcodeBook" id="barcodeBook"
-										class="form-control" />
+									<input type="text" name="bookInfo" id="bookInfo"
+										class="form-control" placeholder="장르" />
 								</div>
 							</div>
 
 
 							<div class="form-group">
-								<div class="offset-md-6 col-md-6">
-									<button type="submit" class="btn btn-primary">제출</button>
-									<button type="reset" class="btn btn-danger">취소</button>
+								<div class="col-md-offset-5 col-md-6">
+									<button type="submit" class="btn btn-primary">제출하기</button>
+									<button type="reset" class="btn btn-danger">다시작성</button>
 								</div>
 							</div>
 						</form>
@@ -176,61 +132,61 @@
 				</div>
 				<!-- card 끝 -->
 
-				<div class="card mb-3 upsideCard">
+				<div class="card mb-3">
 					<div class="card-header">
-						<h6>반납하기</h6>
+						<h6>회원 목록</h6>
 					</div>
-					<div class="card-body"></div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="info text-center">등록번호</th>
+										<th class="info text-center">이름</th>
+										<th class="info text-center">아이디코드</th>
+										<th class="info text-center">연락처</th>
+										<th class="info text-center">회원등급</th>
+										<th class="info text-center">검색번호</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${fn:length(list) > 0}">
+											<c:forEach var="item" items="${list}" varStatus="status">
+												<tr>
+													<td class="text-center">${item.id}</td>
+													<td><c:url var="readUrl" value="/temp/temp.do">
+															<c:param name="id" value="${item.id}" />
+														</c:url> <a href="${readUrl}">${item.name}</a></td>
+													<td class="text-center">${item.idCode}</td>
+													<td class="text-center"><a href="#">${item.phone}</a></td>
+													<td class="text-center">${item.level}</td>
+													<td class="test-center">
+														<button class="pick-user btn" id="${status.index}">선택
+														</button>
+													</td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td colspan="8" class="text-center"
+													style="line-height: 100px;">조회된 데이터가 없습니다.</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</div>
+					</div>
 					<!-- card body2 끝 -->
 				</div>
 				<!-- card2 끝 -->
-				
-				<div class="card mb-3 bottomCard">
-					<div class="card-header">
-						<h4 class='pull-left'>대여 목록</h4>
-					</div>
-					<div class="card-body">
-						<!-- 조회결과를 출력하기 위한 표 -->
-						<table class="table">
-							<thead>
-								<tr>
-									<th class="info text-center">이름</th>
-									<th class="info text-center">연락처</th>
-									<th class="info text-center">회원등급</th>
-									<th class="info text-center">도서명</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:choose>
-									<c:when test="${fn:length(brwlist) > 0}">
-										<c:forEach var="item" items="${brwlist}">
-											<tr>
-												<td class="text-center">${item.name}</td>
-												<td class="text-center">${item.phone}</td>
-												<td class="text-center">${item.gradeId}</td>
-												<td class="text-center">${item.nameBook}</td>
-											</tr>
-										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<tr>
-											<td colspan="8" class="text-center"
-												style="line-height: 100px;">조회된 데이터가 없습니다.</td>
-										</tr>
-									</c:otherwise>
-								</c:choose>
-							</tbody>
-						</table>
-
-					</div>
-					<!-- card3 body 끝 -->
-				</div>
-				<!-- card3 끝 -->
 			</div>
 			<!-- container-fluid 끝 -->
 			<%@ include file="/WEB-INF/inc/footer.jsp"%>
-		</div><!-- content wrapper 끝 -->
-	</div><!-- wrapper 끝 -->
+		</div>
+	</div>
 
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>

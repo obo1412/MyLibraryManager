@@ -4,11 +4,15 @@ package com.gaimit.mlm.model;
 
 public class BookHeld extends Book{
 	private int id;
-	private String regDate;
-	private String barcode;
-	private String localIdCode;
-	private int bookIdBook;
 	private int libraryIdLib;
+	private int bookIdBook;
+	private String bookShelf;
+	private String regDate;
+	private String localIdBarcode;
+	private int purchasedOrDonated;
+	private int available;
+	private String additionalCode;
+	private int copyCode;
 	
 	public int getId() {
 		return id;
@@ -16,23 +20,11 @@ public class BookHeld extends Book{
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getRegDate() {
-		return regDate;
+	public int getLibraryIdLib() {
+		return libraryIdLib;
 	}
-	public void setRegDate(String regDate) {
-		this.regDate = regDate;
-	}
-	public String getBarcode() {
-		return barcode;
-	}
-	public void setBarcode(String barcode) {
-		this.barcode = barcode;
-	}
-	public String getLocalIdCode() {
-		return localIdCode;
-	}
-	public void setLocalIdCode(String localIdCode) {
-		this.localIdCode = localIdCode;
+	public void setLibraryIdLib(int libraryIdLib) {
+		this.libraryIdLib = libraryIdLib;
 	}
 	public int getBookIdBook() {
 		return bookIdBook;
@@ -40,17 +32,54 @@ public class BookHeld extends Book{
 	public void setBookIdBook(int bookIdBook) {
 		this.bookIdBook = bookIdBook;
 	}
-	public int getLibraryIdLib() {
-		return libraryIdLib;
+	public String getBookShelf() {
+		return bookShelf;
 	}
-	public void setLibraryIdLib(int libraryIdLib) {
-		this.libraryIdLib = libraryIdLib;
+	public void setBookShelf(String bookShelf) {
+		this.bookShelf = bookShelf;
 	}
+	public String getRegDate() {
+		return regDate;
+	}
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
+	}
+	public String getLocalIdBarcode() {
+		return localIdBarcode;
+	}
+	public void setLocalIdBarcode(String localIdBarcode) {
+		this.localIdBarcode = localIdBarcode;
+	}
+	public int getPurchasedOrDonated() {
+		return purchasedOrDonated;
+	}
+	public void setPurchasedOrDonated(int purchasedOrDonated) {
+		this.purchasedOrDonated = purchasedOrDonated;
+	}
+	public int getAvailable() {
+		return available;
+	}
+	public void setAvailable(int available) {
+		this.available = available;
+	}
+	public String getAdditionalCode() {
+		return additionalCode;
+	}
+	public void setAdditionalCode(String additionalCode) {
+		this.additionalCode = additionalCode;
+	}
+	public int getCopyCode() {
+		return copyCode;
+	}
+	public void setCopyCode(int copyCode) {
+		this.copyCode = copyCode;
+	}
+	
 	@Override
 	public String toString() {
-		return "BookHeld [id=" + id + ", regDate=" + regDate + ", barcode=" + barcode + ", localIdCode=" + localIdCode
-				+ ", bookIdBook=" + bookIdBook + ", libraryIdLib=" + libraryIdLib + "]";
+		return "BookHeld [id=" + id + ", libraryIdLib=" + libraryIdLib + ", bookIdBook=" + bookIdBook + ", bookShelf="
+				+ bookShelf + ", regDate=" + regDate + ", localIdBarcode=" + localIdBarcode + ", purchasedOrDonated="
+				+ purchasedOrDonated + ", available=" + available + ", additionalCode=" + additionalCode + ", copyCode="
+				+ copyCode + "]";
 	}
-	
-	
 }

@@ -31,7 +31,7 @@ public class BrwServiceImpl implements BrwService {
 	@Override
 	public void insertBorrow(Borrow borrow) throws Exception {
 		// 대여중인 도서인지 중복검사
-		getBorrowCountByBookCode(borrow);
+		//getBorrowCountByBookCode(borrow);
 
 		// 데이터 저장처리 = 가입
 		// not null로 설정된 값이 설정되지 않았다면 예외 발생됨.

@@ -8,7 +8,9 @@
 <%@ include file="/WEB-INF/inc/head.jsp" %>
 
 <style type="text/css">
-
+.red {
+	color: red;
+}
 </style>
 
 </head>
@@ -20,6 +22,7 @@
 <%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
 	<div id="content-wrapper">
 		<div class="container-fluid">
+		
 		<p>게시판 활성화 완료, ui 수정 필요</p>
 		<p>member, manager DB테이블 수정 중</p>
 		<p>도서 등록하기/ 도서테이블 별도, 도서관 별 도서테이블 참조 형식</p>
@@ -28,9 +31,12 @@
 		
 		<p>로그인시 미납 책 목록</p>
 		<p>현재 상태 표기 각종 정보 수집</p>
+		
+		<p class="red">고객등록, 등급정보 업데이트.</p>
+		
 		</div> <!-- container-fluid 종료 -->
 		<%@ include file="/WEB-INF/inc/footer.jsp" %>	
-	</div>
+	</div><!-- content wrapper 끝 -->
 </div>
 
 <%@ include file="/WEB-INF/inc/script-common.jsp" %>

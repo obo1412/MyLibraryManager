@@ -1,5 +1,6 @@
 package com.gaimit.mlm.controller.member;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.Manager;
+import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
@@ -23,20 +25,19 @@ public class Join {
 	// --> import study.jsp.helper.WebHelper;
 	@Autowired
 	WebHelper web;
-	
+
 	@Autowired
 	MemberService memberService;
-	
+
 	@Autowired
 	ManagerService managerService;
-	
-	@RequestMapping(value="/member/join.do")
-	public ModelAndView doRun(Locale locale, Model model, 
-			HttpServletRequest request, HttpServletResponse response) {	
-		
+
+	@RequestMapping(value = "/member/join.do")
+	public ModelAndView doRun(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
+
 		/** (2) WebHelper 초기화 */
 		web.init();
-		
+
 		/** (3) 로그인 여부 검사 */
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		int idLib = 0;
@@ -46,24 +47,29 @@ public class Join {
 		} else {
 			idLib = loginInfo.getIdLibMng();
 		}
-	
 
+		Member member = new Member();
+		member.setIdLib(idLib);
+		
 		/** (8) Service를 통한 데이터베이스 저장 처리 */
-		Integer lastId = new Integer(0);
+		List<Member> gradeList = null;
+		//Integer lastId = new Integer(0);
 		try {
-				lastId = memberService.selectLastJoinedId();
+			//lastId = memberService.selectLastJoinedId();
+			gradeList = memberService.selectGrade(member);
 		} catch (Exception e) {
 			// lastId 초기값이 null 이라서 NPE 을 빼버림
-			/*return web.redirect(null, e.getLocalizedMessage());*/
+			/* return web.redirect(null, e.getLocalizedMessage()); */
 		}
-		
-		if(lastId.equals(null)) {
+
+		/*if (lastId.equals(null)) {
 			lastId = 0;
-		}
-		
-		model.addAttribute("lastId", lastId);
+		}*/
+
+		//model.addAttribute("lastId", lastId);
 		model.addAttribute("idLib", idLib);
-		
+		model.addAttribute("gradeList", gradeList);
+
 		return new ModelAndView("member/join");
 	}
 }

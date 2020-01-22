@@ -82,8 +82,13 @@ public class ReturnBook {
 		Borrow brwSe = new Borrow();
 		List<Borrow> brwList = null;
 		
+		
+		/**
+		 * 여기 수정해야됨***************************
+		 */
 		brw.setIdLibBrw(idLib);
-		brw.setIdCodeBook(bookCode);
+		//brw.setIdCodeBook(bookCode);
+		
 		
 		//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
 		int memberId = 0;

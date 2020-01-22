@@ -35,4 +35,38 @@ public interface BookHeldService {
 	
 	
 	public void insertBookHeld(BookHeld bookHeld) throws Exception;
+	
+	
+	/**
+	 * 복본기호를 체크하기 위하여
+	 * book_id_book 인자를 이용하여 bookHeld안에 id가 또 있는지 검사
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBookHeldCount(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * lib 내에서 첫등록 체크
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBookHeldFirstCount(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * copy code 생성용
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectLastCopyCode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * local id barcode 마지막 구하기
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public BookHeld selectLastLocalBarcode(BookHeld bookHeld) throws Exception;
 }

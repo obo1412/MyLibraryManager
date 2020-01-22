@@ -13,6 +13,16 @@
 	font-family: 'barcode font';
 	font-size: 40pt;
 }
+
+@media print {
+	.sidebar {
+		display: none;
+	}
+	
+	.sticky-footer {
+		display: none;
+	}
+}
 </style>
 </head>
 <body>

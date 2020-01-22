@@ -1,9 +1,9 @@
 package com.gaimit.mlm.model;
 
-public class Borrow extends Book {
+public class Borrow extends BookHeld {
 	private int idBrw;
 	private int idLibBrw;
-	private int idBookBrw;
+	private int bookHeldId;
 	private int idMemberBrw;
 	private String startDateBrw;
 	private String endDateBrw;
@@ -20,11 +20,11 @@ public class Borrow extends Book {
 	public void setIdLibBrw(int idLibBrw) {
 		this.idLibBrw = idLibBrw;
 	}
-	public int getIdBookBrw() {
-		return idBookBrw;
+	public int getBookHeldId() {
+		return bookHeldId;
 	}
-	public void setIdBookBrw(int idBookBrw) {
-		this.idBookBrw = idBookBrw;
+	public void setBookHeldId(int bookHeldId) {
+		this.bookHeldId = bookHeldId;
 	}
 	public int getIdMemberBrw() {
 		return idMemberBrw;
@@ -47,7 +47,7 @@ public class Borrow extends Book {
 	
 	@Override
 	public String toString() {
-		return "Borrow [idBrw=" + idBrw + ", idBookBrw=" + idBookBrw + ", idMemberBrw=" + idMemberBrw
+		return "Borrow [idBrw=" + idBrw + ", bookHeldId=" + bookHeldId + ", idMemberBrw=" + idMemberBrw
 				+ ", startDateBrw=" + startDateBrw + ", endDateBrw=" + endDateBrw + "]";
 	}
 	

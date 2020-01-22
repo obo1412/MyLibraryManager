@@ -89,8 +89,12 @@ public class ReturnBookOk {
 		// 멤버id(회원id)로 검색에 사용할 객체 생성
 		Borrow brwSe = new Borrow();
 		
+		
+		/**
+		 * 여기 수정해야됨 ***************************
+		 */
 		brw.setIdLibBrw(idLib);
-		brw.setIdCodeBook(bookCode);
+		//brw.setIdCodeBook(bookCode);
 		brw.setIdBrw(idBrw);
 		
 		//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.

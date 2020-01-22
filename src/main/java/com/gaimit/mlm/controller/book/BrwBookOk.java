@@ -3,7 +3,6 @@ package com.gaimit.mlm.controller.book;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -83,18 +82,17 @@ public class BrwBookOk {
 		// <form>태그 안에 <input type="file">요소가 포함되어 있고,
 		// <form>태그에 enctype="multipart/form-data"가 정의되어 있는 경우
 		// WebHelper의 getString()|getInt() 메서드는 더 이상 사용할 수 없게 된다.
-		try {
+		/*try {
 			upload.multipartRequest();
 		} catch (Exception e) {
 			return web.redirect(null, "multipart 데이터가 아닙니다.");
 		}
-
+*/
 		// UploadHelper에서 텍스트 형식의 파라미터를 분류한 Map을 리턴받아서 값을 추출한다.
-		Map<String, String> paramMap = upload.getParamMap();
+		//Map<String, String> paramMap = upload.getParamMap();
 				
 		/** brw_book에서 전달받은 member 파라미터를 Beans 객체에 담는다. */
-		String StrMemberId = paramMap.get("memberId");
-		int memberId = Integer.parseInt(StrMemberId);
+		int memberId = web.getInt("memberId");
 		
 		//위에서 받은 파라미터를 이용하여, 해당 도서관에 사용자가 있는지 체크
 		// 추후에 이름과 id코드도 받아와서 이 사용자가 맞는지 확인해야될 듯.
@@ -106,29 +104,28 @@ public class BrwBookOk {
 		logger.debug("idLib=" + idLib);
 		
 		// 그 id를 가진 멤버가 있는지 확인.
-		int memberCount = 0;
+		/*int memberCount = 0;
 		try {
 			memberCount = memberService.getMemberCount(member);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
-		}
+		}*/
 		
 		//borrow insert를 위한 정보 수집
 		Borrow brw = new Borrow();
-		
 		//borrow를 위한 1차 정보 주입 
-		if(memberCount > 0) {
-			brw.setIdLibBrw(idLib);
-			brw.setIdMemberBrw(memberId);
-		}
+		brw.setIdLibBrw(idLib);
+		brw.setIdMemberBrw(memberId);
 		
 		//brw_book.jsp 에서  책에 대한 파라미터 받기
-		String bookCode = paramMap.get("bookCode");
+		String barcodeBook = web.getString("barcodeBook");
 
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		// bookHeld가 book을 상속받아서 아래 조건 성립됨.
-		bookHeld.setIdCodeBook(bookCode);
+		bookHeld.setLocalIdBarcode(barcodeBook);
+		
+		System.out.println(barcodeBook+"******************************************");
 		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
@@ -137,20 +134,18 @@ public class BrwBookOk {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		
 		// 위 과정으로 도서정보가 나오면, 도서 대출을 위한 정보 수집 id_book
 		if(bookHeld != null) {
-			brw.setIdLibBrw(idLib);
-			brw.setIdBookBrw(bookHeld.getIdBook());
+			brw.setBookHeldId(bookHeld.getId());
 		}
 		
 		//대출된 도서 결과를 저장하기 위한 객체
-		List<Borrow> list = null;
+		List<Borrow> brwlist = null;
 		
 		// 대출도서 정보가 다모이면 borrow insert
 		try {
 			brwService.insertBorrow(brw);
-			list = brwService.getBorrowList(brw);
+			brwlist = brwService.getBorrowList(brw);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -175,7 +170,7 @@ public class BrwBookOk {
 		logger.debug("profileImg=" + profileImg);*/
 		
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("brwList", list);
+		model.addAttribute("brwList", brwlist);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
 		return web.redirect(web.getRootPath() + "/book/book_list_brwd.do", "도서대출이 완료되었습니다.");

@@ -7,11 +7,24 @@
 	<resultMap id="member" type="com.gaimit.mlm.model.Member">
 		<result property="id" column="id"/>
 		<result property="idLib" column="id_lib"/>
-		<result property="idCode" column="id_code"/>
 		<result property="name" column="name"/>
 		<result property="phone" column="phone"/>
-		<result property="level" column="level"/>
-
+		<result property="birthdate" column="birthdate"/>
+		<result property="email" column="email"/>
+		<result property="postcode" column="postcode"/>
+		<result property="addr1" column="addr1"/>
+		<result property="addr2" column="addr2"/>
+		<result property="remarks" column="remarks"/>
+		<result property="regDate" column="reg_date"/>
+		<result property="barcodeMbr" column="barcode_mbr"/>
+		<result property="profileImg" column="profile_img"/>
+		<result property="rfUid" column="rf_uid"/>
+		
+		
+		<result property="gradeId" column="grade_id"/>
+		<result property="gradeName" column="grade_name"/>
+		<result property="brwLimit" column="brw_limit"/>
+		<result property="dateLimit" column="date_limit"/>
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -40,7 +53,8 @@
 	<!-- 회원정보 목록 조회 -->
 	<select id="selectMemberListByLib" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, id_lib, id_code, name, phone, level
+			id, id_lib, name, phone, birthdate, email, postcode, addr1, addr2,
+			remarks, reg_date, barcode_mbr, rf_uid, grade_id
 		FROM member
 		WHERE id_lib=#{idLib}
 		ORDER BY id ASC
@@ -49,13 +63,27 @@
 	<!-- 회원 이름과 도서관 번호로 목록 조회 -->
 	<select id="selectMemberListByLibAndName" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, id_lib, id_code, name, phone, level
-		FROM member
-		WHERE id_lib=#{idLib} AND name=#{name}
+			id, m.id_lib, m.name, phone, g.grade_id, barcode_mbr, grade_name,
+			brw_limit, date_limit
+		FROM member m
+		INNER JOIN member_grade g
+		ON m.grade_id = g.grade_id
+		WHERE m.id_lib=#{idLib} AND name=#{name}
 		ORDER BY id ASC
 	</select>
 	
-	<!-- 선수목록 전체 데이터 수 얻기 -->
+	<!-- 일련번호에 의한 회원정보 조회 -->
+	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
+		SELECT
+			id, m.id_lib, m.name, phone, g.grade_id, barcode_mbr, grade_name,
+			brw_limit, date_limit
+		FROM member m
+		INNER JOIN member_grade g
+		ON m.grade_id = g.grade_id
+		WHERE m.id_lib=#{idLib} AND name=#{name}
+	</select>
+	
+	<!-- 선수목록 전체 데이터 수 얻기 getMemberCount -->
 	<select id="selectMemberCount" parameterType="com.gaimit.mlm.model.Member"
 		resultType="int">
 		SElECT count(id)
@@ -76,9 +104,12 @@
 	<!-- 회원정보를 저장한다 : 가입 -->
 	<insert id="insertMember" parameterType="com.gaimit.mlm.model.Member" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO member (
-			id_lib, id_code, name, phone, level
+			id_lib, name, phone, birthdate, email, postcode, addr1, addr2,
+			remarks, reg_date, barcode_mbr, rf_uid, grade_id
 		) VALUES (
-			#{idLib}, #{idCode}, #{name}, #{phone}, #{level}
+			#{idLib}, #{name}, #{phone}, #{birthdate}, #{email},
+			#{postcode}, #{addr1}, #{addr2}, #{remarks}, now(),
+			#{barcodeMbr}, #{rfUid}, #{gradeId}
 		)
 	</insert>
 	
@@ -133,11 +164,52 @@
 		WHERE id=#{id}
 	</update>
 	
-	<!-- 일련번호에 의한 회원정보 조회 -->
-	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
+	
+	<select id="selectGrade" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, id_lib, id_code, name, phone, level
-		FROM member
-		WHERE name=#{name} AND id_lib=#{idLib}
+			grade_id, grade_name, brw_limit, date_limit
+		FROM member_grade
+		WHERE id_lib=#{idLib}
 	</select>
+	
+	<select id="selectPhoneCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
+		SELECT
+			count(id)
+		FROM member
+		WHERE id_lib=#{idLib} AND phone=#{phone}
+	</select>
+	
+	<select id="getGradeItem" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
+		SELECT
+			grade_id, grade_name, brw_limit, date_limit
+		FROM member_grade
+		WHERE id_lib=#{idLib} AND grade_id=#{gradeId}
+	</select>
+	
+	<!-- 등급 정보를 변경한다. -->
+	<select id="updateGrade" parameterType="com.gaimit.mlm.model.Member">
+		UPDATE member_grade
+		SET
+			grade_name=#{gradeName}, brw_limit=#{brwLimit}, date_limit=#{dateLimit}
+		WHERE grade_id=#{gradeId} AND id_lib=#{idLib}
+	</select>
+	
+	<!-- 등급을 추가한다 -->
+		<insert id="insertGrade" parameterType="com.gaimit.mlm.model.Member" useGeneratedKeys="true" keyProperty="grade_id">
+		INSERT INTO member_grade (
+			grade_name, brw_limit, date_limit, id_lib
+		) VALUES (
+			#{gradeName}, #{brwLimit}, #{dateLimit}, #{idLib}
+		)
+	</insert>
+	
+	<select id="selectGradeNameCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
+		SELECT
+			count(grade_id)
+		FROM member_grade
+		WHERE id_lib=#{idLib} AND grade_name=#{gradeName}
+	</select>
+	
+	
+	
 </mapper>

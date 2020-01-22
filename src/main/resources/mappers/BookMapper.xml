@@ -6,17 +6,22 @@
 <mapper namespace="BookMapper">
 	<resultMap id="book" type="com.gaimit.mlm.model.Book">
 		<result property="idBook" column="id_book"/>
-		<result property="idCodeBook" column="id_code_book"/>
-		<result property="nameBook" column="name_book"/>
+		<result property="titleBook" column="title_book"/>
 		<result property="writerBook" column="writer_book"/>
+		<result property="categoryBook" column="category_book"/>
 		<result property="publisherBook" column="publisher_book"/>
 		<result property="pubDateBook" column="pub_date_book"/>
 		<result property="priceBook" column="price_book"/>
+		<result property="isbn10Book" column="isbn10_book"/>
 		<result property="isbn13Book" column="isbn13_book"/>
-		<result property="callNoBook" column="call_no_book"/>
-		<result property="classCodeBook" column="class_code_book"/>
-		<result property="classificationBook" column="classification_book"/>
 		<result property="descriptionBook" column="description_book"/>
+		<result property="bookOrNot" column="book_or_not"/>
+		<result property="page" column="page"/>
+		<result property="imageLink" column="image_link"/>
+		<result property="classificationCode" column="classification_code"/>
+		<result property="authorCode" column="author_code"/>
+		<result property="volumeCode" column="volume_code"/>
+		
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -33,20 +38,22 @@
 	<!-- 선수(회원정보)목록 조회 -->
 	<select id="selectBookList" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
 		SELECT
-			id_book,id_code_book, name_book, writer_book, 
-			publisher_book,	pub_date_book, price_book, isbn13_book, call_no_book,
-			class_code_book, classification_book, description_book
+			id_book, title_book, writer_book, category_book,
+			publisher_book, pub_date_book, price_book,isbn10_book, isbn13_book,
+			description_book, book_or_not, page, image_link, classification_code,
+			author_code, volume_code
 		FROM book
 		ORDER BY id_book ASC
 	</select>
 	
 	<select id="selectBook" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
 		SELECT
-			id_book, id_code_book, name_book, writer_book,
-			publisher_book, pub_date_book,	price_book, isbn13_book, call_no_book,
-			class_code_book, classification_book, description_book
+			id_book, title_book, writer_book, category_book,
+			publisher_book, pub_date_book, price_book,isbn10_book, isbn13_book,
+			description_book, book_or_not, page, image_link, classification_code,
+			author_code, volume_code
 		FROM book
-		WHERE id_lib_book = #{idLibBook} AND id_code_book = #{idCodeBook}
+		WHERE id_lib_book = #{idLibBook} AND idBook = #{id_book}
 	</select>
 	
 </mapper>

@@ -3,13 +3,14 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!doctype html>
 <html>
 <head>
 <meta charset='utf-8' />
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>보유도서 목록</title>
+<title>회원 등급 목록</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 </head>
@@ -21,60 +22,55 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-
 				<div class="card mb-3">
 					<div class="card-header">
-						<h6 class='pull-left'>도서 목록</h6>
+						<h4 class='pull-left'>회원 등급 목록</h4>
 					</div>
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
 							<form method='get'
-								action='${pageContext.request.contextPath}/player/player_list.do'
+								action='${pageContext.request.contextPath}/member/grade_list.do'
 								style="width: 300px;">
 								<div class="input-group">
 									<input type="text" name='keyword' class="form-control"
-										placeholder="도서 검색" value="${keyword}" /> <span
-										class="input-group-btn">
-										<button class="btn btn-success" type="submit">
-											<i class='fas fa-search'></i>
-										</button> <a href="${pageContext.request.contextPath}/book/reg_book.do"
-										class="btn btn-primary">도서 추가</a>
+										placeholder="등급 검색" value="${keyword}" /> <span
+										class="input-group-append">
+											<button class="btn btn-success" type="submit">
+												<i class='fas fa-search'></i>
+											</button>
+										<a href="${pageContext.request.contextPath}/member/grade_add.do"
+										class="btn btn-primary">등급 추가</a>
 									</span>
 								</div>
 							</form>
 						</div>
 
 						<!-- 조회결과를 출력하기 위한 표 -->
+
 						<table class="table">
 							<thead>
 								<tr>
-									<th class="info text-center">도서번호</th>
-									<th class="info text-center">도서명</th>
-									<th class="info text-center">도서저자</th>
-									<th class="info text-center">등록일</th>
-									<th class="info text-center">로컬바코드</th>
-									<th class="info text-center">복본기호</th>
+									<th class="info text-center">번호</th>
+									<th class="info text-center">등급이름</th>
+									<th class="info text-center">대여가능권수</th>
+									<th class="info text-center">대여기한</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:choose>
-									<c:when test="${fn:length(bookHeldList) > 0}">
-										<c:forEach var="item" items="${bookHeldList}">
+									<c:when test="${fn:length(gradeList) > 0}">
+										<c:forEach var="item" items="${gradeList}">
 											<tr>
-												<td class="text-center">${item.id}</td>
-												<td class="text-center">${item.titleBook}</td>
-												<td class="text-center">${item.writerBook}</td>
-												<td class="text-center">${item.regDate}</td>
-												<td class="text-center">${item.localIdBarcode}</td>
-												<c:choose>
-													<c:when test="${item.copyCode eq 0}">
-														<td class="text-center">-</td>
-													</c:when>
-													<c:otherwise>
-														<td class="text-center">C${item.copyCode}</td>
-													</c:otherwise>
-												</c:choose>
+												<td class="text-center">${item.gradeId}</td>
+												<td class="text-center">
+													<c:url var="readUrl" value="/member/grade_edit.do">
+														<c:param name="gradeId" value="${item.gradeId}" />
+													</c:url>
+													<a href="${readUrl}">${item.gradeName}</a>
+												</td>
+												<td class="text-center">${item.brwLimit}</td>
+												<td class="text-center">${item.dateLimit}</td>
 											</tr>
 										</c:forEach>
 									</c:when>
@@ -156,10 +152,13 @@
 				</div>
 				<!-- card 끝 -->
 			</div>
-			<!-- container-fluid 끝 -->
+			<!-- container fluid 끝 -->
 			<%@ include file="/WEB-INF/inc/footer.jsp"%>
 		</div>
+		<!-- content wrapper 끝 -->
 	</div>
+	<!-- wrapper 끝 -->
+
 
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>

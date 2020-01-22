@@ -77,7 +77,7 @@ public class BrwBook {
 		member.setName(keyword);*/
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
-		int nowPage = web.getInt("page", 1);
+		/*int nowPage = web.getInt("page", 1);*/
 		
 		/** 2) 페이지 번호 구현하기 */
 		// 전체 데이터 수 조회하기
@@ -124,12 +124,18 @@ public class BrwBook {
 		if(item != null) {
 			int memberId = item.getId();
 			String name = item.getName();
-			String idCode = item.getIdCode();
+			//String idCode = item.getIdCode();
 			String phone = item.getPhone();
+			String grade = item.getGradeName();
+			int brwLimit = item.getBrwLimit();
+			int dateLimit = item.getDateLimit();
 			
+			model.addAttribute("grade", grade);
+			model.addAttribute("brwLimit", brwLimit);
+			model.addAttribute("dateLimit", dateLimit);
 			model.addAttribute("memberId", memberId);
 			model.addAttribute("name", name);
-			model.addAttribute("idCode", idCode);
+			//model.addAttribute("idCode", idCode);
 			model.addAttribute("phone", phone);
 		}
 		

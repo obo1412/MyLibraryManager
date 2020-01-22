@@ -72,6 +72,8 @@
 	<bean id="page" class="com.gaimit.helper.PageHelper" scope="singleton" />
 	<bean id="regex" class="com.gaimit.helper.RegexHelper" scope="singleton" />
 	<bean id="util" class="com.gaimit.helper.Util" scope="singleton" />
+	<!-- 저자기호 생성 코드 -->
+	<bean id="authorCode" class="com.gaimit.helper.AuthorCode" scope="singleton" />
 	
 	<!-- 싱글톤 객체의 생성 -->
 	<bean id="bbsCommon" class="com.gaimit.mlm.controller.bbs.BBSCommon" 

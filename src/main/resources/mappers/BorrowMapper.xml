@@ -7,33 +7,33 @@
 	<resultMap id="borrow" type="com.gaimit.mlm.model.Borrow">
 		<result property="idBrw" column="id_brw"/>
 		<result property="idLibBrw" column="id_lib_brw"/>
-		<result property="idBookBrw" column="id_book_brw"/>
+		<result property= "bookHeldId" column="book_held_id"/>
 		<result property="idMemberBrw" column="id_member_brw"/>
 		<result property="startDateBrw" column="start_date_brw"/>
 		<result property="endDateBrw" column="end_date_brw"/>
 		
-		<result property="idCodeBook" column="id_code_book"/>
-		<result property="nameBook" column="name_book"/>
-		<result property="idCode" column="id_code"/>
 		<result property="name" column="name"/>
 		<result property="phone" column="phone"/>
+		<result property="gradeId" column="grade_id"/>
+		<result property="titleBook" column="title_book"/>
 	</resultMap>
 	
 	<!-- 회원정보를 저장한다 : 가입 -->
 	<insert id="insertBrw" parameterType="com.gaimit.mlm.model.Borrow" useGeneratedKeys="true" keyProperty="id_brw">
 		INSERT INTO borrow (
-			id_lib_brw, id_book_brw, id_member_brw, start_date_brw
+			id_lib_brw, book_held_id, id_member_brw, start_date_brw
 		) VALUES (
-			#{idLibBrw}, #{idBookBrw}, #{idMemberBrw}, now()
+			#{idLibBrw}, #{bookHeldId}, #{idMemberBrw}, now()
 		)
 	</insert>
 	
+	<!-- getBorrowList -->
 	<select id="selectBorrowList" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">
 		SELECT
-			id_brw, id_lib_brw, id_book_brw, b.id_code_book as id_code_book, b.name_book as name_book,
-			id_member_brw, m.id_code, m.name as name, start_date_brw, end_date_brw
+			id_brw, id_lib_brw, book_held_id, b.title_book,
+			id_member_brw, m.name, start_date_brw, end_date_brw
 		FROM borrow r
-		INNER JOIN book b on r.id_book_brw = b.id_book
+		INNER JOIN book_held b on r.book_held_id = b.id
 		INNER JOIN member m on r.id_member_brw = m.id
 		WHERE id_lib_brw = #{idLibBrw} AND end_date_brw is NULL
 		ORDER BY start_date_brw ASC

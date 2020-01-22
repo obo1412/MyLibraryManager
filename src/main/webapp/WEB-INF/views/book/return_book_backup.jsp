@@ -27,7 +27,7 @@
 		<div id="content-wrapper">
 			<div class="container-fluid">
 
-				<h1>도서 반납하기</h1>
+				<h1>책 반납하기</h1>
 
 				<form class="form-horizontal" name="search-mbr-form"
 					id="search-mbr-form" method="post"

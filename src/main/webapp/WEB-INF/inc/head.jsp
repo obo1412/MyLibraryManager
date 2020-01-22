@@ -24,7 +24,7 @@
 
 	
 <!-- 공통 CSS -->
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/common.css" />
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/css/common.css" />
 
 <!-- 다음 우편번호 검색 스크립트 -->
 <script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>

@@ -145,5 +145,62 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 
+	@Override
+	public int selectBookHeldCount(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectBookHeldCount", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("복본기호를 위한 bookHeld 테이블 존재 여부 검사에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
+	public int selectBookHeldFirstCount(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectBookHeldFirstCount", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("bookHeld 테이블 처음 등록 검사에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
+	@Override
+	public int selectLastCopyCode(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectLastCopyCode", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("마지막 복본기호 조회를 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
+	@Override
+	public BookHeld selectLastLocalBarcode(BookHeld bookHeld) throws Exception {
+		BookHeld result = null;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectLastLocalBarcode", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("LastLocalBarcode 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
 
 }

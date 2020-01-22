@@ -1,9 +1,6 @@
 package com.gaimit.mlm.controller.member;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +22,8 @@ import com.gaimit.helper.FileInfo;
 import com.gaimit.helper.RegexHelper;
 import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.WebHelper;
+import com.gaimit.helper.Util;
+import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.MemberService;
 
@@ -47,6 +46,9 @@ public class JoinOk {
 	UploadHelper upload;
 	// --> import study.jsp.mysite.service.MemberService;
 	@Autowired
+	Util util;
+	
+	@Autowired
 	MemberService memberService;
 
 	@RequestMapping(value = "/member/join_ok.do")
@@ -57,10 +59,14 @@ public class JoinOk {
 		web.init();
 
 		/** (3) 로그인 여부 검사 */
-		// 로그인 중이라면 이 페이지를 동작시켜서는 안된다.
-		/*if (web.getSession("loginInfo") != null) {
-			return web.redirect(web.getRootPath() + "/index.do", "이미 로그인 하셨습니다.");
-		}*/
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		int idLib = 0;
+		// 관리자 로그인 중이라면 관리자의 도서관 id를 가져온다.
+		if (web.getSession("loginInfo") == null) {
+			return web.redirect(web.getRootPath() + "/index.do", "로그인이 필요합니다.");
+		} else {
+			idLib = loginInfo.getIdLibMng();
+		}
 
 		/** (4) 파일이 포함된 POST 파라미터 받기 */
 		// <form>태그 안에 <input type="file">요소가 포함되어 있고,
@@ -77,36 +83,62 @@ public class JoinOk {
 		//join 페이지에서 전달받은 값
 		String name = paramMap.get("name");
 		String phone = paramMap.get("phone");
-		String Strlevel = paramMap.get("level");
+		String birthdate = paramMap.get("birthdate");
+		String email = paramMap.get("email");
+		String gradeStr = paramMap.get("grade");
+		String postcode = paramMap.get("postcode");
+		String addr1 = paramMap.get("addr1");
+		String addr2 = paramMap.get("addr2");
+		String rfuid = paramMap.get("rfuid");
+		String remarks = paramMap.get("remarks");
 		String lastId = paramMap.get("lastId");
 		String idLibString = paramMap.get("idLib");
+		
+		String checkNum = paramMap.get("checkNum");
 
 		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
 		logger.debug("name=" + name);
 		logger.debug("phone=" + phone);
-		logger.debug("level=" + Strlevel);
+		logger.debug("birthdate=" + birthdate);
+		logger.debug("email=" + email);
+		logger.debug("gradeStr=" + gradeStr);
+		logger.debug("postcode=" + postcode);
+		logger.debug("addr1=" + addr1);
+		logger.debug("addr2=" + addr2);
+		logger.debug("rfuid=" + rfuid);
+		logger.debug("remarks=" + remarks);
 		logger.debug("lastId=" + lastId);
 		logger.debug("idLibString=" + idLibString);
 		
-		int intLastId = Integer.parseInt(lastId);
-		int useId = intLastId + 1;
-		int level = Integer.parseInt(Strlevel);
+		logger.debug("checkNum=" + checkNum);
 		
-		int idLib = Integer.parseInt(idLibString);
+		//paramMap으로 받은 String grade를 int형으로 변환
+		int grade = Integer.parseInt(gradeStr);
+		
+		// 중복검사를 실행한 번호와 가입완료로 넘기는 번호가 다를경우 검사.
+		if (!phone.equals(checkNum)) {
+			return web.redirect(null, "연락처 중복 검사를 실행하세요.");
+		}
+		
+		//시간으로 난수 생성
+		//int intLastId = Integer.parseInt(lastId);
+		//int useId = intLastId + 1;
 		// 가장 마지막 생성된 id를 조합한 id_code
 		//현재시간 생성 Calendar 클래스 활용
+		
 		/*int yy = cal.get(Calendar.YEAR);
 		int mm = cal.get(Calendar.MONTH);
 		int dd = cal.get(Calendar.DAY_OF_MONTH);
 		int hh = cal.get(Calendar.HOUR_OF_DAY);
 		int mi = cal.get(Calendar.MINUTE);
 		int ss = cal.get(Calendar.SECOND);*/
-		Calendar cal = Calendar.getInstance();
+		
+		/*Calendar cal = Calendar.getInstance();
 		Date curr = cal.getTime();
 		String timeCurr = (new SimpleDateFormat("yyyyMMddHHmmss").format(curr));
 		String idCode = timeCurr + useId;
 		
-		logger.debug("idCode= "+ idCode);
+		logger.debug("idCode= "+ idCode);*/
 
 		/** (5) 입력값의 유효성 검사 */
 		// 아이디 검사
@@ -154,13 +186,13 @@ public class JoinOk {
 		}
 
 		// 이메일 검사
-	/*	if (!regex.isValue(email)) {
+		if (!regex.isValue(email)) {
 			return web.redirect(null, "이메일을 입력하세요.");
 		}
 
 		if (!regex.isEmail(email)) {
 			return web.redirect(null, "이메일의 형식이 잘못되었습니다.");
-		}*/
+		}
 
 		// 연락처 검사
 		if (!regex.isValue(phone)) {
@@ -184,6 +216,14 @@ public class JoinOk {
 		if (!gender.equals("M") && !gender.equals("F")) {
 			return web.redirect(null, "성별이 잘못되었습니다.");
 		}*/
+		
+		/**
+		 * 바코드 값 난수 생성
+		 */
+		String barcodeMbr = util.getRandomPassword(7);
+		logger.debug("barcodeMbr=" + barcodeMbr);
+		//util의 난수 생성 코드 사용
+		
 
 		/** (6) 업로드 된 파일 정보 추출 */
 		List<FileInfo> fileList = upload.getFileList();
@@ -202,14 +242,24 @@ public class JoinOk {
 
 		/** (7) 전달받은 파라미터를 Beans 객체에 담는다. */
 		Member member = new Member();
+		member.setIdLib(idLib);
 		member.setName(name);
 		member.setPhone(phone);
-		member.setLevel(level);
-		member.setIdCode(idCode);
-		member.setIdLib(idLib);
+		member.setBirthdate(birthdate);
+		member.setEmail(email);
+		member.setPostcode(postcode);
+		member.setAddr1(addr1);
+		member.setAddr2(addr2);
+		member.setRemarks(remarks);
+		member.setProfileImg(profileImg);
+		member.setRfUid(rfuid);
+		member.setGradeId(grade);
+		member.setBarcodeMbr(barcodeMbr);
+
 
 		/** (8) Service를 통한 데이터베이스 저장 처리 */
 		try {
+			memberService.selectPhoneCount(member);
 			memberService.insertMember(member);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());

@@ -2,17 +2,21 @@ package com.gaimit.mlm.model;
 
 public class Book extends Member{
 	private int idBook;
-	private String idCodeBook;
-	private String nameBook;
+	private String titleBook;
 	private String writerBook;
+	private String categoryBook;
 	private String publisherBook;
 	private String pubDateBook;
-	private String priceBook;
+	private int priceBook;
+	private String isbn10Book;
 	private String isbn13Book;
-	private String callNoBook;
-	private String classCodeBook;
-	private String classificationBook;
 	private String descriptionBook;
+	private String bookOrNot;
+	private int page;
+	private String imageLink;
+	private String classificationCode;
+	private String authorCode;
+	private String volumeCode;
 	
 	public int getIdBook() {
 		return idBook;
@@ -20,23 +24,23 @@ public class Book extends Member{
 	public void setIdBook(int idBook) {
 		this.idBook = idBook;
 	}
-	public String getIdCodeBook() {
-		return idCodeBook;
+	public String getTitleBook() {
+		return titleBook;
 	}
-	public void setIdCodeBook(String idCodeBook) {
-		this.idCodeBook = idCodeBook;
-	}
-	public String getNameBook() {
-		return nameBook;
-	}
-	public void setNameBook(String nameBook) {
-		this.nameBook = nameBook;
+	public void setTitleBook(String titleBook) {
+		this.titleBook = titleBook;
 	}
 	public String getWriterBook() {
 		return writerBook;
 	}
 	public void setWriterBook(String writerBook) {
 		this.writerBook = writerBook;
+	}
+	public String getCategoryBook() {
+		return categoryBook;
+	}
+	public void setCategoryBook(String categoryBook) {
+		this.categoryBook = categoryBook;
 	}
 	public String getPublisherBook() {
 		return publisherBook;
@@ -50,11 +54,17 @@ public class Book extends Member{
 	public void setPubDateBook(String pubDateBook) {
 		this.pubDateBook = pubDateBook;
 	}
-	public String getPriceBook() {
+	public int getPriceBook() {
 		return priceBook;
 	}
-	public void setPriceBook(String priceBook) {
+	public void setPriceBook(int priceBook) {
 		this.priceBook = priceBook;
+	}
+	public String getIsbn10Book() {
+		return isbn10Book;
+	}
+	public void setIsbn10Book(String isbn10Book) {
+		this.isbn10Book = isbn10Book;
 	}
 	public String getIsbn13Book() {
 		return isbn13Book;
@@ -62,38 +72,55 @@ public class Book extends Member{
 	public void setIsbn13Book(String isbn13Book) {
 		this.isbn13Book = isbn13Book;
 	}
-	public String getCallNoBook() {
-		return callNoBook;
-	}
-	public void setCallNoBook(String callNoBook) {
-		this.callNoBook = callNoBook;
-	}
-	public String getClassCodeBook() {
-		return classCodeBook;
-	}
-	public void setClassCodeBook(String classCodeBook) {
-		this.classCodeBook = classCodeBook;
-	}
-	public String getClassificationBook() {
-		return classificationBook;
-	}
-	public void setClassificationBook(String classificationBook) {
-		this.classificationBook = classificationBook;
-	}
 	public String getDescriptionBook() {
 		return descriptionBook;
 	}
 	public void setDescriptionBook(String descriptionBook) {
 		this.descriptionBook = descriptionBook;
 	}
+	public String getBookOrNot() {
+		return bookOrNot;
+	}
+	public void setBookOrNot(String bookOrNot) {
+		this.bookOrNot = bookOrNot;
+	}
+	public int getPage() {
+		return page;
+	}
+	public void setPage(int page) {
+		this.page = page;
+	}
+	public String getImageLink() {
+		return imageLink;
+	}
+	public void setImageLink(String imageLink) {
+		this.imageLink = imageLink;
+	}
+	public String getClassificationCode() {
+		return classificationCode;
+	}
+	public void setClassificationCode(String classificationCode) {
+		this.classificationCode = classificationCode;
+	}
+	public String getAuthorCode() {
+		return authorCode;
+	}
+	public void setAuthorCode(String authorCode) {
+		this.authorCode = authorCode;
+	}
+	public String getVolumeCode() {
+		return volumeCode;
+	}
+	public void setVolumeCode(String volumeCode) {
+		this.volumeCode = volumeCode;
+	}
 	@Override
 	public String toString() {
-		return "Book [idBook=" + idBook + ", idCodeBook=" + idCodeBook + ", nameBook=" + nameBook + ", writerBook="
-				+ writerBook + ", publisherBook=" + publisherBook + ", pubDateBook=" + pubDateBook + ", priceBook="
-				+ priceBook + ", isbn13Book=" + isbn13Book + ", callNoBook=" + callNoBook + ", classCodeBook="
-				+ classCodeBook + ", classificationBook=" + classificationBook + ", descriptionBook=" + descriptionBook
-				+ "]";
+		return "Book [idBook=" + idBook + ", titleBook=" + titleBook + ", writerBook=" + writerBook + ", categoryBook="
+				+ categoryBook + ", publisherBook=" + publisherBook + ", pubDateBook=" + pubDateBook + ", priceBook="
+				+ priceBook + ", isbn10Book=" + isbn10Book + ", isbn13Book=" + isbn13Book + ", descriptionBook="
+				+ descriptionBook + ", bookOrNot=" + bookOrNot + ", page=" + page + ", imageLink=" + imageLink
+				+ ", classificationCode=" + classificationCode + ", authorCode=" + authorCode + ", volumeCode="
+				+ volumeCode + "]";
 	}
-	
-	
 }
