@@ -45,7 +45,7 @@
 	<!-- 회원정보 목록 조회 -->
 	<select id="selectMemberList" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, id_lib, id_code, name, phone, level
+			id, id_lib, name, phone, level
 		FROM member
 		ORDER BY id ASC
 	</select>

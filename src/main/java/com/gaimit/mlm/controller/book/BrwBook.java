@@ -18,8 +18,9 @@ import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.model.Book;
+import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.service.BookService;
+import com.gaimit.mlm.service.BrwService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
@@ -42,6 +43,9 @@ public class BrwBook {
 	
 	@Autowired
 	BookService bookService;
+	
+	@Autowired
+	BrwService brwService;
 	
 	/** 교수 목록 페이지 */
 	@RequestMapping(value = "/book/brw_book.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -96,7 +100,7 @@ public class BrwBook {
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 		List<Member> list = null;
-		List<Book> bookList = null;
+		
 		Member item = null;
 		int CountMember = 0;
 		
@@ -137,16 +141,27 @@ public class BrwBook {
 			model.addAttribute("name", name);
 			//model.addAttribute("idCode", idCode);
 			model.addAttribute("phone", phone);
+			
 		}
 		
 		if(list != null) {
 			model.addAttribute("list", list);
 		}
 		
+		List<Borrow> brwList = null;
+		Borrow brw = new Borrow();
+		brw.setIdLibBrw(idLib);
+		
+		try {
+			brwList = brwService.selectBorrowListToday(brw);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		model.addAttribute("CountMember", CountMember);
-		model.addAttribute("bookList", bookList);
+		model.addAttribute("brwList", brwList);
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("page", page);
 		

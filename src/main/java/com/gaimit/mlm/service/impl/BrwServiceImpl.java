@@ -156,4 +156,15 @@ public class BrwServiceImpl implements BrwService {
 		}
 	}
 
+	@Override
+	public List<Borrow> selectBorrowListToday(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectBorrowListToday", borrow);
+		} catch (Exception e) {
+			throw new Exception("금일의 대출/반납 데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
 }

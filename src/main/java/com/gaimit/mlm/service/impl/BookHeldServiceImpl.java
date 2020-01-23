@@ -27,8 +27,6 @@ public class BookHeldServiceImpl implements BookHeldService {
 	SqlSession sqlSession;
 
 
-	
-	
 	@Override
 	public List<BookHeld> getBookHeldList(BookHeld bookHeld) throws Exception {
 		List<BookHeld> result = null;

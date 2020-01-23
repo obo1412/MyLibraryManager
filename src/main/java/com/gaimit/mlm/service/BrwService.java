@@ -59,4 +59,13 @@ public interface BrwService {
 	 * @throws Exception
 	 */
 	public void getBorrowCountByBookCode(Borrow borrow) throws Exception;
+	
+	/**
+	 * 오늘 날짜의 대여/반납 기록 호출
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectBorrowListToday(Borrow borrow) throws Exception;
+	
 }
