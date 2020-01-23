@@ -281,7 +281,10 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
-	$(function() {
+/**
+ * 아래 기능확인해서 사용하기!!!!
+ */
+/* 	$(function() {
 
 		var CountMember = $
 		{
@@ -317,7 +320,7 @@
 			$("#phone").val(PphoneList[x]);
 			$("#level").val(PlevelList[x]);
 			e.preventDefault();
-		});
+		}); */
 
 		/* 	
 		 var name = null;

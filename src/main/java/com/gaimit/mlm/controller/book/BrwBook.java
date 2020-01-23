@@ -116,11 +116,7 @@ public class BrwBook {
 				} else if(CountMember > 1) {
 					list = memberService.getMemberListByLibAndName(member);
 				}
-			}		
-			//책대여를 위한 회원조회 끝
-			
-			/*bookList = bookService.getBookList(book);*/
-			
+			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -128,7 +124,6 @@ public class BrwBook {
 		if(item != null) {
 			int memberId = item.getId();
 			String name = item.getName();
-			//String idCode = item.getIdCode();
 			String phone = item.getPhone();
 			String grade = item.getGradeName();
 			int brwLimit = item.getBrwLimit();
@@ -139,9 +134,7 @@ public class BrwBook {
 			model.addAttribute("dateLimit", dateLimit);
 			model.addAttribute("memberId", memberId);
 			model.addAttribute("name", name);
-			//model.addAttribute("idCode", idCode);
 			model.addAttribute("phone", phone);
-			
 		}
 		
 		if(list != null) {

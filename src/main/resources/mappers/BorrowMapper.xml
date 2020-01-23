@@ -55,7 +55,7 @@
 	<select id="selectBorrowItemByBookCode" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">
 		SELECT
 			id_brw, id_lib_brw, id_book_brw, b.id_code_book as id_code_book, b.name_book as name_book,
-			id_member_brw, m.id_code, m.name as name, m.phone, start_date_brw, end_date_brw
+			id_member_brw, m.name as name, m.phone, start_date_brw, end_date_brw
 		FROM borrow r
 		INNER JOIN book b on r.id_book_brw = b.id_book
 		INNER JOIN member m on r.id_member_brw = m.id
@@ -66,7 +66,7 @@
 	<select id="selectBorrowListByMbrId" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">
 		SELECT
 			id_brw, id_lib_brw, id_book_brw, b.id_code_book as id_code_book, b.name_book as name_book,
-			id_member_brw, m.id_code, m.name as name, m.phone, start_date_brw, end_date_brw
+			id_member_brw, m.name as name, m.phone, start_date_brw, end_date_brw
 		FROM borrow r
 		INNER JOIN book b on r.id_book_brw = b.id_book
 		INNER JOIN member m on r.id_member_brw = m.id
