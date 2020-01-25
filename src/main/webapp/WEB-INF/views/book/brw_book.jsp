@@ -76,6 +76,7 @@
 											</thead>
 											<c:forEach var="item" items="${list}" varStatus="status">
 												<tr>
+													<td style="visibility: hidden; position: absolute;">${item.id}</td>
 													<td><c:url var="readUrl" value="/temp/temp.do">
 															<c:param name="id" value="${item.id}" />
 														</c:url> <a href="${readUrl}">${item.name}</a></td>
@@ -103,20 +104,20 @@
 													<th class="info text-center">선택</th>
 												</tr>
 											</thead>
-												<tr>
-													<td><c:url var="readUrl" value="/temp/temp.do">
-															<c:param name="id" value="${memberId}" />
-														</c:url> <a href="${readUrl}">${name}</a></td>
-													<td class="text-center"></td>
-													<td class="text-center"><a href="#">${phone}</a></td>
-													<td class="text-center">${grade}</td>
-													<td class="text-center">${brwLimit}</td>
-													<td class="text-center">${dateLimit}</td>
-													<td class="test-center">
-														<button class="pick-user btn" id="${status.index}">선택
-														</button>
-													</td>
-												</tr>
+											<tr>
+												<td><c:url var="readUrl" value="/temp/temp.do">
+														<c:param name="id" value="${memberId}" />
+													</c:url> <a href="${readUrl}">${name}</a></td>
+												<td class="text-center"></td>
+												<td class="text-center"><a href="#">${phone}</a></td>
+												<td class="text-center">${grade}</td>
+												<td class="text-center">${brwLimit}</td>
+												<td class="text-center">${dateLimit}</td>
+												<td class="test-center">
+													<button class="pick-user btn" id="${status.index}">선택
+													</button>
+												</td>
+											</tr>
 										</c:when>
 										<c:otherwise>
 											<tr>
@@ -153,10 +154,10 @@
 							</div>
 
 							<div class="form-group">
-							<!-- 	<label for='grade' class="col-md-12">회원 등급</label> -->
+								<!-- 	<label for='grade' class="col-md-12">회원 등급</label> -->
 								<div class="col-md-12">
-									<input type="hidden" name="grade" id="grade" class="form-control"
-										value="${grade}" />
+									<input type="hidden" name="grade" id="grade"
+										class="form-control" value="${grade}" />
 								</div>
 							</div>
 
@@ -210,7 +211,66 @@
 					<div class="card-header">
 						<h6>반납하기</h6>
 					</div>
-					<div class="card-body"></div>
+					<div class="card-body">
+						<form class="form-horizontal" name="search-mbr-form"
+							id="search-mbr-form" method="post"
+							action="${pageContext.request.contextPath}/book/return_book_ok.do">
+							<div class="form-group">
+								<label for='barcodeBook' class="col-md-12">도서 검색</label>
+								<div class="input-group col-md-12">
+									<input type="text" name="barcodeBook" id="barcodeBook"
+										class="form-control" placeholder="이름을 입력해주세요" value="${barcodeBook}" />
+									<span class="input-group-btn">
+										<button class="btn btn-warning" id="btn-search-mbr"
+											type="submit">
+											<i class="fas fa-search"></i>
+										</button>
+									</span>
+								</div>
+							</div>
+						</form><!-- 도서 검색폼 -->
+						
+						<div class="table-responsive">
+							<table class="table">
+								<tbody>
+									<c:choose>
+										<c:when test="${fn:length(mbrBrwList) > 0}">
+											<thead>
+												<tr>
+													<th class="info text-center">도서제목</th>
+													<th class="info text-center">도서바코드</th>
+													<th class="info text-center">대여일</th>
+													<th class="info text-center">선택</th>
+												</tr>
+											</thead>
+											<c:forEach var="item" items="${mbrBrwList}" varStatus="status">
+												<tr>
+													<td style="visibility: hidden; position: absolute;">${item.id}</td>
+													<td><c:url var="readUrl" value="/temp/temp.do">
+															<c:param name="id" value="${item.idBrw}" />
+														</c:url> <a href="${readUrl}">${item.titleBook}</a></td>
+													<td class="text-center"><a href="#">${item.barcodeBook}</a></td>
+													<td class="text-center">${item.startDateBorrow}</td>
+													<td class="text-center">${item.brwLimit}</td>
+													<td class="text-center">${item.dateLimit}</td>
+													<td class="test-center">
+														<button class="pick-user btn" id="${status.index}">선택
+														</button>
+													</td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td colspan="8" class="text-center"
+													style="line-height: 30px;">조회된 회원정보가 없습니다.</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</div><!-- 도서 검색시, 그 도서를 빌린 사람의 대여현황을 보여주기 위함. -->
+					</div>
 					<!-- card body2 끝 -->
 				</div>
 				<!-- card2 끝 -->
@@ -238,14 +298,14 @@
 									<c:when test="${fn:length(brwList) > 0}">
 										<c:forEach var="item" items="${brwList}">
 											<tr>
-											<c:choose>
-												<c:when test="${item.endDateBrw eq null}">
-													<c:set var="state" value="대여" />
-												</c:when>
-												<c:otherwise>
-													<c:set var="state" value="반납" />
-												</c:otherwise>
-											</c:choose>
+												<c:choose>
+													<c:when test="${item.endDateBrw eq null}">
+														<c:set var="state" value="대여" />
+													</c:when>
+													<c:otherwise>
+														<c:set var="state" value="반납" />
+													</c:otherwise>
+												</c:choose>
 												<td class="text-center">${state}</td>
 												<td class="text-center">${item.name}</td>
 												<td class="text-center">${item.phone}</td>
@@ -281,12 +341,12 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
-/**
- * 아래 기능확인해서 사용하기!!!!
- */
-/* 	$(function() {
+	/**
+	 * 아래 기능확인해서 사용하기!!!!
+	 */
+	$(function() {
 
-		var CountMember = $
+		/* var CountMember = $
 		{
 			CountMember
 		}
@@ -294,7 +354,7 @@
 		console.log(CountMember);
 		if (CountMember == 0) {
 			$('#search-state').html("회원 정보를 찾을 수 없습니다.");
-		}
+		} */
 
 		$(".pick-user").on("click", function(e) {
 			var x = $(this).attr('id');
@@ -302,25 +362,25 @@
 
 			var PIdList = [];
 			var PnameList = [];
-			var PidCodeList = [];
 			var PphoneList = [];
-			var PlevelList = [];
+			var PbrwLimitList = [];
+			var PdateLimitList = [];
 
 			<c:forEach var="item" items='${list}'>
 			PIdList.push("${item.id}");
 			PnameList.push("${item.name}");
-			PidCodeList.push("${item.idCode}");
 			PphoneList.push("${item.phone}");
-			PlevelList.push("${item.level}");
+			PbrwLimitList.push("${item.brwLimit}");
+			PdateLimitList.push("${item.dateLimit}");
 			</c:forEach>
 
 			$("#memberId").val(PIdList[x]);
 			$("#name").val(PnameList[x]);
-			$("#idCode").val(PidCodeList[x]);
 			$("#phone").val(PphoneList[x]);
-			$("#level").val(PlevelList[x]);
+			$("#brwLimit").val(PbrwLimitList[x]);
+			$("#dateLimit").val(PdateLimitList[x]);
 			e.preventDefault();
-		}); */
+		});
 
 		/* 	
 		 var name = null;
