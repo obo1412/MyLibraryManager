@@ -70,10 +70,10 @@ public class BrwServiceImpl implements BrwService {
 	}
 
 	@Override
-	public Borrow getBorrowItemByBookCode(Borrow borrow) throws Exception {
+	public Borrow getBorrowItemByBarcodeBook(Borrow borrow) throws Exception {
 		Borrow result = null;
 		try {
-			result = sqlSession.selectOne("BorrowMapper.selectBorrowItemByBookCode", borrow);
+			result = sqlSession.selectOne("BorrowMapper.selectBorrowItemByBarcodeBook", borrow);
 			if (result == null) {
 				throw new NullPointerException();
 			}

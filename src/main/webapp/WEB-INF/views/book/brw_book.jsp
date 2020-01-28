@@ -240,6 +240,7 @@
 													<th class="info text-center">도서제목</th>
 													<th class="info text-center">도서바코드</th>
 													<th class="info text-center">대여일</th>
+													<th class="info text-center">반납일</th>
 													<th class="info text-center">선택</th>
 												</tr>
 											</thead>
@@ -250,12 +251,12 @@
 															<c:param name="id" value="${item.idBrw}" />
 														</c:url> <a href="${readUrl}">${item.titleBook}</a></td>
 													<td class="text-center"><a href="#">${item.barcodeBook}</a></td>
-													<td class="text-center">${item.startDateBorrow}</td>
-													<td class="text-center">${item.brwLimit}</td>
-													<td class="text-center">${item.dateLimit}</td>
+													<td class="text-center">${item.startDateBrw}</td>
+													<td class="text-center">${item.endDateBrw}</td>
 													<td class="test-center">
 														<button class="pick-user btn" id="${status.index}">선택
 														</button>
+														<!-- 버튼 클릭시 반납처리 javascript로 가능할듯.-->
 													</td>
 												</tr>
 											</c:forEach>
@@ -263,7 +264,7 @@
 										<c:otherwise>
 											<tr>
 												<td colspan="8" class="text-center"
-													style="line-height: 30px;">조회된 회원정보가 없습니다.</td>
+													style="line-height: 30px;">조회된 도서 및 회원 정보가 없습니다.</td>
 											</tr>
 										</c:otherwise>
 									</c:choose>
@@ -289,6 +290,7 @@
 									<th class="info text-center">연락처</th>
 									<th class="info text-center">회원등급</th>
 									<th class="info text-center">도서명</th>
+									<th class="info text-center">도서바코드</th>
 									<th class="info text-center">대여일시</th>
 									<th class="info text-center">반납일시</th>
 								</tr>
@@ -311,6 +313,7 @@
 												<td class="text-center">${item.phone}</td>
 												<td class="text-center">${item.gradeId}</td>
 												<td class="text-center">${item.titleBook}</td>
+												<td class="text-center">${item.localIdBarcode}</td>
 												<td class="text-center">${item.startDateBrw}</td>
 												<td class="text-center">${item.endDateBrw}</td>
 											</tr>

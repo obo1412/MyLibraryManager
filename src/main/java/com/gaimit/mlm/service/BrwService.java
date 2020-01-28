@@ -28,7 +28,7 @@ public interface BrwService {
 	 * @return 대여중인 그 책이 맞으면 그 대여정보 반환
 	 * @throws Exception
 	 */
-	public Borrow getBorrowItemByBookCode(Borrow borrow) throws Exception;
+	public Borrow getBorrowItemByBarcodeBook(Borrow borrow) throws Exception;
 	
 	/**
 	 * 

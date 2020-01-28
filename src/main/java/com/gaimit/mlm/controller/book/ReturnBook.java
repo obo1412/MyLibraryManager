@@ -95,7 +95,8 @@ public class ReturnBook {
 		
 		if(!(bookCode.equals(""))) {
 			try {
-				brw = brwService.getBorrowItemByBookCode(brw);
+				//이부분 확인해서 빌린책 검사 활용하기
+				/*brw = brwService.getBorrowItemByBookCode(brw);*/
 			}  catch (Exception e) {
 				return web.redirect(null, e.getLocalizedMessage());
 			}

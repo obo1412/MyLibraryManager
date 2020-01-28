@@ -1,9 +1,6 @@
 package com.gaimit.mlm.controller.book;
 
-
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.PageHelper;
@@ -51,12 +49,12 @@ public class ReturnBookOk {
 	@Autowired
 	BrwService brwService;
 	
-	/** 교수 목록 페이지 */
+	/** 도서 반납 페이지 */
 	@RequestMapping(value = "/book/return_book_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public void doRun(Locale locale, Model model, HttpServletRequest request,
+	public ModelAndView doRun(Locale locale, Model model, HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		response.setContentType("application/json");
+		/*response.setContentType("application/json");*/
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
@@ -74,7 +72,7 @@ public class ReturnBookOk {
 		}
 		
 		// web으로부터 책 코드 번호 수신
-		String bookCode = web.getString("id_code_book", "");
+		String barcodeBook = web.getString("barcodeBook", "");
 		int idBrw = web.getInt("id_brw");
 		
 		// 파라미터를 저장할 Beans
@@ -94,21 +92,25 @@ public class ReturnBookOk {
 		 * 여기 수정해야됨 ***************************
 		 */
 		brw.setIdLibBrw(idLib);
-		//brw.setIdCodeBook(bookCode);
-		brw.setIdBrw(idBrw);
+		brw.setLocalIdBarcode(barcodeBook);
+		
 		
 		//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
 		
-		if(!(bookCode.equals(""))) {
+		if(!(barcodeBook.equals(""))) {
 			try {
 				brwService.updateBorrowEndDate(brw);
-				brwSe = brwService.getBorrowRtnd(brw);
+				/*brw = brwService.getBorrowItemByBarcodeBook(brw);
+				brwService.updateBorrowEndDate(brw);
+				brwSe = brwService.getBorrowRtnd(brw);*/
 			}  catch (Exception e) {
 				web.printJsonRt("도서 반납 및 반납책 조회에 오류가 발생했습니다.");
 			}
 		}
 		
-		Map<String, Object> data = new HashMap<String, Object>();
+		/*brw.setIdBrw(idBrw);*/
+		
+		/*Map<String, Object> data = new HashMap<String, Object>();
 		data.put("rtndItem", brwSe);
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -116,7 +118,7 @@ public class ReturnBookOk {
 			mapper.writeValue(response.getWriter(), data);
 		} catch (Exception e) {
 			web.printJsonRt(e.getLocalizedMessage());	
-		}
+		}*/
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");
@@ -150,6 +152,7 @@ public class ReturnBookOk {
 		/*model.addAttribute("keyword", keyword);*/
 		/*model.addAttribute("page", page);*/
 		
-		/*return new ModelAndView("book/return_book");*/
+		/*return new ModelAndView("book/brw_book");*/
+		return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서 반납이 완료되었습니다.");
 	}	
 }
