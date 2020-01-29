@@ -64,7 +64,7 @@
 	<!--helper 패키지 객체 주입 -->
 	<bean id="web" class="com.gaimit.helper.WebHelper" scope="singleton" />
 	<bean id="upload" class="com.gaimit.helper.UploadHelper" scope="singleton">
-		<constructor-arg value="C:\Users\OK-home\obo1412\work\workspace_library\MLM\downloads" />
+		<constructor-arg value="E:\Works\Coding\workspace_library\MLM\downloads" />
 	</bean>
 	<bean id="mail" class="com.gaimit.helper.MailHelper" scope="singleton">
 		<constructor-arg ref="mailSender" />
