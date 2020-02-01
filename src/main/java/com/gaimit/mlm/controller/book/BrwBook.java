@@ -101,44 +101,36 @@ public class BrwBook {
 		// 조회 결과를 저장하기 위한 객체
 		List<Member> list = null;
 		
-		Member item = null;
-		int CountMember = 0;
-		
 		String memberName = member.getName();
+		
 		try {
 			//책대여를 위한 회원조회
 			if(!(memberName.equals(""))) {
-				CountMember = memberService.getMemberCountByNameAndIdLib(member);
-				if(CountMember == 1) {
-					if(!(memberName.equals(""))) {
-						item = memberService.selectMember(member);
-					}
-				} else if(CountMember > 1) {
-					list = memberService.getMemberListByLibAndName(member);
-				}
+				list = memberService.getMemberListByLibAndName(member);
 			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		if(item != null) {
-			int memberId = item.getId();
-			String name = item.getName();
-			String phone = item.getPhone();
-			String grade = item.getGradeName();
-			int brwLimit = item.getBrwLimit();
-			int dateLimit = item.getDateLimit();
-			
-			model.addAttribute("grade", grade);
-			model.addAttribute("brwLimit", brwLimit);
-			model.addAttribute("dateLimit", dateLimit);
-			model.addAttribute("memberId", memberId);
-			model.addAttribute("name", name);
-			model.addAttribute("phone", phone);
-		}
-		
+		//list 결과값이 null이 아니면
 		if(list != null) {
 			model.addAttribute("list", list);
+			
+			if(list.size() < 2) {
+				int memberId = list.get(0).getId();
+				String name = list.get(0).getName();
+				String phone = list.get(0).getPhone();
+				String grade = list.get(0).getGradeName();
+				int brwLimit = list.get(0).getBrwLimit();
+				int dateLimit = list.get(0).getDateLimit();
+				
+				model.addAttribute("grade", grade);
+				model.addAttribute("brwLimit", brwLimit);
+				model.addAttribute("dateLimit", dateLimit);
+				model.addAttribute("memberId", memberId);
+				model.addAttribute("name", name);
+				model.addAttribute("phone", phone);
+			}
 		}
 		
 		List<Borrow> brwList = null;
@@ -153,7 +145,6 @@ public class BrwBook {
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("CountMember", CountMember);
 		model.addAttribute("brwList", brwList);
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("page", page);

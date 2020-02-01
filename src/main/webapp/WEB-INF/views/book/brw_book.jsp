@@ -10,7 +10,7 @@
 <style type="text/css">
 @media ( min-width : 768px) {
 	.upsideCard {
-		max-width: 1000px;
+		max-width: 500px;
 		float: left;
 		width: 49%;
 		margin-right: 0.2em;
@@ -18,6 +18,11 @@
 	.bottomCard {
 		float: left;
 		width: 100%;
+		/* 페이지가 모니터 최대치일 경우, 아래칸이 위로 올라옴 */
+		clear: left;
+	}
+	.table-sm {
+		font-size: 12px;
 	}
 }
 </style>
@@ -32,19 +37,19 @@
 			<div class="container-fluid">
 				<div class="card mb-3 upsideCard">
 					<div class="card-header">
-						<h6>도서 대여하기</h6>
+						<h6>도서 대출하기</h6>
 					</div>
 
 					<div class="card-body">
 						<form class="form-horizontal" name="search-mbr-form"
 							id="search-mbr-form" method="post"
 							action="${pageContext.request.contextPath}/book/brw_book.do">
-							<div class="form-group">
-								<label for='search-name' class="col-md-12">회원 검색</label>
-								<div class="input-group col-md-12">
+							<div class="form-group form-inline">
+								<label for='search-name' class="col-md-3">회원 검색</label>
+								<div class="input-group col-md-9">
 									<input type="text" name="search-name" id="search-name"
 										class="form-control" placeholder="이름을 입력해주세요" value="${name}" />
-									<span class="input-group-btn">
+									<span class="input-group-append">
 										<button class="btn btn-warning" id="btn-search-mbr"
 											type="submit">
 											<i class="fas fa-search"></i>
@@ -52,14 +57,10 @@
 									</span>
 								</div>
 							</div>
-
-							<!-- 							<div class="form-group">
-								<label for='search-state' class="col-md-12">검색 상태</label>
-								<p class="col-md-12" id="search-state"></p>
-							</div> -->
 						</form>
+						
 						<div class="table-responsive">
-							<table class="table">
+							<table class="table table-sm">
 								<tbody>
 									<c:choose>
 										<c:when test="${fn:length(list) > 0}">
@@ -76,7 +77,7 @@
 											</thead>
 											<c:forEach var="item" items="${list}" varStatus="status">
 												<tr>
-													<td style="visibility: hidden; position: absolute;">${item.id}</td>
+													<td style="display: none; position: absolute;">${item.id}</td>
 													<td><c:url var="readUrl" value="/temp/temp.do">
 															<c:param name="id" value="${item.id}" />
 														</c:url> <a href="${readUrl}">${item.name}</a></td>
@@ -86,8 +87,8 @@
 													<td class="text-center">${item.brwLimit}</td>
 													<td class="text-center">${item.dateLimit}</td>
 													<td class="test-center">
-														<button class="pick-user btn" id="${status.index}">선택
-														</button>
+														<button class="pick-user btn btn-primary"
+															id="${status.index}">선택</button>
 													</td>
 												</tr>
 											</c:forEach>
@@ -135,21 +136,40 @@
 							action="${pageContext.request.contextPath}/book/brw_book_ok.do">
 
 							<input type="hidden" name="memberId" id="memberId"
-								value="${memberId}" />
-
-							<div class="form-group">
-								<label for='name' class="col-md-12">회원 이름</label>
-								<div class="col-md-12">
-									<input type="text" name="name" id="name" class="form-control"
-										value="${name}" />
+								value="${memberId}"/>
+								
+							<div class="form-inline mb-2">
+								<div class="form-group col-md-12">
+									<label for='name' class="col-md-3">회원 이름</label>
+									<div class="input-group col-md-9">
+										<input type="text" name="name" id="name" class="form-control"
+											value="${name}" />
+									</div>
 								</div>
 							</div>
 
-							<div class="form-group">
-								<label for='tel' class="col-md-12">연락처</label>
-								<div class="col-md-12">
-									<input type="tel" name="phone" id="phone" class="form-control"
-										value="${phone}" />
+							<div class="form-inline mb-2">
+								<div class="form-group col-md-12">
+									<label for='tel' class="col-md-3">연락처</label>
+									<div class="input-group col-md-9">
+										<input type="tel" name="phone" id="phone" class="form-control"
+											value="${phone}" />
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-inline mb-2">
+								<div class="form-group col-md-12">
+									<label for='barcodeBook' class="col-md-3">도서바코드</label>
+									<div class="input-group col-md-9">
+										<span class="input-group-prepend">
+											<button class="btn btn-warning"
+												onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do','팝업','width=500,height=600,location=no,status=no,scrollbars=yes')">
+												<i class="fas fa-search"><a href=""></a></i>
+											</button>
+										</span> <input type="text" name="barcodeBook" id="barcodeBook"
+											class="form-control" />
+									</div>
 								</div>
 							</div>
 
@@ -185,17 +205,10 @@
 								</div>
 							</div>
 
-							<div class="form-group">
-								<label for='barcodeBook' class="col-md-12">도서바코드</label>
-								<div class="col-md-12">
-									<input type="text" name="barcodeBook" id="barcodeBook"
-										class="form-control" />
-								</div>
-							</div>
 
 
 							<div class="form-group">
-								<div class="offset-md-6 col-md-6">
+								<div class="offset-md-7 col-md-5">
 									<button type="submit" class="btn btn-primary">제출</button>
 									<button type="reset" class="btn btn-danger">취소</button>
 								</div>
@@ -207,7 +220,7 @@
 				</div>
 				<!-- card 끝 -->
 
-				<div class="card mb-3 upsideCard">
+				<div class="card mb-3 upsideCard clear">
 					<div class="card-header">
 						<h6>반납하기</h6>
 					</div>
@@ -215,12 +228,12 @@
 						<form class="form-horizontal" name="search-mbr-form"
 							id="search-mbr-form" method="post"
 							action="${pageContext.request.contextPath}/book/return_book_ok.do">
-							<div class="form-group">
-								<label for='barcodeBook' class="col-md-12">도서 검색</label>
-								<div class="input-group col-md-12">
+							<div class="form-group form-inline">
+								<label for='barcodeBook' class="col-md-3">도서 검색</label>
+								<div class="input-group col-md-9">
 									<input type="text" name="barcodeBook" id="barcodeBook"
-										class="form-control" placeholder="이름을 입력해주세요" value="${barcodeBook}" />
-									<span class="input-group-btn">
+										class="form-control" placeholder="이름을 입력해주세요"
+										value="${barcodeBook}" /> <span class="input-group-append">
 										<button class="btn btn-warning" id="btn-search-mbr"
 											type="submit">
 											<i class="fas fa-search"></i>
@@ -228,10 +241,11 @@
 									</span>
 								</div>
 							</div>
-						</form><!-- 도서 검색폼 -->
-						
+						</form>
+						<!-- 도서 검색폼 -->
+
 						<div class="table-responsive">
-							<table class="table">
+							<table class="table table-sm">
 								<tbody>
 									<c:choose>
 										<c:when test="${fn:length(mbrBrwList) > 0}">
@@ -244,7 +258,8 @@
 													<th class="info text-center">선택</th>
 												</tr>
 											</thead>
-											<c:forEach var="item" items="${mbrBrwList}" varStatus="status">
+											<c:forEach var="item" items="${mbrBrwList}"
+												varStatus="status">
 												<tr>
 													<td style="visibility: hidden; position: absolute;">${item.id}</td>
 													<td><c:url var="readUrl" value="/temp/temp.do">
@@ -255,8 +270,7 @@
 													<td class="text-center">${item.endDateBrw}</td>
 													<td class="test-center">
 														<button class="pick-user btn" id="${status.index}">선택
-														</button>
-														<!-- 버튼 클릭시 반납처리 javascript로 가능할듯.-->
+														</button> <!-- 버튼 클릭시 반납처리 javascript로 가능할듯.-->
 													</td>
 												</tr>
 											</c:forEach>
@@ -270,7 +284,8 @@
 									</c:choose>
 								</tbody>
 							</table>
-						</div><!-- 도서 검색시, 그 도서를 빌린 사람의 대여현황을 보여주기 위함. -->
+						</div>
+						<!-- 도서 검색시, 그 도서를 빌린 사람의 대여현황을 보여주기 위함. -->
 					</div>
 					<!-- card body2 끝 -->
 				</div>
@@ -278,11 +293,11 @@
 
 				<div class="card mb-3 bottomCard">
 					<div class="card-header">
-						<h4 class='pull-left'>대여 목록</h4>
+						<h4 class='pull-left'>오늘의 대출/반납 현황</h4>
 					</div>
 					<div class="card-body">
 						<!-- 조회결과를 출력하기 위한 표 -->
-						<table class="table">
+						<table class="table table-sm">
 							<thead>
 								<tr>
 									<th class="info text-center">상태</th>
@@ -302,7 +317,7 @@
 											<tr>
 												<c:choose>
 													<c:when test="${item.endDateBrw eq null}">
-														<c:set var="state" value="대여" />
+														<c:set var="state" value="대출" />
 													</c:when>
 													<c:otherwise>
 														<c:set var="state" value="반납" />

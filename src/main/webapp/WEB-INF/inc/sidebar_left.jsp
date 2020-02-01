@@ -22,8 +22,8 @@
 	</a>
 		<div class="dropdown-menu" aria-labelledby="bookDropdown">
 			<h6 class="dropdown-header">도서</h6>
-			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/reg_book.do">도서 등록하기</a>
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/book_held_list.do">도서 목록</a>
+			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/reg_book.do">도서 등록하기</a>
 			
 			<div class="dropdown-divider"></div>
 			<h6 class="dropdown-header">점검</h6>

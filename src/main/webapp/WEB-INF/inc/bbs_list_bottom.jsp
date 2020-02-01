@@ -30,7 +30,7 @@
 
 <!-- 페이지 번호 시작 -->
 <nav class="text-center">
-	<ul class="pagination">
+	<ul class="pagination" style="justify-content:center;">
 		<!-- 이전 그룹으로 이동 -->
 		<c:choose>
 			<c:when test="${pageHelper.prevPage > 0}">
@@ -42,12 +42,12 @@
 					<c:param name="page" value="${pageHelper.prevPage}"></c:param>
 				</c:url>
 
-				<li><a href="${prevUrl}">&laquo;</a></li>
+				<li class="page-item"><a class="page-link" href="${prevUrl}">&laquo;</a></li>
 			</c:when>
 
 			<c:otherwise>
 				<!-- 이전 그룹에 대한 페이지 번호가 존재하지 않는다면? -->
-				<li class='disabled'><a href="#">&laquo;</a></li>
+				<li class='disabled page-item'><a class="page-link" href="#">&laquo;</a></li>
 			</c:otherwise>
 		</c:choose>
 			
@@ -65,10 +65,10 @@
 			<!-- 반복중의 페이지 번호와 현재 위치한 페이지 번호가 같은 경우에 대한 분기 -->
 			<c:choose>
 				<c:when test="${pageHelper.page == i}">
-					<li class='active'><a href="#">${i}</a></li>
+					<li class='active page-item'><a class="page-link" href="#">${i}</a></li>
 				</c:when>
 				<c:otherwise>
-					<li><a href="${pageUrl}">${i}</a></li>
+					<li class="page-item"><a class="page-link" href="${pageUrl}">${i}</a></li>
 				</c:otherwise>
 			</c:choose>	
 
@@ -85,12 +85,12 @@
 					<c:param name="page" value="${pageHelper.nextPage}"></c:param>
 				</c:url>
 
-				<li><a href="${nextUrl}">&raquo;</a></li>
+				<li class="page-item"><a class="page-link" href="${nextUrl}">&raquo;</a></li>
 			</c:when>
 
 			<c:otherwise>
 				<!-- 이전 그룹에 대한 페이지 번호가 존재하지 않는다면? -->
-				<li class='disabled'><a href="#">&raquo;</a></li>
+				<li class='disabled page-item'><a class="page-link" href="#">&raquo;</a></li>
 			</c:otherwise>
 		</c:choose>
 	</ul>

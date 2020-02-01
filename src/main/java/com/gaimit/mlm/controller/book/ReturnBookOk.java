@@ -66,13 +66,17 @@ public class ReturnBookOk {
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
-			web.printJsonRt("로그인 정보가 명확하지 않습니다. 다시 로그인 해주세요.");
+			/*web.printJsonRt("로그인 정보가 명확하지 않습니다. 다시 로그인 해주세요.");*/
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		} else {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
 		// web으로부터 책 코드 번호 수신
 		String barcodeBook = web.getString("barcodeBook", "");
+		if(barcodeBook.equals("")) {
+			return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서바코드를 입력하세요.");
+		}
 		int idBrw = web.getInt("id_brw");
 		
 		// 파라미터를 저장할 Beans

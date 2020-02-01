@@ -33,6 +33,7 @@
 		<p>현재 상태 표기 각종 정보 수집</p>
 		
 		<p class="red">고객등록, 등급정보 업데이트.</p>
+		<p class="red">파일 업로드 경로 테스트 중</p>
 		
 		</div> <!-- container-fluid 종료 -->
 		<%@ include file="/WEB-INF/inc/footer.jsp" %>	

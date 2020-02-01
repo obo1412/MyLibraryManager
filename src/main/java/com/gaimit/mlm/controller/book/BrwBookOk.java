@@ -125,8 +125,6 @@ public class BrwBookOk {
 		// bookHeld가 book을 상속받아서 아래 조건 성립됨.
 		bookHeld.setLocalIdBarcode(barcodeBook);
 		
-		System.out.println(barcodeBook+"******************************************");
-		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
 			bookHeld = bookHeldService.getBookHelditem(bookHeld);
