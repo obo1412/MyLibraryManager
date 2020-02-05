@@ -111,14 +111,15 @@ public class BrwBookOk {
 			return web.redirect(null, e.getLocalizedMessage());
 		}*/
 		
+		//brw_book.jsp 에서  책에 대한 파라미터 받기
+		String barcodeBook = web.getString("barcodeBook");
+		
 		//borrow insert를 위한 정보 수집
 		Borrow brw = new Borrow();
 		//borrow를 위한 1차 정보 주입 
 		brw.setIdLibBrw(idLib);
 		brw.setIdMemberBrw(memberId);
-		
-		//brw_book.jsp 에서  책에 대한 파라미터 받기
-		String barcodeBook = web.getString("barcodeBook");
+		brw.setLocalIdBarcode(barcodeBook);
 
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
@@ -127,13 +128,14 @@ public class BrwBookOk {
 		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
+			brwService.getBorrowCountByBarcodeBook(brw);
 			bookHeld = bookHeldService.getBookHelditem(bookHeld);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
 		// 위 과정으로 도서정보가 나오면, 도서 대출을 위한 정보 수집 id_book
-		if(bookHeld != null) {
+		if(bookHeld.getId() != 0) {
 			brw.setBookHeldId(bookHeld.getId());
 		}
 		

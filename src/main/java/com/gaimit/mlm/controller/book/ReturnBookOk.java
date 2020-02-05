@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
@@ -73,11 +73,10 @@ public class ReturnBookOk {
 		}
 		
 		// web으로부터 책 코드 번호 수신
-		String barcodeBook = web.getString("barcodeBook", "");
+		String barcodeBook = web.getString("barcodeBookRtn", "");
 		if(barcodeBook.equals("")) {
 			return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서바코드를 입력하세요.");
 		}
-		int idBrw = web.getInt("id_brw");
 		
 		// 파라미터를 저장할 Beans
 		Member member = new Member();
@@ -88,8 +87,9 @@ public class ReturnBookOk {
 		book.setIdCodeBook(bookCode);*/
 		
 		Borrow brw = new Borrow();
-		// 멤버id(회원id)로 검색에 사용할 객체 생성
+		// 아래 brw로 idBrw 호출을 위한 객체
 		Borrow brwSe = new Borrow();
+		// 아래 멤버id(회원id)로 검색에 사용할 객체 생성 아직미구현
 		
 		
 		/**
@@ -103,12 +103,13 @@ public class ReturnBookOk {
 		
 		if(!(barcodeBook.equals(""))) {
 			try {
+				brwSe = brwService.getBorrowItemByBarcodeBook(brw);
+				brw.setIdBrw(brwSe.getIdBrw());
 				brwService.updateBorrowEndDate(brw);
-				/*brw = brwService.getBorrowItemByBarcodeBook(brw);
-				brwService.updateBorrowEndDate(brw);
+				/*
 				brwSe = brwService.getBorrowRtnd(brw);*/
 			}  catch (Exception e) {
-				web.printJsonRt("도서 반납 및 반납책 조회에 오류가 발생했습니다.");
+				return web.redirect(null, e.getLocalizedMessage());
 			}
 		}
 		

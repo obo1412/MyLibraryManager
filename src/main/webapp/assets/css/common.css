@@ -1,6 +1,5 @@
 /** 페이지 기본 높이 */
 
-
 /** body 영역이 메뉴에 가려지는 부분 확보하기 */
 /* body {
 	min-height: 600px;
@@ -16,5 +15,5 @@
 } */
 
 .card {
-	max-width : 1000px;
+	max-width: 1000px;
 }

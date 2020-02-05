@@ -2,8 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page trimDirectiveWhitespaces="true"%>
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
@@ -14,15 +15,21 @@
 		float: left;
 		width: 49%;
 		margin-right: 0.2em;
+		min-height: 405px;
 	}
 	.bottomCard {
 		float: left;
 		width: 100%;
 		/* 페이지가 모니터 최대치일 경우, 아래칸이 위로 올라옴 */
 		clear: left;
+		min-height: 300px;
 	}
 	.table-sm {
 		font-size: 12px;
+	}
+	label {
+		margin-bottom: 0;
+		font-size: 15px;
 	}
 }
 </style>
@@ -37,7 +44,9 @@
 			<div class="container-fluid">
 				<div class="card mb-3 upsideCard">
 					<div class="card-header">
-						<h6>도서 대출하기</h6>
+						<h6>
+							<label for='search-name'>도서 대출하기</label>
+						</h6>
 					</div>
 
 					<div class="card-body">
@@ -58,7 +67,7 @@
 								</div>
 							</div>
 						</form>
-						
+
 						<div class="table-responsive">
 							<table class="table table-sm">
 								<tbody>
@@ -136,39 +145,37 @@
 							action="${pageContext.request.contextPath}/book/brw_book_ok.do">
 
 							<input type="hidden" name="memberId" id="memberId"
-								value="${memberId}"/>
-								
+								value="${memberId}" />
+
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
 									<label for='name' class="col-md-3">회원 이름</label>
 									<div class="input-group col-md-9">
 										<input type="text" name="name" id="name" class="form-control"
-											value="${name}" />
+											value="${name}" readonly/>
 									</div>
 								</div>
 							</div>
 
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
-									<label for='tel' class="col-md-3">연락처</label>
+									<label for='phone' class="col-md-3">연락처</label>
 									<div class="input-group col-md-9">
 										<input type="tel" name="phone" id="phone" class="form-control"
-											value="${phone}" />
+											value="${phone}" readonly/>
 									</div>
 								</div>
 							</div>
-							
+
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
 									<label for='barcodeBook' class="col-md-3">도서바코드</label>
 									<div class="input-group col-md-9">
-										<span class="input-group-prepend">
-											<button class="btn btn-warning"
-												onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do','팝업','width=500,height=600,location=no,status=no,scrollbars=yes')">
-												<i class="fas fa-search"><a href=""></a></i>
-											</button>
+										<span class="input-group-prepend"> <input type="button"
+											value="검색" class="btn btn-warning fas fa-search"
+											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=600,height=700,scrollbars=yes')" />
 										</span> <input type="text" name="barcodeBook" id="barcodeBook"
-											class="form-control" />
+											class="form-control" placeholder="or 직접 입력" />
 									</div>
 								</div>
 							</div>
@@ -222,22 +229,22 @@
 
 				<div class="card mb-3 upsideCard clear">
 					<div class="card-header">
-						<h6>반납하기</h6>
+						<h6>
+							<label for='barcodeBookRtn'>반납하기</label>
+						</h6>
 					</div>
 					<div class="card-body">
 						<form class="form-horizontal" name="search-mbr-form"
 							id="search-mbr-form" method="post"
 							action="${pageContext.request.contextPath}/book/return_book_ok.do">
 							<div class="form-group form-inline">
-								<label for='barcodeBook' class="col-md-3">도서 검색</label>
+								<label for='barcodeBookRtn' class="col-md-3">도서 검색</label>
 								<div class="input-group col-md-9">
-									<input type="text" name="barcodeBook" id="barcodeBook"
+									<input type="text" name="barcodeBookRtn" id="barcodeBookRtn"
 										class="form-control" placeholder="이름을 입력해주세요"
 										value="${barcodeBook}" /> <span class="input-group-append">
 										<button class="btn btn-warning" id="btn-search-mbr"
-											type="submit">
-											<i class="fas fa-search"></i>
-										</button>
+											type="submit">반납</button>
 									</span>
 								</div>
 							</div>
@@ -297,52 +304,62 @@
 					</div>
 					<div class="card-body">
 						<!-- 조회결과를 출력하기 위한 표 -->
-						<table class="table table-sm">
-							<thead>
-								<tr>
-									<th class="info text-center">상태</th>
-									<th class="info text-center">이름</th>
-									<th class="info text-center">연락처</th>
-									<th class="info text-center">회원등급</th>
-									<th class="info text-center">도서명</th>
-									<th class="info text-center">도서바코드</th>
-									<th class="info text-center">대여일시</th>
-									<th class="info text-center">반납일시</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:choose>
-									<c:when test="${fn:length(brwList) > 0}">
-										<c:forEach var="item" items="${brwList}">
+						<div class="table-responsive">
+							<table class="table table-sm">
+								<thead>
+									<tr>
+										<th class="info text-center">상태</th>
+										<th class="info text-center">이름</th>
+										<th class="info text-center">연락처</th>
+										<th class="info text-center">회원등급</th>
+										<th class="info text-center">도서명</th>
+										<th class="info text-center">도서바코드</th>
+										<th class="info text-center">대여일시</th>
+										<th class="info text-center">반납일시</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${fn:length(brwList) > 0}">
+											<c:forEach var="item" items="${brwList}">
+												<tr>
+													<c:choose>
+														<c:when test="${item.endDateBrw eq null}">
+															<c:set var="state" value="대출" />
+															<c:set var="classBtn" value="btn btn-warning" />
+														</c:when>
+														<c:otherwise>
+															<c:set var="state" value="반납" />
+															<c:set var="classBtn" value="btn btn-primary" />
+														</c:otherwise>
+													</c:choose>
+													<td class="text-center ${classBtn}" style="font-size:12px;">${state}</td>
+													<td class="text-center">${item.name}</td>
+													<td class="text-center">${item.phone}</td>
+													<td class="text-center">${item.gradeName}</td>
+													<td class="text-center">${item.titleBook}</td>
+													<td class="text-center">${item.localIdBarcode}</td>
+													<td class="text-center">
+														<fmt:parseDate var="formDate" value="${item.startDateBrw}"
+															pattern="yyyy-MM-dd HH:mm:ss" />
+															<fmt:formatDate var="viewDate" value="${formDate}"
+																pattern="yyyy-MM-dd HH:mm:ss" />
+																${viewDate}
+													</td>
+													<td class="text-center">${item.endDateBrw}</td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
 											<tr>
-												<c:choose>
-													<c:when test="${item.endDateBrw eq null}">
-														<c:set var="state" value="대출" />
-													</c:when>
-													<c:otherwise>
-														<c:set var="state" value="반납" />
-													</c:otherwise>
-												</c:choose>
-												<td class="text-center">${state}</td>
-												<td class="text-center">${item.name}</td>
-												<td class="text-center">${item.phone}</td>
-												<td class="text-center">${item.gradeId}</td>
-												<td class="text-center">${item.titleBook}</td>
-												<td class="text-center">${item.localIdBarcode}</td>
-												<td class="text-center">${item.startDateBrw}</td>
-												<td class="text-center">${item.endDateBrw}</td>
+												<td colspan="8" class="text-center"
+													style="line-height: 100px;">조회된 데이터가 없습니다.</td>
 											</tr>
-										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<tr>
-											<td colspan="8" class="text-center"
-												style="line-height: 100px;">조회된 데이터가 없습니다.</td>
-										</tr>
-									</c:otherwise>
-								</c:choose>
-							</tbody>
-						</table>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</div>
 
 					</div>
 					<!-- card3 body 끝 -->
@@ -359,21 +376,13 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
-	/**
-	 * 아래 기능확인해서 사용하기!!!!
-	 */
 	$(function() {
+		/* 페이지 호출시 회원검색에 포커싱 */
+		document.getElementById('search-name').focus();
 
-		/* var CountMember = $
-		{
-			CountMember
-		}
-		;
-		console.log(CountMember);
-		if (CountMember == 0) {
-			$('#search-state').html("회원 정보를 찾을 수 없습니다.");
-		} */
-
+		/*
+		 * 아래기능은 회원검색했을때, 회원선택버튼 누르면, input칸에 채우기
+		 */
 		$(".pick-user").on("click", function(e) {
 			var x = $(this).attr('id');
 			console.log(x);
@@ -398,32 +407,17 @@
 			$("#brwLimit").val(PbrwLimitList[x]);
 			$("#dateLimit").val(PdateLimitList[x]);
 			e.preventDefault();
+			
+			/* 버튼을 누르면 도서바코드로 포커싱 */
+			document.getElementById('barcodeBook').focus();
 		});
-
-		/* 	
-		 var name = null;
-		 var urlName = null;
-		 name = $("#search-name").val();
-		 urlName = '${pageContext.request.contextPath}/member/member_list.do?name='+name;
-		 if(CountMember > 1){
-		 window.open(urlName, 'window', 'width=300', 'height=300');
 		
-		 $.ajax({
-		 url: "${pageContext.request.contextPath}/member/member_list.do?name="+name,
-		 method: 'get',
-		 data: {
-		 },
-		 dataType: 'html',
-		 sucess: function() {
-		 pop.location;
-		 }
-		 });
+		/* 멤버id와 이름, 전화번호가 채워졌을시, 도서바코드로 focusing 함수*/
+		var chkMemberId = document.getElementById('name').value;
+		if (chkMemberId) {
+			document.getElementById('barcodeBook').focus();
+		}
 		
-		 } else if(CountMember == 0) {
-		 $('#search-state').html("회원 정보를 찾을 수 없습니다.");
-		 }
-		 console.log(name);
-		 */
 	});
 </script>
 </html>

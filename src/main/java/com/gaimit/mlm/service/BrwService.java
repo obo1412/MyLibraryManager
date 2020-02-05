@@ -58,7 +58,7 @@ public interface BrwService {
 	 * @param borrow inner join book 테이블의 idbookCode로 검사
 	 * @throws Exception
 	 */
-	public void getBorrowCountByBookCode(Borrow borrow) throws Exception;
+	public void getBorrowCountByBarcodeBook(Borrow borrow) throws Exception;
 	
 	/**
 	 * 오늘 날짜의 대여/반납 기록 호출
@@ -67,5 +67,13 @@ public interface BrwService {
 	 * @throws Exception
 	 */
 	public List<Borrow> selectBorrowListToday(Borrow borrow) throws Exception;
+	
+	/**
+	 * 현재 도서관에 남아있는 책 리스트 (대출중이 아닌 책들)
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectRemainedBookOnLibrary(Borrow borrow) throws Exception;
 	
 }

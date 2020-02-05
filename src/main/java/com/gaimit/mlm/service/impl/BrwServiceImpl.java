@@ -140,10 +140,9 @@ public class BrwServiceImpl implements BrwService {
 	}
 
 	@Override
-	public void getBorrowCountByBookCode(Borrow borrow) throws Exception {
+	public void getBorrowCountByBarcodeBook(Borrow borrow) throws Exception {
 		try {
-			int result = sqlSession.selectOne("BorrowMapper.selectBorrowCountByBookCode", borrow);
-			System.out.println("************************"+result);
+			int result = sqlSession.selectOne("BorrowMapper.selectBorrowCountByBarcodeBook", borrow);
 			//중복된 데이터가 존재한다면?
 			if(result > 0) {
 				throw new NullPointerException();
@@ -163,6 +162,17 @@ public class BrwServiceImpl implements BrwService {
 			result = sqlSession.selectList("BorrowMapper.selectBorrowListToday", borrow);
 		} catch (Exception e) {
 			throw new Exception("오늘의 대출/반납 데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public List<Borrow> selectRemainedBookOnLibrary(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectRemainedBookOnLibrary", borrow);
+		} catch (Exception e) {
+			throw new Exception("보유중인(대출중이 아닌) 도서목록 조회에 실패했습니다.");
 		}
 		return result;
 	}
