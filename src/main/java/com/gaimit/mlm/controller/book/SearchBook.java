@@ -217,9 +217,7 @@ public class SearchBook {
 				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
 					node=node.getNextSibling()) {
 					if(node.getNodeName().equals("class_no")) {
-						
 						xmlClassNoArray.add(node.getTextContent());
-
 					}
 				}
 			}

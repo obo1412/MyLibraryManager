@@ -1,11 +1,15 @@
 package com.gaimit.mlm.controller.book;
 
+import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
@@ -28,7 +33,7 @@ import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class ReturnBookOk {
+public class ReturnBookOk_ajaxtry {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -51,11 +56,11 @@ public class ReturnBookOk {
 	BrwService brwService;
 	
 	/** 도서 반납 페이지 */
-	@RequestMapping(value = "/book/return_book_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView doRun(Locale locale, Model model, HttpServletRequest request,
+	@RequestMapping(value = "/book/return_book_ok_ajax.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public void doRun(Locale locale, Model model, HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		/*response.setContentType("application/json");*/
+		response.setContentType("application/json");
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
@@ -68,7 +73,7 @@ public class ReturnBookOk {
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			/*web.printJsonRt("로그인 정보가 명확하지 않습니다. 다시 로그인 해주세요.");*/
-			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+			/*return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");*/
 		} else {
 			idLib = loginInfo.getIdLibMng();
 		}
@@ -76,7 +81,7 @@ public class ReturnBookOk {
 		// web으로부터 책 코드 번호 수신
 		String barcodeBook = web.getString("barcodeBookRtn", "");
 		if(barcodeBook.equals("")) {
-			return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서바코드를 입력하세요.");
+			/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서바코드를 입력하세요.");*/
 		}
 		
 		// 파라미터를 저장할 Beans
@@ -97,6 +102,9 @@ public class ReturnBookOk {
 		brw.setIdLibBrw(idLib);
 		brw.setLocalIdBarcode(barcodeBook);
 		
+		
+		Map<String, String> resultJson = new HashMap<String, String>();
+		
 		if(!(barcodeBook.equals(""))) {
 			try {
 				brwSe = brwService.getBorrowItemByBarcodeBook(brw);
@@ -108,10 +116,48 @@ public class ReturnBookOk {
 				//오늘 대출/반납 도서 조회
 				brwListToday = brwService.selectBorrowListToday(brw);
 				
+				resultJson.put("a", String.valueOf(brw.getIdBrw()));
+				
+				response.setContentType("text/xml;charset=utf-8");
+				PrintWriter printWriter = response.getWriter();
+				printWriter.print(resultJson);
+				printWriter.flush();
+				printWriter.close();
+				
 			}  catch (Exception e) {
-				return web.redirect(null, e.getLocalizedMessage());
+				/*return web.redirect(null, e.getLocalizedMessage());*/
+				web.printJsonRt(e.getLocalizedMessage());
 			}
 		}
+		
+		/* 위 printWriter과정이랑 아래 과정이랑 같은 역할 하는 듯.*/
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(response.getWriter(), resultJson);
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());	
+		}
+
+		/* jsonobject로 할지 map으로 할지 map으로하고 mapper를 써야되는 듯.*/
+		/*JSONObject resultJson = new JSONObject();
+		Map<String, String> resultJson = new HashMap<String, String>();
+		try {
+			
+			resultJson.put("a", String.valueOf(brw.getIdBrw()));
+			
+			response.setContentType("text/xml;charset=utf-8");
+			PrintWriter printWriter = response.getWriter();
+			printWriter.print(resultJson);
+			printWriter.flush();
+			printWriter.close();
+			
+		} catch (Exception e) {
+			e.getLocalizedMessage();
+		}*/
+		
+		/**
+		 * 위 부분은 comment insert 쪽 보고 공부 더 해보자.
+		 */
 		
 		
 		/*brw.setIdBrw(idBrw);*/
@@ -156,10 +202,10 @@ public class ReturnBookOk {
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
 		/*model.addAttribute("page", page);*/
-		model.addAttribute("brwListToday", brwListToday);
-		model.addAttribute("brwRmnList", brwRmnList);
+		/*model.addAttribute("brwListToday", brwListToday);
+		model.addAttribute("brwRmnList", brwRmnList);*/
 		
-		return new ModelAndView("book/brw_book");
+		/*return new ModelAndView("book/brw_book");*/
 		/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서 반납이 완료되었습니다.");*/
 	}	
 }

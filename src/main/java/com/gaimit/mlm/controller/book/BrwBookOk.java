@@ -140,12 +140,12 @@ public class BrwBookOk {
 		}
 		
 		//대출된 도서 결과를 저장하기 위한 객체
-		List<Borrow> brwList = null;
+		List<Borrow> brwListToday = null;
 		
 		// 대출도서 정보가 다모이면 borrow insert
 		try {
 			brwService.insertBorrow(brw);
-			brwList = brwService.selectBorrowListToday(brw);
+			brwListToday = brwService.selectBorrowListToday(brw);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -170,7 +170,7 @@ public class BrwBookOk {
 		logger.debug("profileImg=" + profileImg);*/
 		
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("brwList", brwList);
+		model.addAttribute("brwListToday", brwListToday);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
 		return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서대출이 완료되었습니다.");

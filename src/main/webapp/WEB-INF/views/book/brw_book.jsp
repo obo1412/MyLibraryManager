@@ -54,7 +54,7 @@
 							id="search-mbr-form" method="post"
 							action="${pageContext.request.contextPath}/book/brw_book.do">
 							<div class="form-group form-inline">
-								<label for='search-name' class="col-md-3">회원 검색</label>
+								<label for='search-name' class="col-md-3 float-right">회원 검색</label>
 								<div class="input-group col-md-9">
 									<input type="text" name="search-name" id="search-name"
 										class="form-control" placeholder="이름을 입력해주세요" value="${name}" />
@@ -255,29 +255,30 @@
 							<table class="table table-sm">
 								<tbody>
 									<c:choose>
-										<c:when test="${fn:length(mbrBrwList) > 0}">
+										<c:when test="${fn:length(brwRmnList) > 0}">
 											<thead>
 												<tr>
 													<th class="info text-center">도서제목</th>
-													<th class="info text-center">도서바코드</th>
+													<th class="info text-center">바코드</th>
 													<th class="info text-center">대여일</th>
 													<th class="info text-center">반납일</th>
 													<th class="info text-center">선택</th>
 												</tr>
 											</thead>
-											<c:forEach var="item" items="${mbrBrwList}"
+											<c:forEach var="item" items="${brwRmnList}"
 												varStatus="status">
 												<tr>
-													<td style="visibility: hidden; position: absolute;">${item.id}</td>
-													<td><c:url var="readUrl" value="/temp/temp.do">
-															<c:param name="id" value="${item.idBrw}" />
-														</c:url> <a href="${readUrl}">${item.titleBook}</a></td>
-													<td class="text-center"><a href="#">${item.barcodeBook}</a></td>
+													<td class="test-center">${item.titleBook}</td>
+													<td class="text-center">${item.localIdBarcode}</td>
 													<td class="text-center">${item.startDateBrw}</td>
 													<td class="text-center">${item.endDateBrw}</td>
 													<td class="test-center">
-														<button class="pick-user btn" id="${status.index}">선택
-														</button> <!-- 버튼 클릭시 반납처리 javascript로 가능할듯.-->
+														<c:url var="rtnUrl" value="/book/return_book_ok.do">
+															<c:param name="barcodeBookRtn" value="${item.localIdBarcode}" />
+														</c:url>
+														<button class="return-book btn btn-warning" onclick="location.href='${rtnUrl}'">
+															반납
+														</button>
 													</td>
 												</tr>
 											</c:forEach>
@@ -313,18 +314,18 @@
 										<th class="info text-center">연락처</th>
 										<th class="info text-center">회원등급</th>
 										<th class="info text-center">도서명</th>
-										<th class="info text-center">도서바코드</th>
+										<th class="info text-center">바코드</th>
 										<th class="info text-center">대여일시</th>
 										<th class="info text-center">반납일시</th>
 									</tr>
 								</thead>
 								<tbody>
 									<c:choose>
-										<c:when test="${fn:length(brwList) > 0}">
-											<c:forEach var="item" items="${brwList}">
+										<c:when test="${fn:length(brwListToday) > 0}">
+											<c:forEach var="item" items="${brwListToday}">
 												<tr>
 													<c:choose>
-														<c:when test="${item.endDateBrw eq null}">
+														<c:when test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
 															<c:set var="state" value="대출" />
 															<c:set var="classBtn" value="btn btn-warning" />
 														</c:when>
@@ -408,7 +409,7 @@
 			$("#dateLimit").val(PdateLimitList[x]);
 			e.preventDefault();
 			
-			/* 버튼을 누르면 도서바코드로 포커싱 */
+			/* pick-user 버튼을 누르면 도서바코드로 포커싱 */
 			document.getElementById('barcodeBook').focus();
 		});
 		

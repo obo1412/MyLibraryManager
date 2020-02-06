@@ -46,7 +46,7 @@ public class BrwServiceImpl implements BrwService {
 		} catch (Exception e) {
 			// sqlSession.rollback();
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("도서 대여에 실패했습니다.");
+			throw new Exception("도서 대출에 실패했습니다.");
 		} finally {
 			// sqlSession.commit();
 		}
@@ -78,10 +78,10 @@ public class BrwServiceImpl implements BrwService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("조회된 도서대여 정보가 없습니다.");
+			throw new Exception("조회된 도서대출 정보가 없습니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("도서대여 조회에 실패했습니다.");
+			throw new Exception("도서대출 조회에 실패했습니다.");
 		}
 		
 		return result;
@@ -112,7 +112,7 @@ public class BrwServiceImpl implements BrwService {
 			}
 		} catch (NullPointerException e) {
 			// sqlSession.rollback();
-			throw new Exception("변경된 도서대여 정보가 없습니다.");
+			throw new Exception("변경된 도서대출 정보가 없습니다.");
 		} catch (Exception e) {
 			// sqlSession.rollback();
 			logger.error(e.getLocalizedMessage());
@@ -131,7 +131,7 @@ public class BrwServiceImpl implements BrwService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("반납된 도서대여 정보가 없습니다.");
+			throw new Exception("반납된 도서 정보가 없습니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 			throw new Exception("도서반납 조회에 실패했습니다.");
@@ -148,10 +148,10 @@ public class BrwServiceImpl implements BrwService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("이미 대여중인 도서 입니다.");
+			throw new Exception("이미 대출 중인 도서 입니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("도서 대여 중복검사에 실패했습니다.");
+			throw new Exception("도서 대출 중복검사에 실패했습니다.");
 		}
 	}
 

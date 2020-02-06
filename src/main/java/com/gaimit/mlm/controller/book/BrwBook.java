@@ -133,19 +133,19 @@ public class BrwBook {
 			}
 		}
 		
-		List<Borrow> brwList = null;
+		List<Borrow> brwListToday = null;
 		Borrow brw = new Borrow();
 		brw.setIdLibBrw(idLib);
 		
 		try {
-			brwList = brwService.selectBorrowListToday(brw);
+			brwListToday = brwService.selectBorrowListToday(brw);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("brwList", brwList);
+		model.addAttribute("brwListToday", brwListToday);
 		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("page", page);
 		

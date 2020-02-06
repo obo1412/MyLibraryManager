@@ -153,11 +153,6 @@
 
 $(function() {
 	
-	/* var CountMember = ${CountMember};
-	console.log(CountMember);
-	if (CountMember == 0) {
-		$('#search-state').html("책 정보를 찾을 수 없습니다.");
-	}*/
 	
 	$(".return-book").on("click", function(e){
 	    var x = $(this).attr('id');
@@ -189,30 +184,7 @@ $(function() {
 	    e.preventDefault();
 	});
 	
-/* 	
-	var name = null;
-	var urlName = null;
-	name = $("#search-name").val();
-	urlName = '${pageContext.request.contextPath}/member/member_list.do?name='+name;
-	if(CountMember > 1){
-		window.open(urlName, 'window', 'width=300', 'height=300');
-		
-		$.ajax({
-			url: "${pageContext.request.contextPath}/member/member_list.do?name="+name,
-			method: 'get',
-			data: {
-			},
-			dataType: 'html',
-			sucess: function() {
-				pop.location;
-			}
-		});
-		
-	} else if(CountMember == 0) {
-		$('#search-state').html("회원 정보를 찾을 수 없습니다.");
-	}
-	console.log(name);
-	 */
+
 });
 </script>
 </html>

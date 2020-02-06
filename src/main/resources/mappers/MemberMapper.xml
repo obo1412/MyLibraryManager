@@ -68,7 +68,10 @@
 		FROM member m
 		INNER JOIN member_grade g
 		ON m.grade_id = g.grade_id
-		WHERE m.id_lib=#{idLib} AND name=#{name}
+		WHERE m.id_lib=#{idLib}
+		<if test="name != null">
+			AND name LIKE concat('%', #{name}, '%')
+		</if>
 		ORDER BY id ASC
 	</select>
 	

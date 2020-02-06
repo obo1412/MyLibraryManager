@@ -59,7 +59,7 @@
 		INNER JOIN book b
 		ON h.book_id_book = b.id_book
 		WHERE library_id_lib=#{libraryIdLib}
-		<if test="titleBook != null">
+		<if test="titleBook != null and title != ''">
 			AND b.title_book LIKE concat('%', #{titleBook}, '%')
 		</if>
 		ORDER BY id ASC

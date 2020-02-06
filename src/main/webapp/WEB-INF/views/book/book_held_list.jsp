@@ -46,7 +46,7 @@
 						</div>
 
 						<!-- 조회결과를 출력하기 위한 표 -->
-						<table class="table">
+						<table class="table table-sm">
 							<thead>
 								<tr>
 									<th class="info text-center">도서번호</th>
