@@ -22,7 +22,7 @@
 
 				<div class="card mb-3">
 					<div class="card-header">
-						<h4>책 등록하기</h4>
+						<h4>도서 등록하기</h4>
 					</div>
 					<div class="card-body">
 						<div class="table-responsive row">

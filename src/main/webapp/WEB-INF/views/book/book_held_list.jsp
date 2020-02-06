@@ -30,7 +30,7 @@
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
 							<form method='get'
-								action='${pageContext.request.contextPath}/player/player_list.do'
+								action='${pageContext.request.contextPath}/book/book_held_list.do'
 								style="width: 300px;">
 								<div class="input-group">
 									<input type="text" name='keyword' class="form-control"
@@ -52,6 +52,10 @@
 									<th class="info text-center">도서번호</th>
 									<th class="info text-center">도서명</th>
 									<th class="info text-center">도서저자</th>
+									<th class="info text-center">출판사</th>
+									<th class="info text-center">출판일</th>
+									<th class="info text-center">ISBN13</th>
+									<th class="info text-center">청구기호</th>
 									<th class="info text-center">등록일</th>
 									<th class="info text-center">로컬바코드</th>
 									<th class="info text-center">복본기호</th>
@@ -65,6 +69,10 @@
 												<td class="text-center">${item.id}</td>
 												<td class="text-center">${item.titleBook}</td>
 												<td class="text-center">${item.writerBook}</td>
+												<td class="text-center">${item.publisherBook}</td>
+												<td class="text-center">${item.pubDateBook}</td>
+												<td class="text-center">${item.isbn13Book}</td>
+												<td class="text-center">${item.additionalCode}${item.classificationCode}${item.authorCode}${item.volumeCode}${item.copyCode}</td>
 												<td class="text-center">${item.regDate}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
 												<c:choose>

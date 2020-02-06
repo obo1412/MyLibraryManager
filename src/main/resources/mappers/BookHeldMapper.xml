@@ -52,7 +52,9 @@
 	<!-- serviceImpl에서 getBookHeldList -->
 	<select id="selectBookHeldList" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
-			id, title_book, writer_book, classification_code, book_shelf, reg_date,
+			id, title_book, writer_book, publisher_book, pub_date_book,
+			isbn13_book, classification_code, author_code, volume_code,
+			book_shelf, reg_date,
 			local_id_barcode, purchased_or_donated, available, additional_code, copy_code,
 			library_id_lib
 		FROM book_held h
