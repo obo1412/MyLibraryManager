@@ -93,6 +93,8 @@ public class BrwBookOk {
 				
 		/** brw_book에서 전달받은 member 파라미터를 Beans 객체에 담는다. */
 		int memberId = web.getInt("memberId");
+		String name = web.getString("name");
+		String phone = web.getString("phone");
 		
 		//위에서 받은 파라미터를 이용하여, 해당 도서관에 사용자가 있는지 체크
 		// 추후에 이름과 id코드도 받아와서 이 사용자가 맞는지 확인해야될 듯.
@@ -102,14 +104,6 @@ public class BrwBookOk {
 		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
 		logger.debug("memberId=" + memberId);
 		logger.debug("idLib=" + idLib);
-		
-		// 그 id를 가진 멤버가 있는지 확인.
-		/*int memberCount = 0;
-		try {
-			memberCount = memberService.getMemberCount(member);
-		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}*/
 		
 		//brw_book.jsp 에서  책에 대한 파라미터 받기
 		String barcodeBook = web.getString("barcodeBook");
@@ -126,10 +120,22 @@ public class BrwBookOk {
 		// bookHeld가 book을 상속받아서 아래 조건 성립됨.
 		bookHeld.setLocalIdBarcode(barcodeBook);
 		
+		int brwLimit = 0;
+		int brwNow = 0;
+		int brwPsb = 0;
+		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
+			//barcode로 id_brw count 검사, 있으면 대출중 NPE 반환
 			brwService.getBorrowCountByBarcodeBook(brw);
 			bookHeld = bookHeldService.getBookHelditem(bookHeld);
+			
+			brwLimit = brwService.selectBrwLimitByMemberId(brw);
+			brwNow = brwService.selectBrwBookCountByMemberId(brw);
+			brwPsb = brwLimit - brwNow;
+			if(brwLimit - brwNow < 1) {
+				return web.redirect(web.getRootPath() + "/book/brw_book.do", brwNow+"/"+brwLimit+"더이상 대출이 불가능 합니다.");
+			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -146,6 +152,9 @@ public class BrwBookOk {
 		try {
 			brwService.insertBorrow(brw);
 			brwListToday = brwService.selectBorrowListToday(brw);
+			//대출 후 대출 권수 최신화
+			brwNow = brwService.selectBrwBookCountByMemberId(brw);
+			brwPsb = brwLimit - brwNow;
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -170,9 +179,16 @@ public class BrwBookOk {
 		logger.debug("profileImg=" + profileImg);*/
 		
 		// 조회 결과를 View에게 전달한다.
+		model.addAttribute("memberId", memberId);
+		model.addAttribute("name", name);
+		model.addAttribute("phone", phone);
+		model.addAttribute("brwLimit", brwLimit);
+		model.addAttribute("brwNow", brwNow);
+		model.addAttribute("brwPsb", brwPsb);
 		model.addAttribute("brwListToday", brwListToday);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
-		return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서대출이 완료되었습니다.");
+		return new ModelAndView("book/brw_book");
+		/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서 대출이 완료되었습니다.");*/
 	}
 }

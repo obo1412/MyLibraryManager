@@ -46,6 +46,13 @@ public interface BrwService {
 	public void updateBorrowEndDate(Borrow borrow) throws Exception;
 	
 	/**
+	 * endDate 취소= null로 바꾸기
+	 * @param borrow
+	 * @throws Exception
+	 */
+	public void updateCancelBorrowEndDate(Borrow borrow) throws Exception;
+	
+	/**
 	 * 반납된 책의 반납시간을 얻기 위함
 	 * @param borrow idLibBrw IdBookBrw 두 조건
 	 * @return 
@@ -75,5 +82,22 @@ public interface BrwService {
 	 * @throws Exception
 	 */
 	public List<Borrow> selectRemainedBookOnLibrary(Borrow borrow) throws Exception;
+	
+	/**
+	 * 멤버의 현재 대출중인 도서 권수 확인
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBrwBookCountByMemberId(Borrow borrow) throws Exception;
+	
+	/**
+	 * 단일 멤버의 brw_limit 조회
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBrwLimitByMemberId(Borrow borrow) throws Exception;
+	
 	
 }

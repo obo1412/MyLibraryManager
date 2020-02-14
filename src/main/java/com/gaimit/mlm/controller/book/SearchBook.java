@@ -59,7 +59,7 @@ public class SearchBook {
 	@Autowired
 	BookHeldService bookHeldService;
 	
-	/** 교수 목록 페이지 */
+	/** 도서 검색 페이지 */
 	@RequestMapping(value = "/book/search_book.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
 		
@@ -116,10 +116,11 @@ public class SearchBook {
 		String titleToCode = null;
 		
 		/** 3) url openapi 수신 */
+		String aladinTtbKey = "ttblib1207001";
 		// 알라딘 api 에서 json 수신
 		JSONObject jsonAladin = new JSONObject();
 		try {
-			String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey=ttbanfyanfy991303001&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
+			String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey="+aladinTtbKey+"&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
 			/*String apiKey = "?ttbkey=ttbanfyanfy991303001";*/
 			String apiUrlItem = apiUrl;
 			String apiUrlFull = null;
@@ -164,11 +165,11 @@ public class SearchBook {
 				+ authorCode.titleFirstLetter(titleToCode);
 		
 		
-		
+		String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
 		// 서지정보에서 api 수신
 		JSONObject jsonSeoji = new JSONObject();
 		try {
-			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key=6debf14330e5866f7c50d47a9c84ae8f&result_style=json&page_no=1&page_size=1";
+			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key="+NLKcertKey+"&result_style=json&page_no=1&page_size=1";
 			String apiUrlFull = null;
 			if(isbn.length() == 13) {
 				apiUrlFull = apiUrl + "&isbn="+ isbn;
@@ -197,7 +198,7 @@ public class SearchBook {
 		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
 		ArrayList<String> xmlClassNoArray = new ArrayList<String>();
 		try {
-			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn";
+			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
 			String apiUrlFull = null;
 			if(isbn.length() == 13) {
 				apiUrlFull = apiUrl + "&isbnCode="+ isbn;
@@ -235,6 +236,7 @@ public class SearchBook {
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
+		model.addAttribute("isbn", isbn);
 		model.addAttribute("atcOut", atcOut);
 		model.addAttribute("barcodeInit", barcodeInit);
 		model.addAttribute("jsonAladin", jsonAladin);
@@ -243,5 +245,82 @@ public class SearchBook {
 		model.addAttribute("page", page);
 		
 		return new ModelAndView("book/reg_book");
+	}
+	
+	/** 도서 검색 페이지 */
+	@RequestMapping(value = "/book/search_nl_book.do", method = RequestMethod.GET)
+	public ModelAndView nlSearch(Locale locale, Model model) {
+		
+		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		web.init();
+		
+		/** 로그인 여부 검사 */
+		// 로그인중인 회원 정보 가져오기
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+		} else {
+			
+		}
+		
+		String isbn = web.getString("search-book-info");
+		
+		String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
+		//국립중앙도서관 아래 api검색
+		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
+		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
+		ArrayList<Object> xmlArray = new ArrayList<Object>();
+		ArrayList<String> classNoArray = new ArrayList<String>();
+		ArrayList<String> titleArray = new ArrayList<String>();
+		ArrayList<String> authorArray = new ArrayList<String>();
+		ArrayList<String> pubArray = new ArrayList<String>();
+		try {
+			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
+			String apiUrlFull = null;
+			if(isbn.length() == 13) {
+				apiUrlFull = apiUrl + "&isbnCode="+ isbn;
+			} else if(isbn.length() == 10) {
+				apiUrlFull = apiUrl +"&isbnCode="+ isbn;
+			}
+			URL url = new URL(apiUrlFull);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc =builder.parse(con.getInputStream());
+			
+			NodeList nodeList = doc.getElementsByTagName("item");
+			for(int i =0; i<nodeList.getLength(); i++) {
+				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
+					node=node.getNextSibling()) {
+					if(node.getNodeName().equals("class_no")) {
+						classNoArray.add(node.getTextContent());
+						xmlArray.add(classNoArray);
+					}
+					if(node.getNodeName().equals("title_info")) {
+						titleArray.add(node.getTextContent());
+						xmlArray.add(titleArray);
+					}
+					if(node.getNodeName().equals("author_info")) {
+						authorArray.add(node.getTextContent());
+						xmlArray.add(authorArray);
+					}
+					if(node.getNodeName().equals("pub_info")) {
+						pubArray.add(node.getTextContent());
+						xmlArray.add(pubArray);
+					}
+				}
+			}
+				
+		} catch(Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		model.addAttribute("xmlArray", xmlArray);
+		model.addAttribute("isbn", isbn);
+		
+		return new ModelAndView("book/search_nl_book");
 	}
 }

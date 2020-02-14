@@ -28,13 +28,13 @@
 
 				<div class="card mb-3">
 					<div class="card-header">
-						<h6 class='pull-left'>도서 목록</h6>
+						<h6 class='pull-left'>국립중앙도서관 정보</h6>
 					</div>
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
 							<form method='get'
-								action='${pageContext.request.contextPath}/book/book_held_list_popup.do'
+								action='${pageContext.request.contextPath}/book/search_nl_book.do'
 								style="width: 300px;">
 								<div class="input-group input-group-sm">
 									<span class="input-group-prepend">
@@ -48,7 +48,7 @@
 										</select>
 									</span>
 									<input type="text" name='keyword' id='keyword'
-										class="form-control form-control-sm" placeholder="검색" value="${keyword}" />
+										class="form-control form-control-sm" placeholder="검색" value="${isbn}" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-success" type="submit">
 											<i class='fas fa-search'></i>
@@ -59,43 +59,32 @@
 
 						</div>
 
+<div>
+${xmlArray}
+</div>
 						<!-- 조회결과를 출력하기 위한 표 -->
 						<div class="table-responsive">
 							<table class="table table-sm">
 								<thead>
 									<tr>
-										<th class="info text-center">바코드</th>
 										<th class="info text-center">도서명</th>
 										<th class="info text-center">도서저자</th>
 										<th class="info text-center">출판사</th>
-										<th class="info text-center">복본기호</th>
+										<th class="info text-center">분류기호</th>
 										<th class="info text-center">선택</th>
 									</tr>
 								</thead>
 								<tbody>
-									<c:choose>
-										<c:when test="${fn:length(bookHeldList) > 0}">
-											<c:forEach var="item" items="${bookHeldList}">
+									<%-- <c:choose>
+										<c:when test="${fn:length(xmlArray) > 0}">
+											<c:forEach var="item" items="${xmlArray}">
 												<tr>
-													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center">
-														<c:url var="viewUrl" value="/book/book_held_view.do">
-															<c:param name="localIdBarcode" value="${item.localIdBarcode}" />
-														</c:url>
-														<a href="${viewUrl}" onclick="window.open(this.href, '_blank','width=800,height=900,scrollbars=yes')" >${item.titleBook}</a>
-													</td>
-													<td class="text-center">${item.writerBook}</td>
-													<td class="text-center">${item.publisherBook}</td>
-													<c:choose>
-														<c:when test="${item.copyCode eq 0}">
-															<td class="text-center">-</td>
-														</c:when>
-														<c:otherwise>
-															<td class="text-center">C${item.copyCode}</td>
-														</c:otherwise>
-													</c:choose>
+													<td class="text-center">${item.titleArray}</td>
+													<td class="text-center">${item.authorArray}</td>
+													<td class="text-center">${item.pubArray}</td>
+													<td class="text-center">${item.classNoArray}</td>
 													<td class="text-center"><c:set var="bar"
-															value="${item.localIdBarcode}" />
+															value="" />
 														<button class="pick-book btn btn-primary btn-sm" value="${bar}">
 															선택</button></td>
 												</tr>
@@ -107,7 +96,7 @@
 													style="line-height: 100px;">조회된 데이터가 없습니다.</td>
 											</tr>
 										</c:otherwise>
-									</c:choose>
+									</c:choose> --%>
 								</tbody>
 							</table>
 						</div>

@@ -61,8 +61,32 @@ public class BookHeldListPopup {
 		borrow.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
+		int searchOpt = web.getInt("searchOpt");
 		String keyword = web.getString("keyword", "");
-		borrow.setTitleBook(keyword);
+		
+		/** 3) Service를 통한 SQL 수행 */
+		// 조회 결과를 저장하기 위한 객체
+		List<Borrow> rmnBookHeldList = null;
+		
+		switch (searchOpt) {
+		case 1:
+			borrow.setTitleBook(keyword);
+			break;
+		case 2:
+			borrow.setWriterBook(keyword);
+			break;
+		case 3:
+			borrow.setPublisherBook(keyword);
+			break;
+		}
+		
+		if(!keyword.equals("")) {
+			try {
+				rmnBookHeldList = brwService.selectRemainedBookOnLibrary(borrow);
+			} catch (Exception e) {
+				return web.redirect(null, e.getLocalizedMessage());
+			}
+		}
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		/*int nowPage = web.getInt("page", 1);
@@ -81,21 +105,14 @@ public class BookHeldListPopup {
 		bookHeld.setLimitStart(page.getLimitStart());
 		bookHeld.setListCount(page.getListCount());*/
 		
-		/** 3) Service를 통한 SQL 수행 */
-		// 조회 결과를 저장하기 위한 객체
-		List<Borrow> rmnBookHeldList = null;
-		try {
-			if(!keyword.equals("")) {
-				rmnBookHeldList = brwService.selectRemainedBookOnLibrary(borrow);
-			}
-		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
+		
+		
 		
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		model.addAttribute("bookHeldList", rmnBookHeldList);
+		model.addAttribute("searchOpt", searchOpt);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("page", page);
 		

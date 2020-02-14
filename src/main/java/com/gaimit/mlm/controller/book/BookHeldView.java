@@ -1,7 +1,5 @@
-package com.gaimit.mlm.controller.member;
+package com.gaimit.mlm.controller.book;
 
-
-import java.util.List;
 import java.util.Locale;
 
 //import org.slf4j.Logger;
@@ -16,13 +14,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
+import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class MemberList {
+public class BookHeldView {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -38,8 +37,11 @@ public class MemberList {
 	@Autowired
 	ManagerService managerService;
 	
+	@Autowired
+	BookHeldService bookHeldService;
+	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/member/member_list.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/book_held_view.do", method = RequestMethod.GET)
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -57,23 +59,21 @@ public class MemberList {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
-		String MemberName = web.getString("name", "");
-		
-		
+		String barcodeBook = web.getString("localIdBarcode");
 		
 		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
-		member.setName(MemberName);
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setLocalIdBarcode(barcodeBook);
 		
 		// 검색어 파라미터 받기 + Beans 설정
-		String keyword = web.getString("keyword", "");
+		/*String keyword = web.getString("keyword", "");
 		member.setName(keyword);
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
 		
-		/** 2) 페이지 번호 구현하기 */
+		*//** 2) 페이지 번호 구현하기 *//*
 		// 전체 데이터 수 조회하기
 		int totalCount = 0;
 		try {
@@ -83,30 +83,25 @@ public class MemberList {
 		}
 		
 		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		page.pageProcess(nowPage, totalCount, 15, 5);
+		page.pageProcess(nowPage, totalCount, 10, 5);
 		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());
+		member.setListCount(page.getListCount());*/
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
-		List<Member> list = null;
+		BookHeld bookHeldItem = new BookHeld();
 		try {
-			/*if(MemberName.equals("")) {*/
-				list = memberService.getMemberListByLib(member);
-			/*} else {
-				list = memberService.getMemberListByLibAndName(member);
-			}*/
+			bookHeldItem = bookHeldService.getBookHelditem(bookHeld);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
+		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("list", list);
-		model.addAttribute("keyword", keyword);
+		model.addAttribute("bookHeldItem", bookHeldItem);
 		model.addAttribute("page", page);
-		model.addAttribute("pageDefUrl", "/member/member_list.do");
 		
-		return new ModelAndView("member/member_list");
-	}	
+		return new ModelAndView("book/book_held_view");
+	}
 }

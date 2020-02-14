@@ -7,6 +7,7 @@ public class Borrow extends BookHeld {
 	private int idMemberBrw;
 	private String startDateBrw;
 	private String endDateBrw;
+	private String dueDateBrw;
 	
 	public int getIdBrw() {
 		return idBrw;
@@ -44,13 +45,16 @@ public class Borrow extends BookHeld {
 	public void setEndDateBrw(String endDateBrw) {
 		this.endDateBrw = endDateBrw;
 	}
-	
+	public String getDueDateBrw() {
+		return dueDateBrw;
+	}
+	public void setDueDateBrw(String dueDateBrw) {
+		this.dueDateBrw = dueDateBrw;
+	}
 	@Override
 	public String toString() {
-		return "Borrow [idBrw=" + idBrw + ", bookHeldId=" + bookHeldId + ", idMemberBrw=" + idMemberBrw
-				+ ", startDateBrw=" + startDateBrw + ", endDateBrw=" + endDateBrw + "]";
+		return "Borrow [idBrw=" + idBrw + ", idLibBrw=" + idLibBrw + ", bookHeldId=" + bookHeldId + ", idMemberBrw="
+				+ idMemberBrw + ", startDateBrw=" + startDateBrw + ", endDateBrw=" + endDateBrw + ", dueDateBrw="
+				+ dueDateBrw + "]";
 	}
-	
-		
-	
 }

@@ -30,17 +30,17 @@
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
 							<form method='get'
-								action='${pageContext.request.contextPath}/player/player_list.do'
+								action='${pageContext.request.contextPath}/member/member_list.do'
 								style="width: 300px;">
-								<div class="input-group">
+								<div class="input-group input-group-sm">
 									<input type="text" name='keyword' class="form-control"
 										placeholder="회원 이름 검색" value="${keyword}" /> <span
 										class="input-group-append">
-											<button class="btn btn-success" type="submit">
+											<button class="btn btn-success btn-sm" type="submit">
 												<i class='fas fa-search'></i>
 											</button>
 										<a href="${pageContext.request.contextPath}/member/join.do"
-										class="btn btn-primary">회원 추가</a>
+										class="btn btn-primary btn-sm">회원 추가</a>
 									</span>
 								</div>
 							</form>

@@ -121,6 +121,25 @@ public class BrwServiceImpl implements BrwService {
 			// sqlSession.commit();
 		}		
 	}
+	
+	@Override
+	public void updateCancelBorrowEndDate(Borrow borrow) throws Exception {
+		try {
+			int result = sqlSession.update("BorrowMapper.updateCancelBorrowEndDate", borrow);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			// sqlSession.rollback();
+			throw new Exception("반납취소된 도서대출 정보가 없습니다.");
+		} catch (Exception e) {
+			// sqlSession.rollback();
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서 반납 취소에 실패했습니다.");
+		} finally {
+			// sqlSession.commit();
+		}		
+	}
 
 	@Override
 	public Borrow getBorrowRtnd(Borrow borrow) throws Exception {
@@ -173,6 +192,28 @@ public class BrwServiceImpl implements BrwService {
 			result = sqlSession.selectList("BorrowMapper.selectRemainedBookOnLibrary", borrow);
 		} catch (Exception e) {
 			throw new Exception("보유중인(대출중이 아닌) 도서목록 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public int selectBrwBookCountByMemberId(Borrow borrow) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BorrowMapper.selectBrwBookCountByMemberId", borrow);
+		} catch (Exception e) {
+			throw new Exception("대출중인 도서 수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public int selectBrwLimitByMemberId(Borrow borrow) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BorrowMapper.selectBrwLimitByMemberId", borrow);
+		} catch (Exception e) {
+			throw new Exception("회원의 최대 대여가능 권 수 조회에 실패했습니다.");
 		}
 		return result;
 	}

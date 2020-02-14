@@ -61,18 +61,34 @@
 		INNER JOIN book b
 		ON h.book_id_book = b.id_book
 		WHERE library_id_lib=#{libraryIdLib}
-		<if test="titleBook != null and title != ''">
-			AND b.title_book LIKE concat('%', #{titleBook}, '%')
-		</if>
+		<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+				AND (
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="writerBook != null">
+						writer_book LIKE concat('%', #{writerBook}, '%')
+					</if>
+					<if test="publisherBook != null">
+						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					</if>
+				)
+			</if>
 		ORDER BY id ASC
+		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
-	<!-- getBookHelditem -->
+	<!-- getBookHelditem
+		BookHeldView.java 에서 사용-->
 	<select id="selectBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
 			id, book_shelf, reg_date, local_id_barcode, purchased_or_donated,
-			available, additional_code, copy_code
-		FROM book_held
+			available, additional_code, copy_code,
+			title_book, writer_book, category_book, publisher_book,
+			pub_date_book, price_book, isbn10_book, isbn13_book, description_book,
+			book_or_not, page, image_link, classification_code, author_code, volume_code
+		FROM book_held h
+		INNER JOIN book b ON h.book_id_book = b.id_book
 		WHERE library_id_lib=#{libraryIdLib} AND local_id_barcode=#{localIdBarcode}
 		<!-- WHERE id_lib_book = #{idLibBook} AND id_code_book = #{idCodeBook} -->
 	</select>
@@ -161,7 +177,28 @@
 		LIMIT 1;
 	</select>
 	
-	
-	
+	<!-- pagination을 위한 전체 도서수 체크 -->
+	<select id="selectBookCountForPage" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			COUNT(id)
+		FROM book_held h
+		INNER JOIN book b ON h.book_id_book = b.id_book
+		<where>
+			library_id_lib=#{libraryIdLib}
+			<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+				AND (
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="writerBook != null">
+						writer_book LIKE concat('%', #{writerBook}, '%')
+					</if>
+					<if test="publisherBook != null">
+						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					</if>
+				)
+			</if>
+		</where>
+	</select>
 	
 </mapper>

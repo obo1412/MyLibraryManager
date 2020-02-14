@@ -4,6 +4,10 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page trimDirectiveWhitespaces="true"%>
+<!-- 오늘날짜 만들고, 날짜패턴 아래와같이 바꾸기 -->
+<jsp:useBean id="currDate" class="java.util.Date" />
+<fmt:formatDate var="currentDate" value="${currDate}" pattern="yyyy-MM-dd HH:mm:ss" />
+<!-- 오늘날짜 관련 끝 -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +33,10 @@
 	}
 	label {
 		margin-bottom: 0;
-		font-size: 15px;
+		font-size: 14px;
+	}
+	.btn-sm {
+		font-size: 10px;
 	}
 }
 </style>
@@ -54,12 +61,13 @@
 							id="search-mbr-form" method="post"
 							action="${pageContext.request.contextPath}/book/brw_book.do">
 							<div class="form-group form-inline">
-								<label for='search-name' class="col-md-3 float-right">회원 검색</label>
-								<div class="input-group col-md-9">
+								<label for='search-name' class="col-md-3 float-right">회원
+									검색</label>
+								<div class="input-group input-group-sm col-md-9">
 									<input type="text" name="search-name" id="search-name"
 										class="form-control" placeholder="이름을 입력해주세요" value="${name}" />
 									<span class="input-group-append">
-										<button class="btn btn-warning" id="btn-search-mbr"
+										<button class="btn btn-sm btn-warning" id="btn-search-mbr"
 											type="submit">
 											<i class="fas fa-search"></i>
 										</button>
@@ -75,57 +83,66 @@
 										<c:when test="${fn:length(list) > 0}">
 											<thead>
 												<tr>
-													<th class="info text-center">이름</th>
-													<th class="info text-center">회원코드</th>
-													<th class="info text-center">연락처</th>
-													<th class="info text-center">회원등급</th>
-													<th class="info text-center">대여권수</th>
-													<th class="info text-center">대여기한</th>
-													<th class="info text-center">선택</th>
+													<th class="table-info text-center">이름</th>
+													<!-- <th class="info text-center">회원코드</th> -->
+													<th class="table-info text-center">연락처</th>
+													<th class="table-info text-center">회원등급</th>
+													<th class="table-info text-center">대여권수</th>
+													<th class="table-info text-center">대여기한</th>
+													<th class="table-info text-center">선택</th>
 												</tr>
 											</thead>
 											<c:forEach var="item" items="${list}" varStatus="status">
 												<tr>
 													<td style="display: none; position: absolute;">${item.id}</td>
-													<td><c:url var="readUrl" value="/temp/temp.do">
+													<td class="text-center"><c:url var="readUrl"
+															value="/temp/temp.do">
 															<c:param name="id" value="${item.id}" />
 														</c:url> <a href="${readUrl}">${item.name}</a></td>
-													<td class="text-center"></td>
-													<td class="text-center"><a href="#">${item.phone}</a></td>
+													<%-- <td class="text-center">${barcodeMbr}</td> --%>
+													<td class="text-center">${item.phone}</td>
 													<td class="text-center">${item.gradeName}</td>
 													<td class="text-center">${item.brwLimit}</td>
 													<td class="text-center">${item.dateLimit}</td>
-													<td class="test-center">
-														<button class="pick-user btn btn-primary"
-															id="${status.index}">선택</button>
-													</td>
+													<td class="text-center"><c:url var="mbrIdUrl"
+															value="/book/brw_book.do">
+															<c:param name="memberId" value="${item.id}" />
+															<c:param name="name" value="${item.name}" />
+															<c:param name="phone" value="${item.phone}" />
+															<c:param name="brwLimit" value="${item.brwLimit}" />
+														</c:url>
+														<button class="pick-user btn btn-secondary btn-sm"
+															id="${status.index}"
+															onclick="location.href='${mbrIdUrl}'">선택</button></td>
 												</tr>
 											</c:forEach>
 										</c:when>
-										<c:when test="${name ne null}">
+										<%-- <c:when test="${name ne null}"> --%>
+										<c:when test="${fn:length(list)==1}">
 											<thead>
 												<tr>
-													<th class="info text-center">이름</th>
-													<th class="info text-center">회원코드</th>
-													<th class="info text-center">연락처</th>
-													<th class="info text-center">회원등급</th>
-													<th class="info text-center">대여권수</th>
-													<th class="info text-center">대여기한</th>
-													<th class="info text-center">선택</th>
+													<th class="table-info text-center">이름</th>
+													<!-- <th class="info text-center">회원코드</th> -->
+													<th class="table-info text-center">연락처</th>
+													<th class="table-info text-center">회원등급</th>
+													<th class="table-info text-center">대여권수</th>
+													<th class="table-info text-center">대여기한</th>
+													<th class="table-info text-center">선택</th>
 												</tr>
 											</thead>
 											<tr>
-												<td><c:url var="readUrl" value="/temp/temp.do">
+												<td class="text-center"><c:url var="readUrl"
+														value="/temp/temp.do">
 														<c:param name="id" value="${memberId}" />
 													</c:url> <a href="${readUrl}">${name}</a></td>
-												<td class="text-center"></td>
-												<td class="text-center"><a href="#">${phone}</a></td>
+												<%-- <td class="text-center">${barcodeMbr}</td> --%>
+												<td class="text-center">${phone}</td>
 												<td class="text-center">${grade}</td>
 												<td class="text-center">${brwLimit}</td>
 												<td class="text-center">${dateLimit}</td>
-												<td class="test-center">
-													<button class="pick-user btn" id="${status.index}">선택
-													</button>
+												<td class="text-center">
+													<button class="pick-user btn btn-secondary btn-sm"
+														id="${status.index}">-</button>
 												</td>
 											</tr>
 										</c:when>
@@ -150,9 +167,9 @@
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
 									<label for='name' class="col-md-3">회원 이름</label>
-									<div class="input-group col-md-9">
+									<div class="input-group input-group-sm col-md-9">
 										<input type="text" name="name" id="name" class="form-control"
-											value="${name}" readonly/>
+											value="${name}" readonly />
 									</div>
 								</div>
 							</div>
@@ -160,9 +177,42 @@
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
 									<label for='phone' class="col-md-3">연락처</label>
-									<div class="input-group col-md-9">
+									<div class="input-group input-group-sm col-md-9">
 										<input type="tel" name="phone" id="phone" class="form-control"
-											value="${phone}" readonly/>
+											value="${phone}" readonly />
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-inline mb-2">
+								<div class="form-group col-md-4">
+									<label for='brwLimit' class="col-md-12">대여한도</label>
+									<div class="col-md-12">
+										<input type="text" name="brwLimit" id="brwLimit"
+											class="form-control form-control-sm" value="${brwLimit}"
+											style="width:50%" readonly/>
+									</div>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for='brwNow' class="col-md-12">대여중</label>
+									<div class="col-md-12">
+										<input type="text" name="brwNow" id="brwNow"
+											class="form-control form-control-sm" value="${brwNow}"
+											style="width:50%" readonly />
+									</div>
+								</div>
+
+								<div class="form-group col-md-4">
+									<label for='brwPsb' class="col-md-12">대여가능</label>
+									<div class="col-md-12">
+										<c:set var="brwWarning" value="" />
+									<c:if test="${brwLimit != 0 and (brwPsb < 1)}">
+										<c:set var="brwWarning" value="bg-danger text-white" />
+									</c:if>
+										<input type="text" name="brwPsb" id="brwPsb"
+											class="form-control form-control-sm ${brwWarning}"
+											value="${brwPsb}" style="width:50%" readonly />
 									</div>
 								</div>
 							</div>
@@ -170,10 +220,10 @@
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
 									<label for='barcodeBook' class="col-md-3">도서바코드</label>
-									<div class="input-group col-md-9">
+									<div class="input-group input-group-sm col-md-9">
 										<span class="input-group-prepend"> <input type="button"
-											value="검색" class="btn btn-warning fas fa-search"
-											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=600,height=700,scrollbars=yes')" />
+											value="검색" class="btn btn-sm btn-warning fas fa-search"
+											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
 										</span> <input type="text" name="barcodeBook" id="barcodeBook"
 											class="form-control" placeholder="or 직접 입력" />
 									</div>
@@ -185,22 +235,6 @@
 								<div class="col-md-12">
 									<input type="hidden" name="grade" id="grade"
 										class="form-control" value="${grade}" />
-								</div>
-							</div>
-
-							<div class="form-group">
-								<!-- <label for='brwLimit' class="col-md-12">대여가능</label> -->
-								<div class="col-md-12">
-									<input type="hidden" name="brwLimit" id="brwLimit"
-										class="form-control" value="${brwLimit}" />
-								</div>
-							</div>
-
-							<div class="form-group">
-								<!-- <label for='name' class="col-md-12">대여중</label> -->
-								<div class="col-md-12">
-									<input type="hidden" name="borrowed" id="borrowed"
-										class="form-control" />
 								</div>
 							</div>
 
@@ -239,11 +273,11 @@
 							action="${pageContext.request.contextPath}/book/return_book_ok.do">
 							<div class="form-group form-inline">
 								<label for='barcodeBookRtn' class="col-md-3">도서 검색</label>
-								<div class="input-group col-md-9">
+								<div class="input-group input-group-sm col-md-9">
 									<input type="text" name="barcodeBookRtn" id="barcodeBookRtn"
-										class="form-control" placeholder="이름을 입력해주세요"
+										class="form-control" placeholder="도서바코드를 입력해주세요"
 										value="${barcodeBook}" /> <span class="input-group-append">
-										<button class="btn btn-warning" id="btn-search-mbr"
+										<button class="btn btn-warning btn-sm" id="btn-search-mbr"
 											type="submit">반납</button>
 									</span>
 								</div>
@@ -258,28 +292,62 @@
 										<c:when test="${fn:length(brwRmnList) > 0}">
 											<thead>
 												<tr>
-													<th class="info text-center">도서제목</th>
-													<th class="info text-center">바코드</th>
-													<th class="info text-center">대여일</th>
-													<th class="info text-center">반납일</th>
-													<th class="info text-center">선택</th>
+													<th class="table-info text-center">도서제목</th>
+													<th class="table-info text-center">바코드</th>
+													<th class="table-info text-center">대여일</th>
+													<th class="table-info text-center">반납일</th>
+													<th class="table-info text-center">상태</th>
 												</tr>
 											</thead>
 											<c:forEach var="item" items="${brwRmnList}"
 												varStatus="status">
 												<tr>
-													<td class="test-center">${item.titleBook}</td>
+													<td class="text-center">${item.titleBook}</td>
 													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center">${item.startDateBrw}</td>
+													<td class="text-center">
+													<fmt:parseDate var="formDate"
+															value="${item.startDateBrw}"
+															pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
+															var="viewDate" value="${formDate}"
+															pattern="yyyy-MM-dd HH:mm:ss" /> ${viewDate}</td>
 													<td class="text-center">${item.endDateBrw}</td>
-													<td class="test-center">
-														<c:url var="rtnUrl" value="/book/return_book_ok.do">
-															<c:param name="barcodeBookRtn" value="${item.localIdBarcode}" />
-														</c:url>
-														<button class="return-book btn btn-warning" onclick="location.href='${rtnUrl}'">
-															반납
-														</button>
-													</td>
+													<td class="text-center"><c:choose>
+															<c:when
+																test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
+																<c:set var="rtnBtnState" value="반납" />
+																<c:set var="classRtnBtn" value="btn btn-warning btn-sm" />
+																<c:if test="${currentDate > item.dueDateBrw}">
+																	<c:set var="rtnBtnState" value="연체" />
+																	<c:set var="classRtnBtn" value="btn btn-danger btn-sm text-white" />
+																</c:if>
+																<c:url var="rtnUrl" value="/book/return_book_ok.do">
+																	<c:param name="barcodeBookRtn"
+																		value="${item.localIdBarcode}" />
+																	<c:param name="idBrw" value="${item.idBrw}" />
+																	<c:param name="idMemberBrw" value="${item.idMemberBrw}" />
+																	<c:param name="name" value="${item.name}" />
+																	<c:param name="phone" value="${item.phone}" />
+																	<c:param name="brwLimit" value="${item.brwLimit}" />
+																</c:url>
+															</c:when>
+															<c:otherwise>
+																<c:set var="rtnBtnState" value="취소" />
+																<c:set var="classRtnBtn" value="btn btn-primary btn-sm" />
+																<c:url var="rtnUrl"
+																	value="/book/return_cancel_book_ok.do">
+																	<c:param name="barcodeBookRtnCancle"
+																		value="${item.localIdBarcode}" />
+																	<c:param name="idBrw" value="${item.idBrw}" />
+																	<c:param name="idMemberBrw" value="${item.idMemberBrw}" />
+																	<c:param name="name" value="${item.name}" />
+																	<c:param name="phone" value="${item.phone}" />
+																	<c:param name="brwLimit" value="${item.brwLimit}" />
+																</c:url>
+															</c:otherwise>
+														</c:choose>
+														<button class="return-book ${classRtnBtn}"
+															onclick="location.href='${rtnUrl}'">
+															${rtnBtnState}</button></td>
 												</tr>
 											</c:forEach>
 										</c:when>
@@ -315,8 +383,9 @@
 										<th class="info text-center">회원등급</th>
 										<th class="info text-center">도서명</th>
 										<th class="info text-center">바코드</th>
-										<th class="info text-center">대여일시</th>
-										<th class="info text-center">반납일시</th>
+										<th class="info text-center">반납예정일</th>
+										<th class="info text-center">대여일</th>
+										<th class="info text-center">반납일</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -325,7 +394,8 @@
 											<c:forEach var="item" items="${brwListToday}">
 												<tr>
 													<c:choose>
-														<c:when test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
+														<c:when
+															test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
 															<c:set var="state" value="대출" />
 															<c:set var="classBtn" value="btn btn-warning" />
 														</c:when>
@@ -334,20 +404,30 @@
 															<c:set var="classBtn" value="btn btn-primary" />
 														</c:otherwise>
 													</c:choose>
-													<td class="text-center ${classBtn}" style="font-size:12px;">${state}</td>
+													<td class="text-center ${classBtn}"
+														style="font-size: 12px;">${state}</td>
 													<td class="text-center">${item.name}</td>
 													<td class="text-center">${item.phone}</td>
 													<td class="text-center">${item.gradeName}</td>
 													<td class="text-center">${item.titleBook}</td>
 													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center">
-														<fmt:parseDate var="formDate" value="${item.startDateBrw}"
-															pattern="yyyy-MM-dd HH:mm:ss" />
-															<fmt:formatDate var="viewDate" value="${formDate}"
-																pattern="yyyy-MM-dd HH:mm:ss" />
-																${viewDate}
+													<td class="text-center"><fmt:parseDate var="dueDate"
+															value="${item.dueDateBrw}"
+															pattern="yyyy-MM-dd" /> <fmt:formatDate
+															var="dViewDate" value="${dueDate}"
+															pattern="yyyy-MM-dd" /> ${dViewDate}</td>
+													<td class="text-center"><fmt:parseDate var="formDate"
+															value="${item.startDateBrw}"
+															pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
+															var="viewDate" value="${formDate}"
+															pattern="yyyy-MM-dd HH:mm:ss" /> ${viewDate}</td>
+														<c:set var="delay" value="" />
+													<c:if test="${item.dueDateBrw < item.endDateBrw}">
+														<c:set var="delay" value="text-danger" />
+													</c:if>
+													<td class="text-center ${delay}">
+														${item.endDateBrw}
 													</td>
-													<td class="text-center">${item.endDateBrw}</td>
 												</tr>
 											</c:forEach>
 										</c:when>
@@ -375,50 +455,21 @@
 	<!-- wrapper 끝 -->
 
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
-</body>
-<script type="text/javascript">
-	$(function() {
-		/* 페이지 호출시 회원검색에 포커싱 */
-		document.getElementById('search-name').focus();
 
-		/*
-		 * 아래기능은 회원검색했을때, 회원선택버튼 누르면, input칸에 채우기
-		 */
-		$(".pick-user").on("click", function(e) {
-			var x = $(this).attr('id');
-			console.log(x);
 
-			var PIdList = [];
-			var PnameList = [];
-			var PphoneList = [];
-			var PbrwLimitList = [];
-			var PdateLimitList = [];
 
-			<c:forEach var="item" items='${list}'>
-			PIdList.push("${item.id}");
-			PnameList.push("${item.name}");
-			PphoneList.push("${item.phone}");
-			PbrwLimitList.push("${item.brwLimit}");
-			PdateLimitList.push("${item.dateLimit}");
-			</c:forEach>
+	<script type="text/javascript">
+		$(function() {
+			/* 페이지 호출시 회원검색에 포커싱 */
+			document.getElementById('search-name').focus();
 
-			$("#memberId").val(PIdList[x]);
-			$("#name").val(PnameList[x]);
-			$("#phone").val(PphoneList[x]);
-			$("#brwLimit").val(PbrwLimitList[x]);
-			$("#dateLimit").val(PdateLimitList[x]);
-			e.preventDefault();
-			
-			/* pick-user 버튼을 누르면 도서바코드로 포커싱 */
-			document.getElementById('barcodeBook').focus();
+			/* 멤버id와 이름, 전화번호가 채워졌을시, 도서바코드로 focusing 함수*/
+			var chkMemberId = document.getElementById('name').value;
+			if (chkMemberId) {
+				document.getElementById('barcodeBook').focus();
+			}
+
 		});
-		
-		/* 멤버id와 이름, 전화번호가 채워졌을시, 도서바코드로 focusing 함수*/
-		var chkMemberId = document.getElementById('name').value;
-		if (chkMemberId) {
-			document.getElementById('barcodeBook').focus();
-		}
-		
-	});
-</script>
+	</script>
+</body>
 </html>

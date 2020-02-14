@@ -159,4 +159,12 @@ public interface MemberService {
 	 * @throws Exception
 	 */
 	public void selectGradeNameCount(Member member) throws Exception;
+	
+	/**
+	 * 페이지네이션을 위한 등급 수 검색
+	 * @param member
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectGradeCountForPage(Member member) throws Exception;
 }

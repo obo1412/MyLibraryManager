@@ -130,9 +130,9 @@ public class MemberServiceImpl implements MemberService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("조회된 데이터가 없습니다.");
+			throw new Exception("조회된 회원 이름이 없습니다.");
 		} catch (Exception e) {
-			throw new Exception("데이터 조회에 실패했습니다.");
+			throw new Exception("회원이름 조회에 실패했습니다.");
 		}
 		return result;
 	}
@@ -390,6 +390,17 @@ public class MemberServiceImpl implements MemberService {
 			throw new Exception("등급 이름 중복검사에 실패했습니다.");
 		}
 		
+	}
+
+	@Override
+	public int selectGradeCountForPage(Member member) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("MemberMapper.selectGradeCountForPage", member);
+		} catch (Exception e) {
+			throw new Exception("등급 개수 조회에 실패했습니다.");
+		}
+		return result;
 	}
 
 }

@@ -200,5 +200,19 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 
+	@Override
+	public int selectBookCountForPage(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectBookCountForPage", bookHeld);
+		} catch (Exception e) {
+			throw new Exception("페이지를 위한 도서수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
 
 }

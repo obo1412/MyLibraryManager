@@ -16,12 +16,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
-import com.gaimit.mlm.service.MemberService;
 
 @Controller
 public class BookHeldList {
@@ -33,9 +31,6 @@ public class BookHeldList {
 	
 	@Autowired
 	PageHelper page;
-	
-	@Autowired
-	MemberService memberService;
 	
 	@Autowired
 	ManagerService managerService;
@@ -62,16 +57,23 @@ public class BookHeldList {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
-		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
-		
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
+		int searchOpt = web.getInt("searchOpt");
 		String keyword = web.getString("keyword", "");
-		member.setName(keyword);
+		switch (searchOpt) {
+		case 1:
+			bookHeld.setTitleBook(keyword);
+			break;
+		case 2:
+			bookHeld.setWriterBook(keyword);
+			break;
+		case 3:
+			bookHeld.setPublisherBook(keyword);
+			break;
+		}
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
@@ -80,22 +82,20 @@ public class BookHeldList {
 		// 전체 데이터 수 조회하기
 		int totalCount = 0;
 		try {
-			totalCount = memberService.getMemberCount(member);
+			totalCount = bookHeldService.selectBookCountForPage(bookHeld);
 		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
 		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
 		page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());
+		bookHeld.setLimitStart(page.getLimitStart());
+		bookHeld.setListCount(page.getListCount());
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
-		List<Member> list = null;
 		List<BookHeld> bookHeldList = null;
 		try {
-			list = memberService.getMemberListByLib(member);
 			bookHeldList = bookHeldService.getBookHeldList(bookHeld);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
@@ -104,10 +104,11 @@ public class BookHeldList {
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("list", list);
 		model.addAttribute("bookHeldList", bookHeldList);
+		model.addAttribute("searchOpt", searchOpt);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("page", page);
+		model.addAttribute("pageDefUrl", "/book/book_held_list.do");
 		
 		return new ModelAndView("book/book_held_list");
 	}

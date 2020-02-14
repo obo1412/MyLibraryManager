@@ -32,14 +32,23 @@
 							<form method='get'
 								action='${pageContext.request.contextPath}/book/book_held_list.do'
 								style="width: 300px;">
-								<div class="input-group">
-									<input type="text" name='keyword' class="form-control"
-										placeholder="도서 검색" value="${keyword}" /> <span
-										class="input-group-append">
-										<button class="btn btn-success" type="submit">
+								<div class="input-group input-group-sm">
+									<span class="input-group-prepend">
+										<select name="searchOpt" class="form-control form-control-sm">
+												<option value="1"
+													<c:if test="${searchOpt == 1}">selected</c:if>>제목</option>
+												<option value="2"
+													<c:if test="${searchOpt == 2}">selected</c:if>>저자</option>
+												<option value="3"
+													<c:if test="${searchOpt == 3}">selected</c:if>>출판사</option>
+										</select>
+									</span> <input type="text" name='keyword'
+										class="form-control form-control-sm" placeholder="도서 검색"
+										value="${keyword}" /> <span class="input-group-append">
+										<button class="btn btn-success btn-sm" type="submit">
 											<i class='fas fa-search'></i>
 										</button> <a href="${pageContext.request.contextPath}/book/reg_book.do"
-										class="btn btn-primary">도서 추가</a>
+										class="btn btn-primary btn-sm">도서 추가</a>
 									</span>
 								</div>
 							</form>
@@ -49,7 +58,7 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
-									<th class="info text-center">도서번호</th>
+									<th class="info text-center">번호</th>
 									<th class="info text-center">도서명</th>
 									<th class="info text-center">도서저자</th>
 									<th class="info text-center">출판사</th>
@@ -57,7 +66,7 @@
 									<th class="info text-center">ISBN13</th>
 									<th class="info text-center">청구기호</th>
 									<th class="info text-center">등록일</th>
-									<th class="info text-center">로컬바코드</th>
+									<th class="info text-center">바코드</th>
 									<th class="info text-center">복본기호</th>
 								</tr>
 							</thead>
@@ -67,12 +76,24 @@
 										<c:forEach var="item" items="${bookHeldList}">
 											<tr>
 												<td class="text-center">${item.id}</td>
-												<td class="text-center">${item.titleBook}</td>
+												<td class="text-center"><c:url var="viewUrl"
+														value="/book/book_held_view.do">
+														<c:param name="localIdBarcode"
+															value="${item.localIdBarcode}" />
+													</c:url> <a href="${viewUrl}"
+													onclick="window.open(this.href, '_blank','width=600,height=800,scrollbars=yes');return false;">${item.titleBook}</a>
+												</td>
 												<td class="text-center">${item.writerBook}</td>
 												<td class="text-center">${item.publisherBook}</td>
 												<td class="text-center">${item.pubDateBook}</td>
 												<td class="text-center">${item.isbn13Book}</td>
-												<td class="text-center">${item.additionalCode}${item.classificationCode}${item.authorCode}${item.volumeCode}${item.copyCode}</td>
+												<td class="text-center"><c:if
+														test="${not empty item.additionalCode}">${item.additionalCode}</c:if>
+													<c:if test="${not empty item.classificationCode}">${item.classificationCode}</c:if>
+													<c:if test="${not empty item.authorCode}">${item.authorCode}</c:if>
+													<c:if test="${item.volumeCode ne '0'}">${item.volumeCode}</c:if>
+													<c:if test="${item.copyCode ne '0'}">C${item.copyCode}</c:if>
+												</td>
 												<td class="text-center">${item.regDate}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
 												<c:choose>
@@ -97,7 +118,7 @@
 						</table>
 
 						<!-- 페이지 번호 -->
-						<%@ include file="/WEB-INF/inc/common_pagination_bottom.jsp" %>
+						<%@ include file="/WEB-INF/inc/common_pagination_bottom.jsp"%>
 					</div>
 					<!-- card body 끝 -->
 				</div>

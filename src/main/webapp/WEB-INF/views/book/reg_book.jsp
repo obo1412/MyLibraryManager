@@ -28,30 +28,32 @@
 						<div class="table-responsive row">
 
 							<form class="form-horizontal search-box" name="search-mbr-form"
-								id="search-mbr-form" method="post"
+								id="search-mbr-form" method="get"
 								action="${pageContext.request.contextPath}/book/search_book.do">
-								<div class="form-group">
-									<label for='search-book-info' class="col-md-8">도서 검색</label>
-									<div class="input-group col-md-8">
+								<div class="form-group form-inline">
+									<label for='search-book-info' class="col-md-3">도서 검색</label>
+									<div class="input-group input-group-sm col-md-6">
 										<input type="text" name="search-book-info"
 											id="search-book-info" class="form-control"
-											placeholder="ISBN 검색" /> <span
+											placeholder="ISBN 검색" value="${isbn}"/> <span
 											class="input-group-append btn-group">
-											<button class="btn btn-warning" id="btn-search-bookinfo"
+											<button class="btn btn-warning btn-sm" id="btn-search-bookinfo"
 												type="submit">
 												<i class="fas fa-search"></i>
 											</button>
-											<button class="btn btn-info" id="searchEx">
+											<button class="btn btn-info btn-sm" id="searchEx">
 												<i class="fas fa-question"></i>
 											</button>
 										</span>
 									</div>
+									<c:url var="nlUrl" value="/book/search_nl_book.do">
+										<c:param name="search-book-info" value="${isbn}" />
+									</c:url>
+									<input type="button" value="국중검색" class="btn btn-sm btn-secondary" 
+										onclick="window.open('${nlUrl}', '_blank', 'width=800,height=600,scrollbars=yes')" />
 									<input type='hidden' name="barcodeHead" value="${barcodeInit}" />
 								</div>
 							</form>
-
-
-
 
 							<!-- 회원정보, 도서정보 수집 시작 -->
 							<form class="form-horizontal info-section" name="myform"
@@ -64,7 +66,7 @@
 										</div>
 										<div class="col-md-4">
 											<input type="text" name="isbn13" id="isbn13"
-												class="form-control" placeholder="ISBN 13자리"
+												class="form-control form-control-sm" placeholder="ISBN 13자리"
 												value="${jsonAladin.item[0].isbn13}" />
 										</div>
 										<div class="col-md-2">
@@ -72,7 +74,7 @@
 										</div>
 										<div class="col-md-4">
 											<input type="text" name="isbn10" id="isbn10"
-												class="form-control" placeholder="ISBN 10자리"
+												class="form-control form-control-sm" placeholder="ISBN 10자리"
 												value="${jsonAladin.item[0].isbn}" />
 										</div>
 									</div>
@@ -83,7 +85,7 @@
 										<label for='bookTitle' class="col-md-2 control-label">도서명</label>
 										<div class="col-md-10">
 											<input type="text" name="bookTitle" id="bookTitle"
-												class="form-control" style="width: 97.5%;"
+												class="form-control form-control-sm" style="width: 97.5%;"
 												placeholder="도서 제목" value="${jsonAladin.item[0].title}" />
 										</div>
 									</div>
@@ -94,13 +96,13 @@
 										<label for='author' class="col-md-2 control-label">저자명</label>
 										<div class="col-md-4">
 											<input type="text" name="author" id="author"
-												class="form-control" value="${jsonAladin.item[0].author}" />
+												class="form-control form-control-sm" value="${jsonAladin.item[0].author}" />
 										</div>
 
 										<label for='authorCode' class="col-md-2 control-label">저자기호</label>
 										<div class="col-md-4">
 											<input type="text" name="authorCode" id="authorCode"
-												class="form-control" value="${atcOut}" />
+												class="form-control form-control-sm" value="${atcOut}" />
 										</div>
 									</div>
 								</div>
@@ -110,14 +112,14 @@
 										<label for='publisher' class="col-md-2 control-label">출판사</label>
 										<div class="col-md-4">
 											<input type="text" name="publisher" id="publisher"
-												class="form-control" value="${jsonAladin.item[0].publisher}" />
+												class="form-control form-control-sm" value="${jsonAladin.item[0].publisher}" />
 										</div>
 
 										<label for='pubDate'
 											class="col-md-2 col-md-offset-1 control-label">출판일</label>
 										<div class="col-md-4">
 											<input type="text" name="pubDate" id="pubDate"
-												class="form-control" value="${jsonAladin.item[0].pubDate}" />
+												class="form-control form-control-sm" value="${jsonAladin.item[0].pubDate}" />
 										</div>
 									</div>
 								</div>
@@ -129,7 +131,7 @@
 										</div>
 										<div class="col-md-10">
 											<input type="text" name="bookCateg" id="bookCateg"
-												class="form-control" style='width: 97.5%;'
+												class="form-control form-control-sm" style='width: 97.5%;'
 												placeholder="도서 분류 / 서가 지정"
 												value="${jsonAladin.item[0].categoryName}" />
 										</div>
@@ -142,7 +144,7 @@
 											<label for='page' class="control-label">페이지</label>
 										</div>
 										<div class="col-md-4">
-											<input type="text" name="page" id="page" class="form-control"
+											<input type="text" name="page" id="page" class="form-control form-control-sm"
 												value="${jsonAladin.item[0].subInfo.itemPage}" />
 										</div>
 										<div class="col-md-2">
@@ -150,7 +152,7 @@
 										</div>
 										<div class="col-md-4">
 											<input type="text" name="price" id="price"
-												class="form-control"
+												class="form-control form-control-sm"
 												value="${jsonAladin.item[0].priceStandard}" />
 										</div>
 									</div>
@@ -160,7 +162,7 @@
 									<div class="form-group col-md-12">
 										<label for='bookCateg' class="col-md-2 control-label">도서/비도서</label>
 										<div class="col-md-4">
-											<select name="bookOrNot" class="form-control"
+											<select name="bookOrNot" class="form-control form-control-sm"
 												style='width: 94.5%;'>
 												<option value="BOOK" selected>국내도서</option>
 												<option value="MUSIC">음반</option>
@@ -172,7 +174,7 @@
 
 										<label for='categCode' class="col-md-2 control-label">수입구분</label>
 										<div class="col-md-4">
-											<select name="purOrDon" class="form-control"
+											<select name="purOrDon" class="form-control form-control-sm"
 												style='width: 94.5%'>
 												<option value="1" selected>구입</option>
 												<option value="0">기증</option>
@@ -187,14 +189,14 @@
 											분류기호</label>
 										<div class="col-md-4">
 											<input type="text" name="classificationCode"
-												id="classificationCode" class="form-control"
+												id="classificationCode" class="form-control form-control-sm"
 												value="${xmlClassNoArray[0]}" />
 										</div>
 
 										<label for='additionalCode' class="col-md-2 control-label">별치기호</label>
 										<div class="col-md-4">
 											<input type="text" name="additionalCode" id="additionalCode"
-												class="form-control" value="" placeholder="유(유아), 아(아동)" />
+												class="form-control form-control-sm" value="" placeholder="유(유아), 아(아동)" />
 										</div>
 									</div>
 								</div>
@@ -205,7 +207,7 @@
 											권차기호</label>
 										<div class="col-md-4">
 											<input type="text" name="volumeCode" id="volumeCode"
-												class="form-control" value="${jsonSeoji.docs[0].VOL}"
+												class="form-control form-control-sm" value="${jsonSeoji.docs[0].VOL}"
 												placeholder="숫자만 기입하세요. 2 -> v2" />
 										</div>
 										
@@ -213,7 +215,7 @@
 											바코드앞머리</label>
 										<div class="col-md-4">
 											<input type="text" name="barcodeHead" id="barcodeHead"
-												class="form-control" value="${barcodeInit}"
+												class="form-control form-control-sm" value="${barcodeInit}"
 												placeholder="공란일 경우 숫자로만 작성됨." />
 										</div>
 									</div>
@@ -224,13 +226,14 @@
 										<label for='bookDesc' class="col-md-4">도서 설명</label>
 
 										<div class="form-inline">
-											<div class="form-control col-md-2"
+											<div class="form-control form-control-sm col-md-2"
 												style="border: 1px solid black; width: 100px; height: 130px;">
-												<img name="bookCover" id="bookCover"
+												<img id="bookCover"
 													src="${jsonAladin.item[0].cover}" />
+												<input type="hidden" name="bookCover" value="${jsonAladin.item[0].cover}" />
 											</div>
 											<textarea
-												class="txt-box form-control custom-control col-md-8"
+												class="txt-box form-control form-control-sm custom-control col-md-8"
 												name='bookDesc' id="bookDesc"
 												style="resize: none; height: 130px; width: 60%;">${jsonAladin.item[0].description}</textarea>
 										</div>
@@ -244,9 +247,9 @@
 										<button type="reset" class="btn btn-danger">다시작성</button>
 									</div>
 								</div>
-								<div class="col-md-6">${xmlClassNoArray[0]}/
+								<%-- <div class="col-md-6">${xmlClassNoArray[0]}/
 									${xmlClassNoArray[1]}/ ${xmlClassNoArray[2]}/
-									${jsonSeoji.docs[0].EA_ADD_CODE}</div>
+									${jsonSeoji.docs[0].EA_ADD_CODE}</div> --%>
 							</form>
 							<!-- 회원정보, 도서정보 끝 -->
 						</div>

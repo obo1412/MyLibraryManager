@@ -57,7 +57,11 @@
 			remarks, reg_date, barcode_mbr, rf_uid, grade_id
 		FROM member
 		WHERE id_lib=#{idLib}
+		<if test="(name != null) and (name != '')">
+			AND name LIKE concat('%', #{name}, '%')
+		</if>
 		ORDER BY id ASC
+		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
 	<!-- 회원 이름과 도서관 번호로 목록 조회 -->
@@ -86,13 +90,15 @@
 		WHERE m.id_lib=#{idLib} AND name=#{name}
 	</select>
 	
-	<!-- 선수목록 전체 데이터 수 얻기 getMemberCount -->
+	<!-- 선수목록 전체 데이터 수 얻기 getMemberCount 
+	 MemberList.java 에서 사용 -->
 	<select id="selectMemberCount" parameterType="com.gaimit.mlm.model.Member"
 		resultType="int">
 		SElECT count(id)
 		FROM member
-		<if test="id != null and id != ''">
-			WHERE id = #{id}
+		WHERE id_lib=#{idLib}
+		<if test="(name != null) and (name != '')">
+			AND name LIKE concat('%', #{name}, '%')
 		</if>
 	</select>
 	
@@ -173,6 +179,9 @@
 			grade_id, grade_name, brw_limit, date_limit
 		FROM member_grade
 		WHERE id_lib=#{idLib}
+		<if test="gradeName != null">
+			AND grade_name LIKE concat('%',#{gradeName} ,'%')
+		</if>
 	</select>
 	
 	<select id="selectPhoneCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
@@ -206,6 +215,7 @@
 		)
 	</insert>
 	
+	<!-- 중복되는 등급이름이 있을 경우 NPE 발생 -->
 	<select id="selectGradeNameCount" parameterType="com.gaimit.mlm.model.Member" resultType="int">
 		SELECT
 			count(grade_id)
@@ -213,6 +223,15 @@
 		WHERE id_lib=#{idLib} AND grade_name=#{gradeName}
 	</select>
 	
-	
+	<!--  -->
+	<select id="selectGradeCountForPage" parameterType="com.gaimit.mlm.model.Member" resultType="int">
+		SELECT
+			count(grade_id)
+		FROM member_grade
+		WHERE id_lib=#{idLib}
+		<if test="gradeName != null">
+			AND grade_name LIKE concat('%',#{gradeName} ,'%')
+		</if>
+	</select>
 	
 </mapper>

@@ -80,6 +80,7 @@ public class ReturnBookOk_ajaxtry {
 		
 		// web으로부터 책 코드 번호 수신
 		String barcodeBook = web.getString("barcodeBookRtn", "");
+		int memberId = web.getInt("memberId");
 		if(barcodeBook.equals("")) {
 			/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서바코드를 입력하세요.");*/
 		}
@@ -96,14 +97,14 @@ public class ReturnBookOk_ajaxtry {
 		// 아래 brw로 idBrw 호출을 위한 객체
 		Borrow brwSe = new Borrow();
 		// 아래 멤버id(회원id)로 검색에 사용할 객체 생성 아직미구현
-		List<Borrow> brwRmnList = null;
-		List<Borrow> brwListToday = null;
+		List<Borrow> jsonBrwRmnList = null;
+		List<Borrow> jsonBrwListToday = null;
 		
 		brw.setIdLibBrw(idLib);
 		brw.setLocalIdBarcode(barcodeBook);
 		
 		
-		Map<String, String> resultJson = new HashMap<String, String>();
+		Map<String, Object> jsonResult = new HashMap<String, Object>();
 		
 		if(!(barcodeBook.equals(""))) {
 			try {
@@ -112,65 +113,27 @@ public class ReturnBookOk_ajaxtry {
 				brw.setIdMemberBrw(brwSe.getIdMemberBrw());
 				brwService.updateBorrowEndDate(brw);
 				//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
-				brwRmnList = brwService.getBorrowListByMbrId(brw);
+				jsonBrwRmnList = brwService.getBorrowListByMbrId(brw);
 				//오늘 대출/반납 도서 조회
-				brwListToday = brwService.selectBorrowListToday(brw);
-				
-				resultJson.put("a", String.valueOf(brw.getIdBrw()));
-				
-				response.setContentType("text/xml;charset=utf-8");
-				PrintWriter printWriter = response.getWriter();
-				printWriter.print(resultJson);
-				printWriter.flush();
-				printWriter.close();
-				
+				jsonBrwListToday = brwService.selectBorrowListToday(brw);
 			}  catch (Exception e) {
-				/*return web.redirect(null, e.getLocalizedMessage());*/
 				web.printJsonRt(e.getLocalizedMessage());
 			}
 		}
 		
-		/* 위 printWriter과정이랑 아래 과정이랑 같은 역할 하는 듯.*/
+		jsonResult.put("jsonBrwRmnList", jsonBrwRmnList);
+		jsonResult.put("jsonBrwListToday", jsonBrwListToday);
+		
+		
+		/* 위 printWriter과정이랑 아래 과정이랑 같은 역할 하는 듯.
+		 * Map에 담긴 정보들을 json 형태로 맵핑? 해주는 듯.
+		 */
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			mapper.writeValue(response.getWriter(), resultJson);
+			mapper.writeValue(response.getWriter(), jsonResult);
 		} catch (Exception e) {
 			web.printJsonRt(e.getLocalizedMessage());	
 		}
-
-		/* jsonobject로 할지 map으로 할지 map으로하고 mapper를 써야되는 듯.*/
-		/*JSONObject resultJson = new JSONObject();
-		Map<String, String> resultJson = new HashMap<String, String>();
-		try {
-			
-			resultJson.put("a", String.valueOf(brw.getIdBrw()));
-			
-			response.setContentType("text/xml;charset=utf-8");
-			PrintWriter printWriter = response.getWriter();
-			printWriter.print(resultJson);
-			printWriter.flush();
-			printWriter.close();
-			
-		} catch (Exception e) {
-			e.getLocalizedMessage();
-		}*/
-		
-		/**
-		 * 위 부분은 comment insert 쪽 보고 공부 더 해보자.
-		 */
-		
-		
-		/*brw.setIdBrw(idBrw);*/
-		
-		/*Map<String, Object> data = new HashMap<String, Object>();
-		data.put("rtndItem", brwSe);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.writeValue(response.getWriter(), data);
-		} catch (Exception e) {
-			web.printJsonRt(e.getLocalizedMessage());	
-		}*/
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		/*String keyword = web.getString("keyword", "");
@@ -202,10 +165,5 @@ public class ReturnBookOk_ajaxtry {
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
 		/*model.addAttribute("page", page);*/
-		/*model.addAttribute("brwListToday", brwListToday);
-		model.addAttribute("brwRmnList", brwRmnList);*/
-		
-		/*return new ModelAndView("book/brw_book");*/
-		/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서 반납이 완료되었습니다.");*/
-	}	
+	}
 }

@@ -68,7 +68,7 @@ public class GradeList {
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		String keyword = web.getString("keyword", "");
-		member.setName(keyword);
+		member.setGradeName(keyword);
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
@@ -77,7 +77,7 @@ public class GradeList {
 		// 전체 데이터 수 조회하기
 		int totalCount = 0;
 		try {
-			totalCount = memberService.getMemberCount(member);
+			totalCount = memberService.selectGradeCountForPage(member);
 		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}

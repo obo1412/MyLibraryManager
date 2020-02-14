@@ -69,4 +69,12 @@ public interface BookHeldService {
 	 * @throws Exception
 	 */
 	public BookHeld selectLastLocalBarcode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 페이지를 위한 count
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBookCountForPage(BookHeld bookHeld) throws Exception;
 }

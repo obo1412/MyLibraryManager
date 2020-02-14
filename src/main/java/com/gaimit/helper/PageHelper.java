@@ -1,37 +1,35 @@
 package com.gaimit.helper;
 
 public class PageHelper {
-	/***** GET�뙆�씪誘명꽣濡� 泥섎━�븷 媛� *****/
-    private int page = 1; 			// �쁽�옱 �럹�씠吏� 踰덊샇
+	/***** GET파라미터로 처리할 값 *****/
+    private int page = 1; 			// 현재 페이지 번호
 
-    /***** DB�뿉�꽌 議고쉶�븳 寃곌낵 媛� *****/
-    private int totalCount = 0;		// �쟾泥� 湲� 媛쒖닔 議고쉶
+    /***** DB에서 조회한 결과 값 *****/
+    private int totalCount = 0;		// 전체 글 개수 조회
 
-    /***** 媛쒕컻�옄媛� �젙�쓽�빐�빞 �븯�뒗 媛� *****/
-    private int listCount = 10;		// �븳 �럹�씠吏��뿉 蹂댁뿬吏� 湲��쓽 紐⑸줉 �닔
-    private int groupCount = 5;		// �븳 洹몃９�뿉 �몴�떆�븷 �럹�씠吏�踰덊샇 媛쒖닔
+    /***** 개발자가 정의해야 하는 값 *****/
+    private int listCount = 10;		// 한 페이지에 보여질 글의 목록 수
+    private int groupCount = 5;		// 한 그룹에 표시할 페이지번호 개수
 
-	/***** �뿰�궛泥섎━媛� �븘�슂�븳 媛� *****/
-	private int totalPage = 0;		// �쟾泥� �럹�씠吏� �닔
-    private int startPage = 0;		// �쁽�옱 洹몃９�쓽 �떆�옉 �럹�씠吏� 
-    private int endPage = 0;		// �쁽�옱 洹몃９�쓽 留덉�留� �럹�씠吏�
-    private int prevPage = 0;		// �씠�쟾 洹몃９�쓽 留덉�留� �럹�씠吏�
-    private int nextPage = 0;		// �씠�쟾 洹몃９�쓽 泥� �럹�씠吏�
-    private int limitStart = 0;		// MySQL�쓽 Limit �떆�옉 �쐞移�
-
-
+	/***** 연산처리가 필요한 값 *****/
+	private int totalPage = 0;		// 전체 페이지 수
+    private int startPage = 0;		// 현재 그룹의 시작 페이지 
+    private int endPage = 0;		// 현재 그룹의 마지막 페이지
+    private int prevPage = 0;		// 이전 그룹의 마지막 페이지
+    private int nextPage = 0;		// 이전 그룹의 첫 페이지
+    private int limitStart = 0;		// MySQL의 Limit 시작 위치
 	
-	/** �럹�씠吏� 援ы쁽�뿉 �븘�슂�븳 怨꾩궛�떇�쓣 泥섎━�븯�뒗 硫붿꽌�뱶 */
+	/** 페이지 구현에 필요한 계산식을 처리하는 메서드 */
 	public void pageProcess(int page, int totalCount, int listCount, int groupCount) {
 		this.page = page;
 		this.totalCount = totalCount;
 		this.listCount = listCount;
 		this.groupCount = groupCount;
 
-		// �쟾泥� �럹�씠吏� �닔
+		// 전체 페이지 수
 	    totalPage = ((totalCount-1)/listCount)+1;
 
-	    // �쁽�옱 �럹�씠吏��뿉 ���븳 �삤李� 議곗젅
+	    // 현재 페이지에 대한 오차 조절
 	    if (page < 0) {
 	    	page = 1;
 	    }
@@ -40,56 +38,114 @@ public class PageHelper {
 	    	page = totalPage;
 	    }
 
-	    // �쁽�옱 �럹�씠吏� 洹몃９�쓽 �떆�옉 �럹�씠吏� 踰덊샇
+	    // 현재 페이징 그룹의 시작 페이지 번호
 	    startPage = ((page - 1) / groupCount) * groupCount + 1;
 
-	    // �쁽�옱 �럹�씠吏� 洹몃９�쓽 �걹 �럹�씠吏� 踰덊샇
+	    // 현재 페이징 그룹의 끝 페이지 번호
 	    endPage = (((startPage - 1) + groupCount) / groupCount) * groupCount;
 
-	    // �걹 �럹�씠吏� 踰덊샇媛� �쟾泥� �럹�씠吏��닔瑜� 珥덇낵�븯硫� �삤李⑤쾾�쐞 議곗젅
-	    if (endPage > totalPage) { endPage = totalPage; }
+	    // 끝 페이지 번호가 전체 페이지수를 초과하면 오차범위 조절
+	    if (endPage > totalPage) {
+	    	endPage = totalPage;
+	    }
 
-	    // �씠�쟾 洹몃９�쓽 留덉�留� �럹�씠吏�
-	    if (startPage > groupCount) { prevPage = startPage - 1; }
-	    else { prevPage = 0; }
+	    // 이전 그룹의 마지막 페이지
+	    if (startPage > groupCount) {
+	        prevPage = startPage - 1;
+	    } else {
+	    	prevPage = 0;
+	    }
 
-	    // �떎�쓬 洹몃９�쓽 泥� �럹�씠吏�
-	    if (endPage < totalPage) { nextPage = endPage + 1; }
-	    else { nextPage = 0; }
+	    // 다음 그룹의 첫 페이지
+	    if (endPage < totalPage) {
+	        nextPage = endPage + 1;
+	    } else {
+	    	nextPage = 0;
+	    }
 
-	    // 寃��깋 踰붿쐞�쓽 �떆�옉 �쐞移�
+	    // 검색 범위의 시작 위치
 	    limitStart = (page-1) * listCount;
 	}
 
-	public int getPage() { return page; }
-	public void setPage(int page) { this.page = page; }
+	public int getPage() {
+		return page;
+	}
 
-	public int getTotalCount() { return totalCount; }
-	public void setTotalCount(int totalCount) { this.totalCount = totalCount; }
+	public void setPage(int page) {
+		this.page = page;
+	}
 
-	public int getListCount() { return listCount; }
-	public void setListCount(int listCount) { this.listCount = listCount; }
-	
-	public int getGroupCount() { return groupCount; }
-	public void setGroupCount(int groupCount) { this.groupCount = groupCount; }
+	public int getTotalCount() {
+		return totalCount;
+	}
 
-	public int getTotalPage() { return totalPage; }
-	public void setTotalPage(int totalPage) { this.totalPage = totalPage; }
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
 
-	public int getStartPage() { return startPage; }
-	public void setStartPage(int startPage) { this.startPage = startPage; }
+	public int getListCount() {
+		return listCount;
+	}
 
-	public int getEndPage() { return endPage; }
-	public void setEndPage(int endPage) { this.endPage = endPage; }
+	public void setListCount(int listCount) {
+		this.listCount = listCount;
+	}
 
-	public int getPrevPage() { return prevPage; }
-	public void setPrevPage(int prevPage) { this.prevPage = prevPage; }
+	public int getGroupCount() {
+		return groupCount;
+	}
 
-	public int getNextPage() { return nextPage; }
-	public void setNextPage(int nextPage) { this.nextPage = nextPage; }
+	public void setGroupCount(int groupCount) {
+		this.groupCount = groupCount;
+	}
 
-	public int getLimitStart() { return limitStart; }
-	public void setLimitStart(int limitStart) { this.limitStart = limitStart; }
+	public int getTotalPage() {
+		return totalPage;
+	}
+
+	public void setTotalPage(int totalPage) {
+		this.totalPage = totalPage;
+	}
+
+	public int getStartPage() {
+		return startPage;
+	}
+
+	public void setStartPage(int startPage) {
+		this.startPage = startPage;
+	}
+
+	public int getEndPage() {
+		return endPage;
+	}
+
+	public void setEndPage(int endPage) {
+		this.endPage = endPage;
+	}
+
+	public int getPrevPage() {
+		return prevPage;
+	}
+
+	public void setPrevPage(int prevPage) {
+		this.prevPage = prevPage;
+	}
+
+	public int getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(int nextPage) {
+		this.nextPage = nextPage;
+	}
+
+	public int getLimitStart() {
+		return limitStart;
+	}
+
+	public void setLimitStart(int limitStart) {
+		this.limitStart = limitStart;
+	}
 
 	@Override
 	public String toString() {
