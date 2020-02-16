@@ -7,6 +7,11 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
+<!-- Twitter Bootstrap3 & jQuery -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
 </head>
 <body>
 	<%@ include file="/WEB-INF/inc/topbar.jsp"%>
@@ -225,8 +230,7 @@
 				}
 
 				// 템플릿 HTML을 로드한다.
-				var template = Handlebars.compile($("#tmpl_comment_item")
-						.html());
+				var template = Handlebars.compile($("#tmpl_comment_item").html());
 
 				// JSON에 포함된 '&lt;br/&gt;'을 검색에서 <br/>로 변경함.
 				// --> 정규표현식 /~~~/g는 문자열 전체의 의미.

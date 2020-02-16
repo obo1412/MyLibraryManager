@@ -19,9 +19,19 @@
 		<div id="content-wrapper">
 			<div class="container-fluid">
 				<h4 class='page-header'>도서 상세 보기</h4>
-
+				
+				<!-- 버튼 -->
+				<div class="text-right">
+					<a
+						href="${pageContext.request.contextPath}/book/book_held_edit.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
+						class="btn btn-warning">수정</a> <a
+						href="${pageContext.request.contextPath}/book/book_held_delete.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
+						class="btn btn-danger">삭제</a> <input type="button"
+						class="btn btn-primary" value="닫기" onclick="self.close()" />
+				</div>
+				
 				<!-- 조회결과를 출력하기 위한 표 -->
-				<table class="table table-sm table-bordered">
+				<table class="table table-sm table-bordered mt-2">
 					<tbody>
 						<tr>
 							<th class="table-info text-center" width="130">번호</th>
@@ -105,16 +115,6 @@
 						</tr>
 					</tbody>
 				</table>
-
-				<!-- 버튼 -->
-				<div class="text-center">
-					<a
-						href="${pageContext.request.contextPath}/book/book_held_edit.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
-						class="btn btn-warning">수정</a> <a
-						href="${pageContext.request.contextPath}/book/book_held_delete.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
-						class="btn btn-danger">삭제</a> <input type="button"
-						class="btn btn-primary" value="닫기" onclick="self.close()" />
-				</div>
 			</div>
 			<!-- container-fluid 끝 -->
 		</div>

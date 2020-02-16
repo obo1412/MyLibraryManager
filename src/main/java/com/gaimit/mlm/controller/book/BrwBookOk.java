@@ -134,7 +134,7 @@ public class BrwBookOk {
 			brwNow = brwService.selectBrwBookCountByMemberId(brw);
 			brwPsb = brwLimit - brwNow;
 			if(brwLimit - brwNow < 1) {
-				return web.redirect(web.getRootPath() + "/book/brw_book.do", brwNow+"/"+brwLimit+"더이상 대출이 불가능 합니다.");
+				return web.redirect(web.getRootPath() + "/book/brw_book.do", "대출 권수 초과입니다.");
 			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
