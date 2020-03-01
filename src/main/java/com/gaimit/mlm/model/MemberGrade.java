@@ -1,6 +1,6 @@
 package com.gaimit.mlm.model;
 
-public class MemberGrade extends Pagination{
+public class MemberGrade extends Library{
 	private int gradeId;
 	private String gradeName;
 	private int brwLimit;

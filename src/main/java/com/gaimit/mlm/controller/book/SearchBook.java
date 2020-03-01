@@ -3,11 +3,16 @@ package com.gaimit.mlm.controller.book;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -247,9 +252,16 @@ public class SearchBook {
 		return new ModelAndView("book/reg_book");
 	}
 	
+	
+	
+	
+	
+	
+	
+	
 	/** 도서 검색 페이지 */
 	@RequestMapping(value = "/book/search_nl_book.do", method = RequestMethod.GET)
-	public ModelAndView nlSearch(Locale locale, Model model) {
+	public ModelAndView nlSearch(Locale locale, Model model, HttpServletResponse response) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
@@ -271,10 +283,7 @@ public class SearchBook {
 		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
 		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
 		ArrayList<Object> xmlArray = new ArrayList<Object>();
-		ArrayList<String> classNoArray = new ArrayList<String>();
-		ArrayList<String> titleArray = new ArrayList<String>();
-		ArrayList<String> authorArray = new ArrayList<String>();
-		ArrayList<String> pubArray = new ArrayList<String>();
+		
 		try {
 			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
 			String apiUrlFull = null;
@@ -292,34 +301,35 @@ public class SearchBook {
 			Document doc =builder.parse(con.getInputStream());
 			
 			NodeList nodeList = doc.getElementsByTagName("item");
-			for(int i =0; i<nodeList.getLength(); i++) {
-				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
-					node=node.getNextSibling()) {
-					if(node.getNodeName().equals("class_no")) {
-						classNoArray.add(node.getTextContent());
-						xmlArray.add(classNoArray);
-					}
+			for(int i =0; i< nodeList.getLength(); i++) {
+				Map<String, String> tempMap = new HashMap<String, String>();
+				for(Node node = nodeList.item(i).getFirstChild(); node!=null; node=node.getNextSibling()) {
 					if(node.getNodeName().equals("title_info")) {
-						titleArray.add(node.getTextContent());
-						xmlArray.add(titleArray);
+						tempMap.put("title_info", node.getTextContent());
 					}
 					if(node.getNodeName().equals("author_info")) {
-						authorArray.add(node.getTextContent());
-						xmlArray.add(authorArray);
+						tempMap.put("author_info", node.getTextContent());
 					}
 					if(node.getNodeName().equals("pub_info")) {
-						pubArray.add(node.getTextContent());
-						xmlArray.add(pubArray);
+						tempMap.put("pub_info", node.getTextContent());
 					}
+					if(node.getNodeName().equals("class_no")) {
+						tempMap.put("class_no", node.getTextContent());
+						xmlArray.add(tempMap);
+					}
+					
 				}
-			}
 				
+			}
+			
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		model.addAttribute("xmlArray", xmlArray);
+	
+		
 		model.addAttribute("isbn", isbn);
+		model.addAttribute("xmlArray", xmlArray);
 		
 		return new ModelAndView("book/search_nl_book");
 	}

@@ -38,6 +38,7 @@
 	.btn-sm {
 		font-size: 10px;
 	}
+	
 }
 </style>
 </head>
@@ -65,7 +66,7 @@
 									검색</label>
 								<div class="input-group input-group-sm col-md-9">
 									<input type="text" name="search-name" id="search-name"
-										class="form-control" placeholder="이름을 입력해주세요" value="${name}" />
+										class="form-control korean-first" placeholder="이름을 입력해주세요" value="${name}" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-warning" id="btn-search-mbr"
 											type="submit">
@@ -222,7 +223,7 @@
 									<label for='barcodeBook' class="col-md-3">도서바코드</label>
 									<div class="input-group input-group-sm col-md-9">
 										<span class="input-group-prepend"> <input type="button"
-											value="검색" class="btn btn-sm btn-warning fas fa-search"
+											value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
 											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
 										</span> <input type="text" name="barcodeBook" id="barcodeBook"
 											class="form-control" placeholder="or 직접 입력" />
@@ -411,8 +412,7 @@
 													<td class="text-center">${item.gradeName}</td>
 													<td class="text-center">${item.titleBook}</td>
 													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center"><fmt:parseDate var="dueDate"
-															value="${item.dueDateBrw}"
+													<td class="text-center"><fmt:parseDate var="dueDate" value="${item.dueDateBrw}"
 															pattern="yyyy-MM-dd" /> <fmt:formatDate
 															var="dViewDate" value="${dueDate}"
 															pattern="yyyy-MM-dd" /> ${dViewDate}</td>

@@ -17,6 +17,7 @@ public class Book extends Member{
 	private String classificationCode;
 	private String authorCode;
 	private String volumeCode;
+	private int classCodeHead;
 	
 	public int getIdBook() {
 		return idBook;
@@ -114,6 +115,12 @@ public class Book extends Member{
 	public void setVolumeCode(String volumeCode) {
 		this.volumeCode = volumeCode;
 	}
+	public int getClassCodeHead() {
+		return classCodeHead;
+	}
+	public void setClassCodeHead(int classCodeHead) {
+		this.classCodeHead = classCodeHead;
+	}
 	@Override
 	public String toString() {
 		return "Book [idBook=" + idBook + ", titleBook=" + titleBook + ", writerBook=" + writerBook + ", categoryBook="
@@ -121,6 +128,7 @@ public class Book extends Member{
 				+ priceBook + ", isbn10Book=" + isbn10Book + ", isbn13Book=" + isbn13Book + ", descriptionBook="
 				+ descriptionBook + ", bookOrNot=" + bookOrNot + ", page=" + page + ", imageLink=" + imageLink
 				+ ", classificationCode=" + classificationCode + ", authorCode=" + authorCode + ", volumeCode="
-				+ volumeCode + "]";
+				+ volumeCode + ", classCodeHead=" + classCodeHead + "]";
 	}
+	
 }

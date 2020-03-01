@@ -1,6 +1,6 @@
 package com.gaimit.mlm.model;
 
-public class Library {
+public class Library extends Pagination {
 	private int idLib;
 	private String nameLib;
 	private String locLib;

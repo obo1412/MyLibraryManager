@@ -9,7 +9,7 @@
 <meta charset='utf-8' />
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>보유도서 목록</title>
+<title>폐기 도서 목록</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 </head>
@@ -24,13 +24,13 @@
 
 				<div class="card mb-3">
 					<div class="card-header">
-						<h6 class='float-left'>도서 목록</h6>
+						<h6 class='float-left'>폐기 도서 목록</h6>
 					</div>
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="float-left">
 							<form method='get'
-								action='${pageContext.request.contextPath}/book/book_held_list.do'
+								action='${pageContext.request.contextPath}/book/book_held_discard_list.do'
 								style="width: 300px;">
 								<div class="input-group input-group-sm">
 									<span class="input-group-prepend">
@@ -47,8 +47,7 @@
 										value="${keyword}" /> <span class="input-group-append">
 										<button class="btn btn-success btn-sm" type="submit">
 											<i class='fas fa-search'></i>
-										</button> <a href="${pageContext.request.contextPath}/book/reg_book.do"
-										class="btn btn-primary btn-sm">도서 추가</a>
+										</button>
 									</span>
 								</div>
 							</form>
@@ -66,14 +65,15 @@
 									<th class="info text-center">ISBN13</th>
 									<th class="info text-center">청구기호</th>
 									<th class="info text-center">등록일</th>
+									<th class="info text-center">폐기일</th>
 									<th class="info text-center">바코드</th>
 									<th class="info text-center">복본기호</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:choose>
-									<c:when test="${fn:length(bookHeldList) > 0}">
-										<c:forEach var="item" items="${bookHeldList}">
+									<c:when test="${fn:length(discardList) > 0}">
+										<c:forEach var="item" items="${discardList}">
 											<tr>
 												<td class="text-center">${item.id}</td>
 												<td class="text-center"><c:url var="viewUrl"
@@ -95,6 +95,7 @@
 													<c:if test="${item.copyCode ne '0'}">C${item.copyCode}</c:if>
 												</td>
 												<td class="text-center">${item.regDate}</td>
+												<td class="text-center">${item.editDate}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
 												<c:choose>
 													<c:when test="${item.copyCode eq 0}">

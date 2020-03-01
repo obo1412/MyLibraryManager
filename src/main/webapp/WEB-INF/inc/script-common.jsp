@@ -25,6 +25,28 @@
 
 
 <script type="text/javascript">
+
+function clearInput() {
+	/*텍스트박스 지우기*/
+	var el = document.getElementsByClassName("input-clear");
+
+	for(var i=0; i<el.length; i++){
+		el[i].value = '';
+	}
+	
+	/*체크박스 지우기*/
+	var el = document.getElementsByClassName("input-radio");
+	for(var i=0; i<el.length; i++){
+		el[i].checked = false;
+	}
+	
+	$("#bookCover").attr("src", '');
+}
+
+
+
+
+
 	/* var windowWidth = $(window).width();
 	var sidebarWidth = $(".sidebar").outerWidth(); */
 	//위 20과 1의 숫자는 border와 margin값으로 계산에 포함하여야 한다.

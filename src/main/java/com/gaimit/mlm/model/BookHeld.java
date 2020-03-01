@@ -8,6 +8,7 @@ public class BookHeld extends Book{
 	private int bookIdBook;
 	private String bookShelf;
 	private String regDate;
+	private String editDate;
 	private String localIdBarcode;
 	private int purchasedOrDonated;
 	private int available;
@@ -44,6 +45,12 @@ public class BookHeld extends Book{
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
+	public String getEditDate() {
+		return editDate;
+	}
+	public void setEditDate(String editDate) {
+		this.editDate = editDate;
+	}
 	public String getLocalIdBarcode() {
 		return localIdBarcode;
 	}
@@ -74,12 +81,12 @@ public class BookHeld extends Book{
 	public void setCopyCode(int copyCode) {
 		this.copyCode = copyCode;
 	}
-	
 	@Override
 	public String toString() {
 		return "BookHeld [id=" + id + ", libraryIdLib=" + libraryIdLib + ", bookIdBook=" + bookIdBook + ", bookShelf="
-				+ bookShelf + ", regDate=" + regDate + ", localIdBarcode=" + localIdBarcode + ", purchasedOrDonated="
-				+ purchasedOrDonated + ", available=" + available + ", additionalCode=" + additionalCode + ", copyCode="
-				+ copyCode + "]";
+				+ bookShelf + ", regDate=" + regDate + ", editDate=" + editDate + ", localIdBarcode=" + localIdBarcode
+				+ ", purchasedOrDonated=" + purchasedOrDonated + ", available=" + available + ", additionalCode="
+				+ additionalCode + ", copyCode=" + copyCode + "]";
 	}
+
 }

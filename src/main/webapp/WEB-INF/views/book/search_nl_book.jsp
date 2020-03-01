@@ -40,14 +40,14 @@
 									<span class="input-group-prepend">
 										<select name="searchOpt" class="form-control form-control-sm">
 											<option value="1" <c:if test="${searchOpt == 1}">selected</c:if>>
-												제목</option>
+												ISBN</option>
 											<option value="2" <c:if test="${searchOpt == 2}">selected</c:if>>
-												저자</option>
+												제목</option>
 											<option value="3" <c:if test="${searchOpt == 3}">selected</c:if>>
 												출판사</option>
 										</select>
 									</span>
-									<input type="text" name='keyword' id='keyword'
+									<input type="text" name='search-book-info' id='search-book-info'
 										class="form-control form-control-sm" placeholder="검색" value="${isbn}" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-success" type="submit">
@@ -59,9 +59,6 @@
 
 						</div>
 
-<div>
-${xmlArray}
-</div>
 						<!-- 조회결과를 출력하기 위한 표 -->
 						<div class="table-responsive">
 							<table class="table table-sm">
@@ -75,17 +72,20 @@ ${xmlArray}
 									</tr>
 								</thead>
 								<tbody>
-									<%-- <c:choose>
+									<c:choose>
 										<c:when test="${fn:length(xmlArray) > 0}">
-											<c:forEach var="item" items="${xmlArray}">
+											<c:forEach var="item" items="${xmlArray}" varStatus="status">
 												<tr>
-													<td class="text-center">${item.titleArray}</td>
-													<td class="text-center">${item.authorArray}</td>
-													<td class="text-center">${item.pubArray}</td>
-													<td class="text-center">${item.classNoArray}</td>
-													<td class="text-center"><c:set var="bar"
-															value="" />
-														<button class="pick-book btn btn-primary btn-sm" value="${bar}">
+													<td class="text-center">${item.title_info}</td>
+													<td class="text-center">${item.author_info}</td>
+													<td class="text-center">${item.pub_info}</td>
+													<td class="text-center">${item.class_no}</td>
+													<td class="text-center">
+														<button class="pick-book btn btn-primary btn-sm"
+															thisTitle="${item.title_info}"
+															thisAuthor="${item.author_info}"
+															thisPub="${item.pub_info}"
+															thisClassNo="${item.class_no}">
 															선택</button></td>
 												</tr>
 											</c:forEach>
@@ -96,7 +96,7 @@ ${xmlArray}
 													style="line-height: 100px;">조회된 데이터가 없습니다.</td>
 											</tr>
 										</c:otherwise>
-									</c:choose> --%>
+									</c:choose>
 								</tbody>
 							</table>
 						</div>
@@ -120,7 +120,15 @@ ${xmlArray}
 		}
 
 		$(document).on('click', '.pick-book', function() {
-			$(opener.document).find("#barcodeBook").val($(this).val());
+			var titleR = $(this).attr('thisTitle');
+			var authorR = $(this).attr('thisAuthor');
+			var pubR = $(this).attr('thisPub');
+			var classNoR = $(this).attr('thisClassNo');
+			
+			$(opener.document).find("#bookTitle").val(titleR);
+			$(opener.document).find("#author").val(authorR);
+			$(opener.document).find("#publisher").val(pubR);
+			$(opener.document).find("#classificationCode").val(classNoR);
 			window.close();
 		});
 	</script>

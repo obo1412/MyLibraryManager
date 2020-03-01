@@ -7,10 +7,27 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
 <!-- Twitter Bootstrap3 & jQuery -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
 <script src="http://code.jquery.com/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> -->
+
+<!-- ajax -->
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/assets/plugins/ajax/ajax_helper.css" />
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/plugins/ajax/ajax_helper.js"></script>
+
+<!-- ajaxForm -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/plugins/ajax-form/jquery.form.min.js"></script>
 
 </head>
 <body>
@@ -112,7 +129,7 @@
 
 				<!-- 버튼들 : category값에 대한 상태유지 필요함 -->
 				<div class="clearfix">
-					<div class="pull-right">
+					<div class="float-right">
 						<a
 							href="${pageContext.request.contextPath}/bbs/document_list.do?category=${category}"
 							class="btn btn-info">목록보기</a> <a
@@ -178,26 +195,26 @@
     <li class="media" style='border-top: 1px dotted #ccc; padding-top: 15px' 
     	id="comment_{{id}}">
         <div class="media-body" style='display: block;'>
-            <h4 class="media-heading clearfix">
+            <h5 class="heading clearfix">
                 <!-- 작성자,작성일시 -->
-                <div class='pull-left'>
+                <div class='float-left'>
                     {{writerName}}
                     <small>
                         <a href='mailto:{{email}}'>
-                            <i class='glyphicon glyphicon-envelope'></i></a>
+                            <i class='fas fa-envelope fa-sm'></i></a>
                             / {{regDate}}
                     </small>
                 </div>
                 <!-- 수정,삭제 버튼 -->
-                <div class='pull-right'>
+                <div class='float-right'>
                     <a href='${pageContext.request.contextPath}/bbs/comment_edit.do?comment_id={{id}}' data-toggle="modal" data-target="#comment_edit_modal" class='btn btn-warning btn-xs'>
-                        <i class='glyphicon glyphicon-edit'></i>
+                        <i class='far fa-edit fa-sm'></i>
                     </a>
                     <a href='${pageContext.request.contextPath}/bbs/comment_delete.do?comment_id={{id}}' data-toggle="modal" data-target="#comment_delete_modal" class='btn btn-danger btn-xs'>
-                        <i class='glyphicon glyphicon-remove'></i>
+                        <i class='fas fa-eraser fa-sm'></i>
                     </a>
                 </div>
-            </h4>
+            </h5>
             <!-- 내용 -->
             <p>{{{content}}}</p>
         </div>
@@ -207,14 +224,16 @@
 	<!-- 덧글 삭제시 사용될 Modal -->
 	<div class="modal fade" id="comment_delete_modal">
 		<div class="modal-dialog modal-sm">
-			<div class="modal-content"></div>
+			<div class="modal-content">
+			</div>
 		</div>
 	</div>
 
 	<!-- 덧글 수정시 사용될 Modal -->
 	<div class="modal fade" id="comment_edit_modal">
 		<div class="modal-dialog">
-			<div class="modal-content"></div>
+			<div class="modal-content">
+			</div>
 		</div>
 	</div>
 
@@ -336,6 +355,7 @@
 					});
 		});
 	</script>
-	<%@ include file="/WEB-INF/inc/script-common.jsp" %>
+	<!-- 아래 template 충돌로 인해, 댓글 작성 등 작동 안됐음. -->
+	<%-- <%@ include file="/WEB-INF/inc/script-common.jsp" %> --%>
 </body>
 </html>

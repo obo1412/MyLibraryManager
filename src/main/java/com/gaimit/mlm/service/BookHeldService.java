@@ -77,4 +77,42 @@ public interface BookHeldService {
 	 * @throws Exception
 	 */
 	public int selectBookCountForPage(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 도서 폐기 반환값 없음
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void updateBookHeldDiscard(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 폐기된 도서 목록
+	 * @param bookHeld 도서관 번호
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookHeld> getBookHeldDiscardList(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 폐기도서 카운트 페이지 목록
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBookDiscardCountForPage(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 도서 정보 수정
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void updateBookHeldItem(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 프린트 리스트
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookHeld> getPrintBookHeldList(BookHeld bookHeld) throws Exception;
 }

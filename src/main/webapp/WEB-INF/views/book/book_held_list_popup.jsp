@@ -28,11 +28,11 @@
 
 				<div class="card mb-3">
 					<div class="card-header">
-						<h6 class='pull-left'>도서 목록</h6>
+						<h6 class='float-left'>도서 목록</h6>
 					</div>
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
-						<div style='margin-top: 30px;' class="pull-right">
+						<div style='margin-top: 30px;' class="float-left">
 							<form method='get'
 								action='${pageContext.request.contextPath}/book/book_held_list_popup.do'
 								style="width: 300px;">

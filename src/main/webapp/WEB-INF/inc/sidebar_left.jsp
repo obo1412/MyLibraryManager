@@ -27,11 +27,11 @@
 			
 			<div class="dropdown-divider"></div>
 			<h6 class="dropdown-header">점검</h6>
-			<a class="dropdown-item notyet" href="#">도서 현황</a>
+			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/book_held_discard_list.do">폐기도서 목록</a>
 			<a class="dropdown-item notyet" href="#">장서 점검</a> <a
 				class="dropdown-item notyet" href="#">보고서 출력</a> <a
 				class="dropdown-item"
-				href="${pageContext.request.contextPath}/book/print_tag.do">태그
+				href="${pageContext.request.contextPath}/book/print_tag_setup.do">태그
 				인쇄하기</a>
 		</div></li>
 	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"

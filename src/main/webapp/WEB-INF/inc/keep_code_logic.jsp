@@ -193,4 +193,117 @@
 
 
 
+<!-- xml데이터를 json으로 Map을 이용해서 파싱해보려고 시도했으나,
+	몇가지 문제에 부딪혀 성공하지는 못했음. hm과 nlLists 에 데이터를 넣기는 했으나,
+	Map 특성상 Map<key, value>에서 key 중복이 안되므로 여러 key 값의 put이 안된다.-->
+	<!-- 	String isbn = web.getString("search-book-info");
+		
+		String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
+		//국립중앙도서관 아래 api검색
+		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
+		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
+		ArrayList<Object> xmlArray = new ArrayList<Object>();
+		ArrayList<String> classNoArray = new ArrayList<String>();
+		ArrayList<String> titleArray = new ArrayList<String>();
+		ArrayList<String> authorArray = new ArrayList<String>();
+		ArrayList<String> pubArray = new ArrayList<String>();
+		
+		JSONArray nlList = new JSONArray();
+		JSONObject nlJson = new JSONObject();
+		
+		Map<String, String> hm = new HashMap<String, String>();
+		Map<String, Object> nlLists = new HashMap<String, Object>();
+		
+		try {
+			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
+			String apiUrlFull = null;
+			if(isbn.length() == 13) {
+				apiUrlFull = apiUrl + "&isbnCode="+ isbn;
+			} else if(isbn.length() == 10) {
+				apiUrlFull = apiUrl +"&isbnCode="+ isbn;
+			}
+			URL url = new URL(apiUrlFull);
+			HttpURLConnection con = (HttpURLConnection)url.openConnection();
+			con.setRequestMethod("GET");
+			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc =builder.parse(con.getInputStream());
+			
+			// xml 데이터를 string으로 
+			String jsonNl = null;
+			org.json.JSONObject jsonob = null;
+			
+			//xml 데이터를 string 으로
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			StringWriter writer = new StringWriter();
+			transformer.transform(new DOMSource(doc), new StreamResult(writer));
+			String output = writer.getBuffer().toString();
+			
+			jsonob = XML.toJSONObject(output);
+			jsonNl = jsonob.toString(4);
+			// xml 데이터를 string으로
+			
+			NodeList nodeList = doc.getElementsByTagName("item");
+			for(int i =0; i<nodeList.getLength(); i++) {
+				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
+					node=node.getNextSibling()) {
+					if(node.getNodeName().equals("class_no")) {
+						classNoArray.add(node.getTextContent());
+						hm.put("class_no", node.getTextContent());
+					}
+					if(node.getNodeName().equals("title_info")) {
+						titleArray.add(node.getTextContent());
+						hm.put("title_info", node.getTextContent());
+					}
+					if(node.getNodeName().equals("author_info")) {
+						authorArray.add(node.getTextContent());
+						hm.put("author_info", node.getTextContent());
+					}
+					if(node.getNodeName().equals("pub_info")) {
+						pubArray.add(node.getTextContent());
+						hm.put("pub_info", node.getTextContent());
+					}
+					nlLists.put("item"+i, hm);
+					xmlArray.add(hm);
+				}
+			}
+			
+			
+			xmlArray.add(classNoArray);
+			xmlArray.add(titleArray);
+			xmlArray.add(authorArray);
+			xmlArray.add(pubArray); -->
+
+	.input[type=text] {
+		-webkit-ime-mode: active;
+		-moz-ime-mode: active;
+		-ms-ime-mode: active;
+		ime-mode: active;
+	}
+	
+	.korean-first {
+		-webkit-ime-mode: active;
+		-moz-ime-mode: active;
+		-ms-ime-mode: active;
+		ime-mode: active;
+	}
+
+	.english-first {
+		-webkit-ime-mode: inactive;
+		-moz-ime-mode: inactive;
+		-ms-ime-mode: inactive;
+		ime-mode: inactive;
+	}
+
+	.only-english {
+		/* 아이디와 비밀번호에는 이것을 적용시켜서 혼란이 없도록. */
+		-webkit-ime-mode: disabled;
+		-moz-ime-mode: disabled;
+		-ms-ime-mode: disabled;
+		ime-mode: disabled;
+	}
+
 

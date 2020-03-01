@@ -9,26 +9,88 @@
 <meta charset='utf-8' />
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>도서 상세 보기</title>
+<title>도서 정보 수정하기</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
+
+<style type="text/css">
+	label {
+		font-size: 14px;
+	}
+	
+	p {
+		margin: 5px 0px;
+	}
+</style>
 </head>
 
 <body>
 	<div id="wrapper">
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<h4 class='page-header'>도서 상세 보기</h4>
+				<h4 class='page-header'>도서 정보 수정</h4>
 				
-				<!-- 버튼 -->
-				<div class="text-right">
-					<a
-						href="${pageContext.request.contextPath}/book/book_held_edit.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
-						class="btn btn-warning">수정</a> <a
-						href="${pageContext.request.contextPath}/book/book_held_delete.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
-						class="btn btn-danger" data-toggle="modal" data-target="#delete_book_modal">삭제</a> <input type="button"
-						class="btn btn-primary" value="닫기" onclick="self.close()" />
-				</div>
+				<form class="horizontal" name="edit_book_held" method="post" action="${pageContext.request.contextPath}/book/book_held_edit_ok.do">
+					
+					<input type="hidden" name="id" id="id" value="${bookHeldItem.id}"/>
+					
+					<div class="form-inline">
+						<label for="titleBook" class="col-2">도서 제목</label>
+						<div class="col-10">
+							<p class="form-control-static form-control-sm">${bookHeldItem.titleBook}</p>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="bookShelf" class="col-2">서가</label>
+						<div class="col-10">
+							<input name="bookShelf" id="bookShelf" class="form-control form-control-sm"
+								value="${bookHeldItem.bookShelf}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="localIdBarcode" class="col-2">바코드</label>
+						<div class="col-10">
+							<input name="localIdBarcode" id="localIdBarcode" class="form-control form-control-sm"
+								value="${bookHeldItem.localIdBarcode}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="purchasedOrDonated" class="col-2">구입/기증</label>
+						<div class="col-10">
+							<select name="purchasedOrDonated" id="purchasedOrDonated"
+								class="form-control form-control-sm">
+								<option value="1" <c:if test="${bookHeldItem.purchasedOrDonated == 1}">selected</c:if>>구입</option>
+								<option value="0"<c:if test="${bookHeldItem.purchasedOrDonated == 0}">selected</c:if>>기증</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="additionalCode" class="col-2">별치기호</label>
+						<div class="col-10">
+							<input name="additionalCode" id="additionalCode" class="form-control form-control-sm"
+								value="${bookHeldItem.additionalCode}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="copyCode" class="col-2">복본기호</label>
+						<div class="col-10">
+							<input name="copyCode" id="copyCode" class="form-control form-control-sm"
+								value="${bookHeldItem.copyCode}"/>
+						</div>
+					</div>
+					
+					<div class="form-group mt-2">
+						<div class="col-md-offset-2 col-md-6">
+							<button type="submit" class="btn btn-primary btn-sm Refresh">수정하기</button>
+							<button type="reset" class="btn btn-danger btn-sm">다시작성</button>
+						</div>
+					</div>
+				</form>
 				
 				<!-- 조회결과를 출력하기 위한 표 -->
 				<table class="table table-sm table-bordered mt-2">
@@ -51,10 +113,6 @@
 						<tr>
 							<th class="table-info text-center">카테고리</th>
 							<td>${bookHeldItem.categoryBook}</td>
-						</tr>
-						<tr>
-							<th class="table-info text-center">서가</th>
-							<td>${bookHeldItem.bookShelf}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">도서제목</th>
@@ -175,6 +233,10 @@
 			$(".closeRefresh").click(function(){
 				opener.location.href=opener.document.URL;
 				window.close();
+			});
+			
+			$(".Refresh").click(function(){
+				opener.location.href=opener.document.URL;
 			});
 		});
 	</script>

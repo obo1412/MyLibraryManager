@@ -68,8 +68,6 @@ public class BookListBrwd {
 		}
 		
 		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
 		
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
@@ -78,25 +76,25 @@ public class BookListBrwd {
 		brw.setIdLibBrw(idLib);
 		
 		// 검색어 파라미터 받기 + Beans 설정
-		String keyword = web.getString("keyword", "");
-		member.setName(keyword);
+		/*String keyword = web.getString("keyword", "");
+		bookHeld.setName(keyword);
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
 		
-		/** 2) 페이지 번호 구현하기 */
+		*//** 2) 페이지 번호 구현하기 *//*
 		// 전체 데이터 수 조회하기
 		int totalCount = 0;
 		try {
-			totalCount = memberService.getMemberCount(member);
+			totalCount = memberService.getMemberCount(bookHeld);
 		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
 		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
 		page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());
+		bookHeld.setLimitStart(page.getLimitStart());
+		bookHeld.setListCount(page.getListCount());*/
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
@@ -113,7 +111,7 @@ public class BookListBrwd {
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		model.addAttribute("brwList", brwList);
-		model.addAttribute("keyword", keyword);
+		/*model.addAttribute("keyword", keyword);*/
 		model.addAttribute("page", page);
 		
 		return new ModelAndView("book/book_list_brwd");

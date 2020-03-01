@@ -29,6 +29,7 @@
 		<!-- book_held beans -->
 		<result property="localIdBarcode" column="local_id_barcode"/>
 		<result property="copyCode" column="copy_code"/>
+		<result property="available" column="available"/>
 	</resultMap>
 	
 	<!-- 도서 대출 정보를 저장한다
@@ -49,14 +50,15 @@
 	<!-- getBorrowList -->
 	<select id="selectBorrowList" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">
 		SELECT
-			id_brw, id_lib_brw, book_held_id, b.title_book,
-			id_member_brw, m.name, m.phone, start_date_brw, end_date_brw
+			id_brw, id_lib_brw, book_held_id, b.title_book, local_id_barcode,
+			id_member_brw, m.name, m.phone, start_date_brw, end_date_brw,
+			due_date_brw
 		FROM borrow r
 		INNER JOIN book_held h ON r.book_held_id = h.id
 		INNER JOIN book b ON b.id_book = h.book_id_book
 		INNER JOIN member m ON r.id_member_brw = m.id
 		WHERE id_lib_brw = #{idLibBrw} AND (end_date_brw is NULL OR end_date_brw = '')
-		ORDER BY start_date_brw ASC
+		ORDER BY m.name ASC
 	</select>
 	
 	<!-- brwBook.java - 오늘의 대출/반납 표시 -->
@@ -151,7 +153,8 @@
 		FROM book_held h
 		LEFT OUTER JOIN borrow r ON h.id = r.book_held_id
 		INNER JOIN book b on b.id_book = h.book_id_book
-		WHERE (library_id_lib = #{libraryIdLib}
+		WHERE (available = 0 OR available = 1)
+		AND (library_id_lib = #{libraryIdLib}
 		AND (book_held_id NOT IN (SELECT book_held_id FROM borrow r WHERE (end_date_brw IS NULL OR end_date_brw = '')))
 		OR (library_id_lib = #{libraryIdLib} AND id_brw IS NULL))
 		<choose>

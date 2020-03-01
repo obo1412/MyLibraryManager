@@ -46,8 +46,8 @@
 				<!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
 
 				<form class="form-horizontal search-box prtNone"
-					name="search-mbr-form" id="search-mbr-form" method="post"
-					action="${pageContext.request.contextPath}/book/search_book.do">
+					name="search-mbr-form" id="search-mbr-form" method="get"
+					action="${pageContext.request.contextPath}/book/print_tag_default.do">
 					<div class="form-group form-inline">
 						<button class="btn btn-danger" id="btn-print">인쇄</button>
 						<label for='search-book-info' class="col-md-2">도서 검색</label>
@@ -72,89 +72,8 @@
 						onclick="window.open('','window팝업','width=300, height=300, menubar=no, status=no, tollbar=no');">
 				</div> -->
 
-				<table class="table table-sm prtNone">
-					<thead>
-						<tr>
-							<th class="info text-center">도서관</th>
-							<th class="info text-center">도서제목</th>
-							<th class="info text-center">바코드</th>
-							<th class="info text-center">청구기호</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="text-center">리브도서관</td>
-							<td class="text-center">표백</td>
-							<td class="text-center">BZ000001</td>
-							<td class="text-center">813.7장12ㅍC3</td>
-						</tr>
-					</tbody>
-				</table>
-					
-					<div id="bcTarget">
-					</div>
-					
-				<div id="wholeBox"
-					style="border: 1px solid black; width: 490px; height: 140px;">
-					<div id="leftBox"
-						style="padding-left: 50px; float: left; width: 50%; height: 100%;">
-						<div style="width: 100%; height: 10px;"></div>
-						<div style="font-family:'Free 3 of 9'; font-size: 50px;">
-							*000126*</div>
-						<div>0000006</div>
-					</div>
-					<div id="qrBox"
-						style="float: left; width: 16.6%; height: 100%;">
-						<div style="margin-top: 10px; margin: 25px auto; transform: rotate(90deg);">
-							<!-- <div>000006</div>
-							<div>qr</div> -->
-						</div>
-					</div>
-					<div id="callNoBox" style="float: left; width: 16%; height: 100%;">
-						<div
-							style="font-size: 14px; margin-top: 10px; margin: 25px auto; transform: rotate(90deg);">
-							<div>813.7</div>
-							<div>장12ㅍ</div>
-							<div>C3</div>
-						</div>
-					</div>
-					<div id="rightBox"
-						style="display: table; float: right; width: 16%; height: 100%; background-color: #3399ff; text-align: center;">
-						<div
-							style="display: table-cell; font-size: 40px; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">900</div>
-					</div>
-				</div>
+					<input name="" id="" value="" placeholder="도서sorting 조건"/>
 				
-				<div id="wholeBox" 
-					style="margin-top: 10px; border: 1px solid black; width: 490px; height: 140px;">
-					<div id="leftBox"
-						style="padding-left: 50px; float: left; width: 50%; height: 100%;">
-						<div style="width: 100%; height: 10px;"></div>
-						<div style="font-family:'Free 3 of 9'; font-size: 50px;">
-							*000126*</div>
-						<div>0000006</div>
-					</div>
-					<div id="qrBox"
-						style="float: left; width: 16.6%; height: 100%;">
-						<div style="margin-top: 10px; margin: 25px auto; transform: rotate(90deg);">
-							<!-- <div>000006</div>
-							<div>qr</div> -->
-						</div>
-					</div>
-					<div id="callNoBox" style="float: left; width: 16%; height: 100%;">
-						<div
-							style="font-size: 14px; margin-top: 10px; margin: 25px auto; transform: rotate(90deg);">
-							<div>813.7</div>
-							<div>장12ㅍ</div>
-							<div>C3</div>
-						</div>
-					</div>
-					<div id="rightBox"
-						style="display: table; float: right; width: 16%; height: 100%; background-color: #3399ff; text-align: center;">
-						<div
-							style="display: table-cell; font-size: 40px; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">900</div>
-					</div>
-				</div>
 			</div>
 			<!-- container-fluid 끝 -->
 		</div>
@@ -206,12 +125,16 @@
 
 		});
 
-		$("#btn-print").click(function() {
+		/* $("#btn-print").click(function() {
 			if (navigator.userAgent.indexOf("MSIE") > 0) {
 				printPage();
 			} else if (navigator.userAgent.indexOf("Chrome") > 0) {
 				window.print();
 			}
+		}); */
+		$("#btn-print").click(functione() {
+			e.preventDefault();
+			window.open('${pageContext.request.contextPath}/book/print_tag_default.do', '_blank', 'width=750,height=700,scrollbars=yes')
 		});
 
 		var sVal = null;

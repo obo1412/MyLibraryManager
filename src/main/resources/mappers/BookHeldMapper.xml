@@ -29,11 +29,15 @@
 		<result property="bookIdBook" column="book_id_book"/>
 		<result property="bookShelf" column="book_shelf"/>
 		<result property="regDate" column="reg_date"/>
+		<result property="editDate" column="edit_date"/>
 		<result property="localIdBarcode" column="local_id_barcode"/>
 		<result property="purchasedOrDonated" column="purchased_or_donated"/>
 		<result property="available" column="available"/>
 		<result property="additionalCode" column="additional_code"/>
 		<result property="copyCode" column="copy_code"/>
+		
+		<!-- library 테이블 -->
+		<result property="nameLib" column="name_lib"/>
 		
 	</resultMap>
 	
@@ -54,13 +58,13 @@
 		SELECT
 			id, title_book, writer_book, publisher_book, pub_date_book,
 			isbn13_book, classification_code, author_code, volume_code,
-			book_shelf, reg_date,
+			book_shelf, reg_date, edit_date,
 			local_id_barcode, purchased_or_donated, available, additional_code, copy_code,
 			library_id_lib
 		FROM book_held h
 		INNER JOIN book b
 		ON h.book_id_book = b.id_book
-		WHERE library_id_lib=#{libraryIdLib}
+		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
 		<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
 				AND (
 					<if test="titleBook != null">
@@ -82,7 +86,7 @@
 		BookHeldView.java 에서 사용-->
 	<select id="selectBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
-			id, book_shelf, reg_date, local_id_barcode, purchased_or_donated,
+			id, book_shelf, reg_date, edit_date, local_id_barcode, purchased_or_donated,
 			available, additional_code, copy_code,
 			title_book, writer_book, category_book, publisher_book,
 			pub_date_book, price_book, isbn10_book, isbn13_book, description_book,
@@ -95,7 +99,7 @@
 	
 	<!-- <select id="selectBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
-			id, book_shelf, reg_date, local_id_barcode, purchased_or_donated,
+			id, book_shelf, reg_date, edit_date, local_id_barcode, purchased_or_donated,
 			available, additional_code, copy_code
 		FROM book_held
 		WHERE library_id_lib=#{libraryIdLib} AND id=#{id}
@@ -133,10 +137,12 @@
 	
 	<insert id="insertBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO book_held (
-			library_id_lib, book_id_book, book_shelf, reg_date, local_id_barcode,
+			library_id_lib, book_id_book, book_shelf, reg_date, edit_date,
+			local_id_barcode,
 			purchased_or_donated, available, additional_code, copy_code  
 		) VALUES (
-			#{libraryIdLib}, #{bookIdBook}, #{bookShelf}, now(), #{localIdBarcode},
+			#{libraryIdLib}, #{bookIdBook}, #{bookShelf}, now(), now(),
+			#{localIdBarcode},
 			#{purchasedOrDonated}, #{available}, #{additionalCode}, #{copyCode}
 		)
 	</insert>
@@ -201,4 +207,100 @@
 		</where>
 	</select>
 	
+	<!-- 도서 폐기 bookHeldDelete.java -->
+	<update id="updateBookHeldDiscard" parameterType="com.gaimit.mlm.model.BookHeld">
+		UPDATE book_held SET
+			edit_date=now(), local_id_barcode=CONCAT(#{localIdBarcode}, 'x'),
+			available = 2
+		WHERE library_id_lib=#{libraryIdLib} AND local_id_barcode=#{localIdBarcode}
+	</update>
+	
+	<!-- 폐기도서 목록 보기 bookHeldDiscardList -->
+	<select id="selectBookHeldDiscardList" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id, title_book, writer_book, publisher_book, pub_date_book,
+			isbn13_book, classification_code, author_code, volume_code,
+			book_shelf, reg_date, edit_date,
+			local_id_barcode, purchased_or_donated, available, additional_code, copy_code,
+			library_id_lib
+		FROM book_held h
+		INNER JOIN book b ON h.book_id_book = b.id_book
+		WHERE library_id_lib=#{libraryIdLib} AND available = 2
+		<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+				AND (
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="writerBook != null">
+						writer_book LIKE concat('%', #{writerBook}, '%')
+					</if>
+					<if test="publisherBook != null">
+						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					</if>
+				)
+			</if>
+		ORDER BY id ASC
+		LIMIT #{limitStart}, #{listCount}
+	</select>
+	
+		<!-- pagination을 위한 폐기도서 전체 도서수 체크 -->
+	<select id="selectBookDiscardCountForPage" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			COUNT(id)
+		FROM book_held h
+		INNER JOIN book b ON h.book_id_book = b.id_book
+		<where>
+			library_id_lib=#{libraryIdLib} AND available = 2
+			<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+				AND (
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="writerBook != null">
+						writer_book LIKE concat('%', #{writerBook}, '%')
+					</if>
+					<if test="publisherBook != null">
+						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					</if>
+				)
+			</if>
+		</where>
+	</select>
+	
+	<!-- 도서 정보 수정.java -->
+	<update id="updateBookHeldItem" parameterType="com.gaimit.mlm.model.BookHeld">
+		UPDATE book_held SET
+			edit_date=now(), book_shelf=#{bookShelf}, local_id_barcode=#{localIdBarcode},
+			purchased_or_donated=#{purchasedOrDonated},
+			additional_code=#{additionalCode}, copy_code=#{copyCode}
+		WHERE library_id_lib=#{libraryIdLib} AND id=#{id}
+	</update>
+	
+	<!-- printTag.java -->
+	<select id="selectPrintBookHeldList" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id, title_book,  additional_code, copy_code,
+			classification_code, author_code, volume_code,
+			local_id_barcode, name_lib
+		FROM book_held h
+		INNER JOIN book b ON h.book_id_book = b.id_book
+		INNER JOIN library l ON h.library_id_lib = l.id_lib
+		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
+		<!-- <if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+				AND (
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="writerBook != null">
+						writer_book LIKE concat('%', #{writerBook}, '%')
+					</if>
+					<if test="publisherBook != null">
+						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					</if>
+				)
+			</if>
+		ORDER BY id ASC
+		LIMIT #{limitStart}, #{listCount} -->
+	</select>
+
 </mapper>

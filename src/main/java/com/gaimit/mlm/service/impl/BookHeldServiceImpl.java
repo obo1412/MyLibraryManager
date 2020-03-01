@@ -36,7 +36,7 @@ public class BookHeldServiceImpl implements BookHeldService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("조회된 책이 없습니다.");
+			throw new Exception("조회된 도서가 없습니다.");
 		} catch (Exception e) {
 			throw new Exception("데이터 조회에 실패했습니다.");
 		}
@@ -66,7 +66,7 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 	/*
-	 * book 테이블에 책 정보가 있는지 확인하고, 바로 insertbook과 insertbookHeld 까지 진행
+	 * book 테이블에 도서 정보가 있는지 확인하고, 바로 insertbook과 insertbookHeld 까지 진행
 	 */
 	@Override
 	public int selectBookCount(BookHeld bookHeld) throws Exception {
@@ -207,6 +207,96 @@ public class BookHeldServiceImpl implements BookHeldService {
 			result = sqlSession.selectOne("BookHeldMapper.selectBookCountForPage", bookHeld);
 		} catch (Exception e) {
 			throw new Exception("페이지를 위한 도서수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
+	@Override
+	public void updateBookHeldDiscard(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.update("BookHeldMapper.updateBookHeldDiscard", bookHeld);
+
+			// 회원번호와 비밀번호가 일치하는 데이터가 0이라면, 비밀번호가 잘못된 상태
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("폐기된 도서가 없습니다.(바코드 불일치)");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서 폐기에 실패했습니다.");
+		}
+	}
+
+
+
+
+	@Override
+	public List<BookHeld> getBookHeldDiscardList(BookHeld bookHeld) throws Exception {
+		List<BookHeld> result = null;
+		try {
+			result = sqlSession.selectList("BookHeldMapper.selectBookHeldDiscardList", bookHeld);
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("조회된 폐기 도서가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("폐기 도서 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
+	@Override
+	public int selectBookDiscardCountForPage(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectBookDiscardCountForPage", bookHeld);
+		} catch (Exception e) {
+			throw new Exception("(페이지) 폐기 도서수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+
+
+
+	@Override
+	public void updateBookHeldItem(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.update("BookHeldMapper.updateBookHeldItem", bookHeld);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("변경된 도서 데이터가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("도서 데이터 수정에 실패했습니다.");
+		} 
+		
+	}
+
+
+
+
+	@Override
+	public List<BookHeld> getPrintBookHeldList(BookHeld bookHeld) throws Exception {
+		List<BookHeld> result = null;
+		try {
+			result = sqlSession.selectList("BookHeldMapper.selectPrintBookHeldList", bookHeld);
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("인쇄 도서 목록이 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("인쇄 도서 목록 조회에 실패했습니다.");
 		}
 		return result;
 	}
