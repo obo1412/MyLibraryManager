@@ -98,14 +98,11 @@ public class BookHeldDelete {
 
 		/** (3) 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
-		int idLib = 0;
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			/*return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");*/
 			web.printJsonRt("로그인 상태가 아닙니다.");
-		} else {
-			idLib = loginInfo.getIdLibMng();
 		}
 
 		

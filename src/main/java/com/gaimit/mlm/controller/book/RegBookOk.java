@@ -38,6 +38,7 @@ public class RegBookOk {
 	// --> import study.jsp.helper.RegexHelper;
 	@Autowired
 	RegexHelper regex;
+	
 	@Autowired
 	Util util;
 	// --> import study.jsp.helper.UploadHelper;
@@ -102,10 +103,7 @@ public class RegBookOk {
 			volumeCode2 = "0";
 		}
 		
-		String barcodeHead = web.getString("barcodeHead");
-		if(barcodeHead==null||barcodeHead.equals("")) {
-			barcodeHead = "";
-		}
+		String newBarcode = web.getString("newBarcode");
 		String bookCover = web.getString("bookCover");
 		String bookDesc = web.getString("bookDesc");
 		
@@ -129,7 +127,7 @@ public class RegBookOk {
 		logger.debug("volumeCode2=" + volumeCode2);
 		logger.debug("bookCover=" + bookCover);
 		logger.debug("bookDesc=" + bookDesc);
-		logger.debug("barcodeHead=" + barcodeHead);
+		logger.debug("newBarcode=" + newBarcode);
 		
 		
 		//book, bookHeld insert 위한 정보 수집
@@ -158,31 +156,62 @@ public class RegBookOk {
 		bookHeld.setAvailable(1);
 		
 		
+		String viewBarcodeInit = util.strExtract(newBarcode);
+		int viewBarNum = util.numExtract(newBarcode);
 		
-		//barcode 작성을 위한 로직
-		BookHeld lastLocalBarcode = null;
-		String lastLocalBarcode2 = null;
+		if(newBarcode.length() != 8) {
+			return web.redirect(null, "바코드를 8자리로 맞추어 주세요.");
+		} else if(viewBarcodeInit.length() > 3 ) {
+			return web.redirect(null, "바코드 머리 글자수는 3자리 이하여야 합니다.");
+		}
 		
+		//바코드 번호 생성을 위한 변수 선언
+		int lastEmptyLocalBarcode = 0; //바코드 번호 빈자리 
+		BookHeld lastLocalBarcode = new BookHeld(); //바코드 헤드를 위한 마지막 바코드 참조
+		String barcodeInit = ""; 
+		int barcodeInitCount = 0;
+		
+		//barcode 호출
 		try {
-			//최종 barcodeHead를 가지고 와서 함수에 적용.
-			//처음일 경우 이 함수를 호출할지 말지 걸어야되나?
-			int firstBookHeld = bookHeldService.selectBookHeldFirstCount(bookHeld);
-			if(firstBookHeld > 0) {
-				lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
-				lastLocalBarcode2 = lastLocalBarcode.getLocalIdBarcode();
+			/*바코드 헤드 검사*/
+			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
+			/*바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다*/
+			if(lastLocalBarcode != null) {
+				barcodeInit = lastLocalBarcode.getLocalIdBarcode();
+				barcodeInit = util.strExtract(barcodeInit);
+				/*바코드말머리가 있다면 말머리의 길이를 구한다.
+				 *말머리의 길이로 mapper에서 바코드 select함*/
+				barcodeInitCount = barcodeInit.length();
+			}
+			/*바코드 말머리의 길이를 bookHeld에 주입*/
+			bookHeld.setBarcodeInitCount(barcodeInitCount);
+			//바코드 뒤 숫자 중복검사를 위하여 값 주입
+			bookHeld.setNewBarcodeForDupCheck(viewBarNum);
+			//위 viewBarNum를 중복검사 변수로 사용.
+			//중복되는 번호가 있다면 impl 단계에서 예외처리
+			bookHeldService.selectDupCheckLocalBarcode(bookHeld);
+			
+			/*바코드 번호가 1번인지 검사*/
+			int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
+			/*1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록*/
+			/*1이 아니면 1로 바코드 등록*/
+			if(firstBarcode == 1 ) {
+				lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
 			} else {
-				lastLocalBarcode2 = barcodeHead + "0";
+				lastEmptyLocalBarcode = 1;
+			}
+			
+			/*뷰페이지에서 넘어온 바코드 숫자와 ok컨트롤러에서 조사한 바코드 뒤숫자가
+			 * 같지 않으면, 콜백 발생. */
+			if(viewBarNum != lastEmptyLocalBarcode) {
+				return web.redirect(null, "최신 바코드 번호가 일치하지 않습니다.");
 			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
+		/* 바코드 호출 끝 */
 		
-		//요 아래 8자리 문자로 만드는 함수 만들어서 넣기
-		int barNum = util.numExtract(lastLocalBarcode2)+1;
-		String barStr = util.strExtract(lastLocalBarcode2);
-		String localBarcode = util.makeStrLength(8, barStr, barNum);
-		//위 함수로 완성된 바코드 넣기
-		bookHeld.setLocalIdBarcode(localBarcode);
+		bookHeld.setLocalIdBarcode(newBarcode);
 		
 		
 		try {

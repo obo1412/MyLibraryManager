@@ -16,7 +16,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Borrow;

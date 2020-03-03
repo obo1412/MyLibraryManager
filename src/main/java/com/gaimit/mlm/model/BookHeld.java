@@ -14,6 +14,8 @@ public class BookHeld extends Book{
 	private int available;
 	private String additionalCode;
 	private int copyCode;
+	private int barcodeInitCount;
+	private int newBarcodeForDupCheck;
 	
 	public int getId() {
 		return id;
@@ -81,12 +83,25 @@ public class BookHeld extends Book{
 	public void setCopyCode(int copyCode) {
 		this.copyCode = copyCode;
 	}
+	public int getBarcodeInitCount() {
+		return barcodeInitCount;
+	}
+	public void setBarcodeInitCount(int barcodeInitCount) {
+		this.barcodeInitCount = barcodeInitCount;
+	}
+	public int getNewBarcodeForDupCheck() {
+		return newBarcodeForDupCheck;
+	}
+	public void setNewBarcodeForDupCheck(int newBarcodeForDupCheck) {
+		this.newBarcodeForDupCheck = newBarcodeForDupCheck;
+	}
 	@Override
 	public String toString() {
 		return "BookHeld [id=" + id + ", libraryIdLib=" + libraryIdLib + ", bookIdBook=" + bookIdBook + ", bookShelf="
 				+ bookShelf + ", regDate=" + regDate + ", editDate=" + editDate + ", localIdBarcode=" + localIdBarcode
 				+ ", purchasedOrDonated=" + purchasedOrDonated + ", available=" + available + ", additionalCode="
-				+ additionalCode + ", copyCode=" + copyCode + "]";
+				+ additionalCode + ", copyCode=" + copyCode + ", barcodeInitCount=" + barcodeInitCount
+				+ ", newBarcodeForDupCheck=" + newBarcodeForDupCheck + "]";
 	}
-
+	
 }

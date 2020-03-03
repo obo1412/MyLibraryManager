@@ -63,8 +63,8 @@ public class Util {
 		// 리턴할 문자열
 		String password = "";
 
-		// A~Z, a~z, 1~0 
-		String words = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+		// A~Z, 1~0 소문자 뺀다. 소문자 넣고 싶으면 위처럼 다 적어넣으면 된다. 
+		String words = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		// 글자길이
 		int words_len = words.length();
 

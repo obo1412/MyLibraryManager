@@ -68,7 +68,31 @@ public interface BookHeldService {
 	 * @return
 	 * @throws Exception
 	 */
+	public int selectEmptyLocalBarcode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 바코드 첫번째 번호 1번이 아닌 경우, 1번을 만들어주고 1번이 있으면 사이번호를 위 함수로 찾는다
+	 * @param bookHeld
+	 * @return mysql에서 얻은 결과값이 null 수도 있다.
+	 * 	그러나 int에는 null을 체크할 수 없으므로, Integer를 사용했다.
+	 * @throws Exception
+	 */
+	public Integer selectFirstLocalBarcode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
 	public BookHeld selectLastLocalBarcode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 바코드 중복체크를 위한 함수
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void selectDupCheckLocalBarcode(BookHeld bookHeld) throws Exception;
 	
 	/**
 	 * 페이지를 위한 count

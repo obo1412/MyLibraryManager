@@ -49,9 +49,10 @@
 
 							<div class="form-group">
 								<label for='birthdate' class="col-md-2">생년월일*</label>
-								<div class="col-md-6">
-									<input type="date" name="birthdate" id="birthdate"
+								<div class="col-md-6 form-inline">
+									<input type="date" name="birthdate" id="birthdate" max="9999-12-31"
 										class="form-control" placeholder="yyyy-mm-dd" value="${birthdate}"/>
+									<p class="" style="text-align:center;">YYYY-mm-dd</p>
 								</div>
 							</div>
 

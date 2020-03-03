@@ -65,9 +65,13 @@
 										<c:forEach var="item" items="${list}">
 											<tr>
 												<td class="text-center">${item.id}</td>
-												<td><c:url var="readUrl" value="/player/player_view.do">
-														<c:param name="id" value="${item.id}" />
-													</c:url> <a href="${readUrl}">${item.name}</a></td>
+												<td><c:url var="readUrl" value="/member/member_view.do">
+														<c:param name="memberId" value="${item.id}" />
+													</c:url>
+													<a href="${readUrl}" onclick="window.open(this.href, '_blank','width=400,height=650,scrollbars=yes');return false;">
+														${item.name}
+													</a>
+												</td>
 												<td class="text-center" id="userCode"><fmt:parseDate
 														var="birthdateStr" value="${item.birthdate}"
 														pattern="yyyy-MM-dd" /> <!-- DB에서 가져온 String형 데이터를 Date로 변환

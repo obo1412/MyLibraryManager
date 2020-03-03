@@ -89,10 +89,10 @@ public class BookHeldServiceImpl implements BookHeldService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("조회된 id_book이 없습니다앙.");
+			throw new Exception("조회된 book테이블의 id_book이 없습니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("도서 id_book 조회에 실패했습니다.");
+			throw new Exception("book테이블의 id_book 조회에 실패했습니다.");
 		}
 		return result;
 	}
@@ -186,18 +186,60 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 	@Override
+	public int selectEmptyLocalBarcode(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectEmptyLocalBarcode", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("마지막 Empty LocalBarcode 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	
+	@Override
+	public Integer selectFirstLocalBarcode(BookHeld bookHeld) throws Exception {
+		Integer result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectFirstLocalBarcode", bookHeld);
+			if(result == null) {
+				result = 0;
+			}
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("첫번째 local barcode 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
 	public BookHeld selectLastLocalBarcode(BookHeld bookHeld) throws Exception {
 		BookHeld result = null;
 		try {
 			result = sqlSession.selectOne("BookHeldMapper.selectLastLocalBarcode", bookHeld);
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("LastLocalBarcode 조회에 실패했습니다.");
+			throw new Exception("마지막 barcode 조회에 실패했습니다.");
 		}
 		return result;
 	}
-
-
+	
+	@Override
+	public void selectDupCheckLocalBarcode(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.selectOne("BookHeldMapper.selectDupCheckLocalBarcode", bookHeld);
+			// 일치하는 번호가 있다면 중복이 존재하는 것이다.
+			if (result > 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("중복된 바코드 번호가 존재합니다.");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("바코드 번호 중복검사에 실패했습니다.");
+		}
+	}
 
 
 	@Override

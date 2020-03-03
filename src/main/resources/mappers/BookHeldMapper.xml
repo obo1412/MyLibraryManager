@@ -106,19 +106,24 @@
 
 	</select> 이거 id로 호출할때가 필요할 것 같은데 확인해서 분리하거나 하기.-->
 	
-	<!-- 책 공통DB에 등록되어 있는지 확인 -->
+	<!-- 책 공통DB에 등록되어 있는지 확인
+				이후 제목과 저자 비교할때, 띄어쓰기를 다 제거한걸로 비교로 바꾸자-->
 	<select id="selectBookCount" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
 		SELECT
 			count(id_book)
 		FROM book
 		WHERE isbn13_book = #{isbn13Book}
+		OR (title_book = #{titleBook} AND writer_book = #{writerBook})
 	</select>
 	
+	<!-- book 테이블에 등록이후 bookId를 가져오기 위한 쿼리
+				이후 제목과 저자 비교할때, 띄어쓰기를 다 제거한걸로 비교로 바꾸자  -->
 	<select id="selectBookId" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
 			id_book
 		FROM book
 		WHERE isbn13_book = #{isbn13Book}
+		OR (title_book = #{titleBook} AND writer_book = #{writerBook})
 	</select>
 	
 	<insert id="insertBook" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id_book">
@@ -155,7 +160,8 @@
 		WHERE book_id_book = #{bookIdBook} AND library_id_lib = #{libraryIdLib}
 	</select>
 	
-	<!-- bookHeld 도서 첫등록체크 -->
+	<!-- bookHeld 도서 첫등록체크
+				현재 사용하는 곳이 없는 듯하니 추후 삭제 예정 -->
 	<select id="selectBookHeldFirstCount" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
 		SELECT
 			count(id)
@@ -173,14 +179,50 @@
 		LIMIT 1;
 	</select>
 	
-	<!-- 바코드 최종번호 불러오기 -->
+	<!-- 비어있는 번호를 찾기 위한 쿼리, 중간에 비어있는 값이 없으면 이어진 값에서 최대값+1 나옴 
+		#{barcodeInitCount} 이놈은 모델에만 선언한 놈으로, bookHeld에 변수로 넣어서
+		바코드 헤드의 길이를 측정하기 위해 사용한다.-->
+	<select id="selectEmptyLocalBarcode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			MIN(REPLACE(local_id_barcode, substring(local_id_barcode,1,#{barcodeInitCount}), '')+1)
+		FROM book_held
+		WHERE library_id_lib = #{libraryIdLib} AND (available = 0 OR available =1)
+		AND ((REPLACE(local_id_barcode, substring(local_id_barcode,1,#{barcodeInitCount}), '')+1)
+		NOT IN
+			(SELECT (REPLACE(local_id_barcode, SUBSTRING(local_id_barcode,1,#{barcodeInitCount}), ''))
+				FROM book_held
+				WHERE (library_id_lib = #{libraryIdLib} AND (available = 0 OR available =1))))
+		<!-- ORDER BY local_id_barcode DESC
+		LIMIT 1; -->
+	</select>
+	
+	<!-- 1이 존재한다면, 중간에 비어있는 번호의 최소값을 찾아감.
+				1인지 아닌지 비교하기 위한 시작 값-->
+	<select id="selectFirstLocalBarcode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			MIN(REPLACE(local_id_barcode, SUBSTRING(local_id_barcode,1,#{barcodeInitCount}), ''))
+		FROM book_held
+		WHERE library_id_lib = #{libraryIdLib} AND (available = 0 OR available =1)
+	</select>
+	
+	<!-- 바코드 최종번호 불러오기 마지막에 사용한 바코드 헤드를 참고하기 위하여. -->
 	<select id="selectLastLocalBarcode" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
 			local_id_barcode
 		FROM book_held
-		WHERE library_id_lib = #{libraryIdLib}
+		WHERE library_id_lib = #{libraryIdLib} AND (available = 0 OR available =1)
 		ORDER BY id DESC
-		LIMIT 1;
+		LIMIT 1
+	</select>
+	
+	<!-- 혹시나 모를 바코드 중복체크 -->
+	<select id="selectDupCheckLocalBarcode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			COUNT(id)
+		FROM book_held
+		WHERE library_id_lib = #{libraryIdLib} AND (available = 0 OR available =1)
+		AND (REPLACE(local_id_barcode, SUBSTRING(local_id_barcode,1,#{barcodeInitCount}), '')
+					= #{newBarcodeForDupCheck})
 	</select>
 	
 	<!-- pagination을 위한 전체 도서수 체크 -->

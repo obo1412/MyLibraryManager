@@ -82,12 +82,15 @@
 	<!-- 일련번호에 의한 회원정보 조회 -->
 	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, m.id_lib, m.name, phone, g.grade_id, barcode_mbr, grade_name,
+			id, m.id_lib, m.name, phone, birthdate, email, postcode,
+			addr1, addr2, remarks, reg_date, barcode_mbr, profile_img,
+			rf_uid,
+			g.grade_id, grade_name,
 			brw_limit, date_limit
 		FROM member m
 		INNER JOIN member_grade g
 		ON m.grade_id = g.grade_id
-		WHERE m.id_lib=#{idLib} AND name=#{name}
+		WHERE m.id_lib=#{idLib} AND id=#{id}
 	</select>
 	
 	<!-- 선수목록 전체 데이터 수 얻기 getMemberCount 

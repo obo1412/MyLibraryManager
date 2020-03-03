@@ -9,7 +9,7 @@
 <meta charset='utf-8' />
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>보유도서 목록</title>
+<title>국립중앙도서관 api 검색</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <style type="text/css">
@@ -44,7 +44,7 @@
 											<option value="2" <c:if test="${searchOpt == 2}">selected</c:if>>
 												제목</option>
 											<option value="3" <c:if test="${searchOpt == 3}">selected</c:if>>
-												출판사</option>
+												저자</option>
 										</select>
 									</span>
 									<input type="text" name='search-book-info' id='search-book-info'
