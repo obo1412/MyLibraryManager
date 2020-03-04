@@ -391,22 +391,43 @@ public class SearchBook {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		}
 		
-		String isbn = web.getString("search-book-info", "");
+		int searchOpt = web.getInt("searchOpt");
+		String keyword = web.getString("search-book-info", "");
 		
-		if(isbn != null && !isbn.equals("")) {
+		if(keyword != null && !keyword.equals("")) {
 			String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
+			String apiUrl = null;
+			
+			switch (searchOpt) {
+			case 1:
+				apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=";
+				break;
+			case 2:
+				apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&f1=title&v1=";
+				break;
+			case 3:
+				apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&f1=author&v1=";
+				break;
+			case 4:
+				apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&pageSize=100&category=dan&detailSearch=true&f1=title&f2=author";
+				break;
+			}
+			
 			//국립중앙도서관 아래 api검색
 			//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
 			// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
 			ArrayList<Object> xmlArray = new ArrayList<Object>();
 			try {
-				String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
+				
 				String apiUrlFull = null;
-				if(isbn.length() == 13) {
-					apiUrlFull = apiUrl + "&isbnCode="+ isbn;
-				} else if(isbn.length() == 10) {
-					apiUrlFull = apiUrl +"&isbnCode="+ isbn;
+				apiUrlFull = apiUrl + keyword;
+				
+				if(searchOpt == 4) {
+					String[] array = keyword.split(" ");
+					apiUrlFull = apiUrl + "&v1="+ array[0] +"&v2="+ array[1];
 				}
+				
+				
 				URL url = new URL(apiUrlFull);
 				HttpURLConnection con = (HttpURLConnection)url.openConnection();
 				con.setRequestMethod("GET");
@@ -440,7 +461,8 @@ public class SearchBook {
 			}
 		}
 		
-		model.addAttribute("isbn", isbn);
+		model.addAttribute("keyword", keyword);
+		model.addAttribute("searchOpt", searchOpt);
 		
 		
 		return new ModelAndView("book/search_nl_book");

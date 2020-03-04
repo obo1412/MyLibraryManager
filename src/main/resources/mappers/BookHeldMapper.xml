@@ -65,7 +65,7 @@
 		INNER JOIN book b
 		ON h.book_id_book = b.id_book
 		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
-		<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+			<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
 				AND (
 					<if test="titleBook != null">
 						title_book LIKE concat('%', #{titleBook}, '%')
@@ -232,7 +232,7 @@
 		FROM book_held h
 		INNER JOIN book b ON h.book_id_book = b.id_book
 		<where>
-			library_id_lib=#{libraryIdLib}
+			library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
 			<if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
 				AND (
 					<if test="titleBook != null">

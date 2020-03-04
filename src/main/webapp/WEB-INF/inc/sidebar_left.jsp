@@ -63,7 +63,7 @@
 			<a class="dropdown-item"
 				href="${pageContext.request.contextPath}/book/brw_book.do">도서
 				대출/반납</a> <a class="dropdown-item"
-				href="${pageContext.request.contextPath}/book/book_list_brwd.do">대출된
+				href="${pageContext.request.contextPath}/book/book_held_list_brwd.do">대출된
 				도서 목록</a>
 		</div></li>
 	<li class="nav-item"><a class="nav-link notyet" href="#"> <i

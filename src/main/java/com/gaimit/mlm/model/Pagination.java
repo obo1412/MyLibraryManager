@@ -17,10 +17,9 @@ public class Pagination {
 	public void setListCount(int listCount) {
 		this.listCount = listCount;
 	}
-	
 	@Override
 	public String toString() {
 		return "Pagination [limitStart=" + limitStart + ", listCount=" + listCount + "]";
 	}
-	
+
 }

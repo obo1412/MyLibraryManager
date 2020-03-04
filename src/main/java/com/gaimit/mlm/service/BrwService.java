@@ -99,5 +99,20 @@ public interface BrwService {
 	 */
 	public int selectBrwLimitByMemberId(Borrow borrow) throws Exception;
 	
+	/**
+	 * 오늘 반납되어야할 대출중인 도서 목록
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectReturnListToday(Borrow borrow) throws Exception;
+	
+	/**
+	 * 대출도서 목록 페이지
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBorrowListCount(Borrow borrow) throws Exception;
 	
 }

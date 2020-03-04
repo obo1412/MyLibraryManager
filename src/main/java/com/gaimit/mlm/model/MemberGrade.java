@@ -6,6 +6,7 @@ public class MemberGrade extends Library{
 	private int brwLimit;
 	private int dateLimit;
 	private int idLib;
+	private int standard;
 
 	public int getGradeId() {
 		return gradeId;
@@ -37,9 +38,15 @@ public class MemberGrade extends Library{
 	public void setIdLib(int idLib) {
 		this.idLib = idLib;
 	}
+	public int getStandard() {
+		return standard;
+	}
+	public void setStandard(int standard) {
+		this.standard = standard;
+	}
 	@Override
 	public String toString() {
 		return "MemberGrade [gradeId=" + gradeId + ", gradeName=" + gradeName + ", brwLimit=" + brwLimit
-				+ ", dateLimit=" + dateLimit + ", idLib=" + idLib + "]";
+				+ ", dateLimit=" + dateLimit + ", idLib=" + idLib + ", standard=" + standard + "]";
 	}
 }

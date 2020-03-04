@@ -19,7 +19,7 @@
 
 @media print {
 	@page {
-		size: 21cm 29.7cm; /* A4 */
+		size: 262mm 371mm; /* A4 */
 		margin: 0;
 	}
 	html, body {
@@ -61,13 +61,13 @@
 				</div> -->
 
 				<c:forEach var="item" items="${bookHeldList}">
-					<div style="width: 105mm; float: none;"><!-- float left를 사용해서 나란히 놓기 -->
+					<div style="width: 131mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
 						<div id="titleRmk"
-							style="margin-left: 8pt; font-size: 10pt; font-weight: bold;">${item.titleBook}</div>
+							style="padding-left: 8pt; font-size: 10pt; font-weight: bold; width:100%; overflow:hidden">${item.titleBook}</div>
 						<div id="wholeBox"
-							style="width: 376pt; height: 112pt; float: left;">
+							style="border:1px solid black; width: 117mm; height: 35mm; float: left;">
 							<div id="leftBox"
-								style="text-align: center; float: left; width: 188pt;; height: 100%;">
+								style="text-align: center; float: left; width: 56mm; height: 100%;">
 								<div
 									style="width: 100%; height: 35%; font-weight: 900; font-size: 20pt; padding-top: 20pt;">
 									${item.nameLib}</div>
@@ -78,8 +78,8 @@
 							</div>
 							
 							<div id="centerBox"
-								style="float: left; width: 128pt; height: 100%;">
-								<div id="qrBox" style="float: left; width: 80pt; height: 100%;">
+								style="float: left; width: 40mm; height: 100%;">
+								<div id="qrBox" style="float: left; width: 19mm; height: 100%;">
 									<div
 										style="float:left; line-height:12pt; margin-top: 30pt; margin-left: 20pt; transform: rotate(90deg);">
 										<div style="font-weight:bold;">${item.localIdBarcode}</div>
@@ -87,7 +87,7 @@
 									</div>
 								</div>
 								<div id="callNoBox"
-									style="float: left; width: 48pt; height: 100%;">
+									style="float: left; width: 21mm; height: 100%;">
 									<div
 										style="float:left; font-size: 10pt; line-height:12pt; margin: 10px auto; transform: rotate(90deg);">
 										<div>${item.classificationCode}</div>
@@ -101,17 +101,17 @@
 								<c:when test="${classCode lt 0}">
 									<c:set var="classCode" value="" />
 									<div id="rightBox"
-										style="display: table; background-color:black; float: right; width: 58pt; height: 100%; text-align: center;">
+										style="display: table; background-color:black; float: right; width: 18mm; height: 100%; text-align: center;">
 									<div
-										style="display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
+										style="width:100%; display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;"><%-- ${classCode} --%></div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 0}">
 									<c:set var="classCode" value="000" />
 									<div id="rightBox"
-										style="display: table; background-color:brown; float: right; width: 58pt; height: 100%; text-align: center;">
+										style="display: table; background-color:brown; float: right; width: 18mm; height: 100%; text-align: center;">
 									<div
-										style="display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
+										style="width:100%; display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;"><%-- ${classCode} --%></div>
 										</div>
 								</c:when>
 								<c:when test="${classCode eq 100}">
@@ -137,9 +137,9 @@
 								</c:when>
 								<c:when test="${classCode eq 800}">
 									<c:set var="classSectionColor" value="pink" />
-									<div id="rightBox" style="display: table; background-color:pink; float: right;
-										width: 58pt; height: 100%; text-align: center;">
-										<div style="display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
+									<div id="rightBox"
+											style="display: table; background-color:pink; float: right; width: 18mm; height: 100%; text-align: center;">
+										<div style="width:100%; display: table-cell; font-size: 35pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;"></div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 900}">

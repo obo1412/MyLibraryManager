@@ -45,10 +45,12 @@
 												제목</option>
 											<option value="3" <c:if test="${searchOpt == 3}">selected</c:if>>
 												저자</option>
+											<option value="4" <c:if test="${searchOpt == 4}">selected</c:if>>
+												제목+저자</option>
 										</select>
 									</span>
 									<input type="text" name='search-book-info' id='search-book-info'
-										class="form-control form-control-sm" placeholder="검색" value="${isbn}" />
+										class="form-control form-control-sm" placeholder="검색" value="${keyword}" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-success" type="submit">
 											<i class='fas fa-search'></i>

@@ -218,4 +218,31 @@ public class BrwServiceImpl implements BrwService {
 		return result;
 	}
 
+	@Override
+	public List<Borrow> selectReturnListToday(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectReturnListToday", borrow);
+		} catch (Exception e) {
+			throw new Exception("오늘 반납 예정 도서 데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public int selectBorrowListCount(Borrow borrow) throws Exception {
+		int result = 0;
+
+		try {
+			// 게시물 수가 0건인 경우도 있으므로, 
+			// 결과값이 0인 경우에 대한 예외를 발생시키지 않는다.
+			result = sqlSession.selectOne("BorrowMapper.selectBorrowListCount", borrow);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("대출중인 도서count 조회에 실패했습니다.");
+		}
+
+		return result;
+	}
+
 }
