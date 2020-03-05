@@ -73,9 +73,9 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(bookHeldList) > 0}">
-										<c:forEach var="item" items="${bookHeldList}" varStatus="status">
+										<c:forEach var="item" items="${bookHeldList}">
 											<tr>
-												<td class="text-center">${status.count}</td>
+												<td class="text-center">${item.id}</td>
 												<td class="text-center"><c:url var="viewUrl"
 														value="/book/book_held_view.do">
 														<c:param name="localIdBarcode"
