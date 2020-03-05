@@ -61,11 +61,11 @@
 				</div> -->
 
 				<c:forEach var="item" items="${bookHeldList}">
-					<div style="width: 131mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
+					<div style="/* border:1px dashed red; */ width: 131mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
 						<div id="titleRmk"
-							style="padding-left: 8pt; font-size: 10pt; font-weight: bold; width:100%; overflow:hidden">${item.titleBook}</div>
+							style="line-height:4mm; padding-left: 8pt; font-size: 6pt; font-weight: bold; width:100%; overflow:hidden">${item.titleBook}</div>
 						<div id="wholeBox"
-							style="border:1px solid black; width: 117mm; height: 35mm; float: left;">
+							style="/* border:1px solid black; */ margin-left:6.2mm; width: 117mm; height: 35mm; float: left;">
 							<div id="leftBox"
 								style="text-align: center; float: left; width: 56mm; height: 100%;">
 								<div
