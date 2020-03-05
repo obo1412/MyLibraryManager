@@ -25,6 +25,7 @@
 		<result property="gradeName" column="grade_name"/>
 		<result property="brwLimit" column="brw_limit"/>
 		<result property="dateLimit" column="date_limit"/>
+		<result property="standard" column="standard"/>
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -236,5 +237,21 @@
 			AND grade_name LIKE concat('%',#{gradeName} ,'%')
 		</if>
 	</select>
+	
+	<!-- 회원등급 정보를 삭제한다 -->
+	<delete id="deleteMember" parameterType="com.gaimit.mlm.model.Member">
+		DELETE
+		FROM member_grade
+		WHERE grade_id=#{gradeId} AND standard=0;
+	</delete>
+	
+	<!-- 삭제하려는 등급을 사용중인 회원을 검색하여 기준 등급으로 변경 -->
+	<update id="updateMemberStandardGradeToDelete" parameterType="com.gaimit.mlm.model.Member">
+		UPDATE member SET
+			grade_id =
+				(SELECT grade_id FROM member_grade
+				WHERE id_lib=#{idLib} AND standard=1)
+		WHERE id_lib=#{idLib} AND grade_id=#{gradeId}
+	</update>
 	
 </mapper>

@@ -225,6 +225,7 @@
 	<div class="modal fade" id="comment_delete_modal">
 		<div class="modal-dialog modal-sm">
 			<div class="modal-content">
+			
 			</div>
 		</div>
 	</div>
@@ -233,6 +234,7 @@
 	<div class="modal fade" id="comment_edit_modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
+			
 			</div>
 		</div>
 	</div>
