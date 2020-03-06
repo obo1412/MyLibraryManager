@@ -211,6 +211,8 @@ public class RegBookOk {
 		}
 		/* 바코드 호출 끝 */
 		
+		/*소문자 바코드를 대문자로 변환*/
+		newBarcode = newBarcode.toUpperCase();
 		bookHeld.setLocalIdBarcode(newBarcode);
 		
 		
@@ -225,18 +227,40 @@ public class RegBookOk {
 				//if 복본이 있는지 체크후 insertBookHeld;
 				int copyCheckBookHeld = bookHeldService.selectBookHeldCount(bookHeld);
 				if(copyCheckBookHeld == 0) {
+					/*bookheld 테이블에 없으면 바로 등록*/
 					bookHeldService.insertBookHeld(bookHeld);
-				} else {
-					int lastCopyCode = bookHeldService.selectLastCopyCode(bookHeld);
-					if(lastCopyCode == 0) {
-						bookHeld.setCopyCode(2);
-						bookHeldService.insertBookHeld(bookHeld);
+				} else if(copyCheckBookHeld > 1){
+					int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+					if(zeroCopyCode == 1) {
+						/*bookheld 테이블에 여러권 존재시 2번 시작기준 빠진 번호 검색*/
+						int firstCopyCode = bookHeldService.selectFirstCopyCode(bookHeld);
+						if(firstCopyCode != 2) {
+							bookHeld.setCopyCode(2);
+							bookHeldService.insertBookHeld(bookHeld);
+						} else {
+							int lastEmptyCopyCode = bookHeldService.selectLastEmptyCopyCode(bookHeld);
+							bookHeld.setCopyCode(lastEmptyCopyCode);
+							bookHeldService.insertBookHeld(bookHeld);
+						}
 					} else {
-						lastCopyCode += 1;
-						bookHeld.setCopyCode(lastCopyCode);
+						bookHeld.setCopyCode(0);
 						bookHeldService.insertBookHeld(bookHeld);
 					}
 					
+				} else if(copyCheckBookHeld == 1) {
+					/*위 경우 도서관에 책이 반드시 있는 경우다.
+					 * 아래의 최초복본기호 체크가 copy_code != 0이 아닌 조건으로
+					 * 검색했기 때문에, null이 나올 수 있다.
+					 * 따라서 firstcopycode가 null이면 도서의 복본기호는 0이라는 뜻.
+					 * 이 경우엔 복본기호를 2로 지정하고
+					 * 0이 아닌 모든 경우엔 새로등록할 도서의 복본기호를 0으로 설정*/
+					int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+					if(zeroCopyCode == 1) {
+						bookHeld.setCopyCode(2);
+					} else {
+						bookHeld.setCopyCode(0);
+					}
+					bookHeldService.insertBookHeld(bookHeld);
 				}
 			} else if (checkBookTable == 0) {
 				//book에 아예 없을 때

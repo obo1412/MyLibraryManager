@@ -71,6 +71,7 @@
 									<th class="table-info text-center">도서바코드</th>
 									<th class="table-info text-center">대여 일시</th>
 									<th class="table-info text-center">반납 예정일</th>
+									<th class="table-info text-center">연체일</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -99,6 +100,13 @@
 														<c:set var="delay" value="text-danger" />
 													</c:if>
 												<td class="text-center ${delay}">${item.dueDateBrw}</td>
+												<fmt:parseDate var="parseDueDateBrw" value="${item.dueDateBrw}" pattern="yyyy-MM-dd"/>
+												<fmt:parseNumber value="${parseDueDateBrw.time/(1000*60*60*24)}" integerOnly="true" var="dueDate" />
+												<%-- <fmt:formatDate value="${parseDueDateBrw}" type="date"/> --%>
+												<fmt:parseDate var="parseCurrentDate" value="${currentDate}" pattern="yyyy-MM-dd" />
+												<fmt:parseNumber value="${parseCurrentDate.time/(1000*60*60*24)}" integerOnly="true" var="curDate" />
+												<%-- <fmt:formatDate value="${parseCurrentDate}" type="date" /> --%>
+												<td class="text-center">${curDate - dueDate}</td>
 											</tr>
 										</c:forEach>
 									</c:when>

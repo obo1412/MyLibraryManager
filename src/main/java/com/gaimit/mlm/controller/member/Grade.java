@@ -24,10 +24,10 @@ import com.gaimit.mlm.service.ManagerService;
 import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class GradeList {
+public class Grade {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	// --> import org.apache.logging.log4j.Logger;
-	Logger logger = LoggerFactory.getLogger(GradeList.class);
+	Logger logger = LoggerFactory.getLogger(Grade.class);
 	// --> import study.spring.helper.WebHelper;
 	@Autowired
 	WebHelper web;
@@ -153,7 +153,7 @@ public class GradeList {
 	}
 	
 	/** 등급 정보 수정 처리 */
-	@RequestMapping(value = "/member/grade_edit_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/member/grade_edit_ok.do", method = RequestMethod.POST)
 	public ModelAndView GradeEditOk(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -172,11 +172,13 @@ public class GradeList {
 		String gradeName = web.getString("gradeName");
 		int brwLimit = web.getInt("brwLimit");
 		int dateLimit = web.getInt("dateLimit");
+		int standard = web.getInt("standard", 0);
 		
 		logger.debug("gradeId=" + gradeId);
 		logger.debug("gradeName=" + gradeName);
 		logger.debug("brwLimit=" + brwLimit);
 		logger.debug("dateLimit=" + dateLimit);
+		logger.debug("standard=" + standard);
 		
 		if (gradeId == 0) {
 			return web.redirect(null, "해당하는 등급이 없습니다.");
@@ -198,11 +200,21 @@ public class GradeList {
 		member.setBrwLimit(brwLimit);
 		member.setDateLimit(dateLimit);
 		member.setIdLib(idLib);
+		member.setStandard(standard);
 		
 		/** 2) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 		Member item = null;
+		int changeStd = 0;
 		try {
+			/*기준등급인지 조회를 위한 호출*/
+			item = memberService.getGradeItem(member);
+			if(item.getStandard() == 1 && standard == 0) {
+				return web.redirect(null, "기준 등급은 반드시 하나가 존재해야합니다.");
+			} else if(item.getStandard()==0 && standard==1) {
+				memberService.updateMemberGradeStandardToNormal(member);
+				changeStd = 1;
+			}
 			memberService.updateGrade(member);
 			item = memberService.getGradeItem(member);
 		} catch (Exception e) {
@@ -214,7 +226,11 @@ public class GradeList {
 		
 		/** 5) 결과를 확인하기 위한 페이지로 이동하기 */
 		String url = web.getRootPath() + "/member/grade_edit.do?gradeId=" + member.getGradeId();
-		return web.redirect(url, "등급정보가 수정되었습니다.");
+		String msg = "등급정보가 수정되었습니다.";
+		if(changeStd == 1) {
+			msg = "기준 등급과 등급 정보가 수정되었습니다.";
+		}
+		return web.redirect(url, msg);
 	}
 	
 	
@@ -230,8 +246,6 @@ public class GradeList {
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
-		} else {
-			
 		}
 		
 		/** 5)등급 추가 페이지로 이동하기 */
@@ -240,19 +254,17 @@ public class GradeList {
 	
 	
 	/** 등급 정보 수정 처리 */
-	@RequestMapping(value = "/member/grade_add_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/member/grade_add_ok.do", method = RequestMethod.POST)
 	public ModelAndView GradeAddOk(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
 		
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
-		int idLib = 0;
+		
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
-		} else {
-			idLib = loginInfo.getIdLibMng();
 		}
 		
 		String gradeName = web.getString("gradeName");
@@ -278,12 +290,17 @@ public class GradeList {
 		member.setGradeName(gradeName);
 		member.setBrwLimit(brwLimit);
 		member.setDateLimit(dateLimit);
-		member.setIdLib(idLib);
+		member.setStandard(0);
+		member.setIdLib(loginInfo.getIdLibMng());
 		
 		/** 2) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 	
 		try {
+			int std = memberService.selectGradeStandardCount(member);
+			if(std < 1) {
+				member.setStandard(1);
+			}
 			memberService.selectGradeNameCount(member);
 			memberService.insertGrade(member);
 		} catch (Exception e) {
@@ -295,5 +312,40 @@ public class GradeList {
 		/** 5) 결과를 확인하기 위한 페이지로 이동하기 */
 		String url = web.getRootPath() + "/member/grade_list.do";
 		return web.redirect(url, "등급정보가 추가되었습니다.");
+	}
+	
+	/** 등급 정보 수정 처리 */
+	@RequestMapping(value = "/member/grade_delete_ok.do", method = RequestMethod.POST)
+	public ModelAndView GradeDeleteOk(Locale locale, Model model) {
+		
+		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		web.init();
+		
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+		}
+		
+		int gradeId = web.getInt("gradeId");
+		
+		Member member = new Member();
+		member.setIdLib(loginInfo.getIdLibMng());
+		member.setGradeId(gradeId);
+		
+		logger.debug("gradeId=" + gradeId);
+	
+		try {
+			memberService.updateMemberGradeStandardToDelete(member);
+			memberService.deleteMemberGrade(member);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		/** 3) View 처리하기 */
+		
+		/** 5) 결과를 확인하기 위한 페이지로 이동하기 */
+		String url = web.getRootPath() + "/member/grade_list.do";
+		return web.redirect(url, "등급 정보가 삭제되었습니다.");
 	}
 }

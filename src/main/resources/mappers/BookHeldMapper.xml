@@ -169,14 +169,37 @@
 		WHERE library_id_lib = #{libraryIdLib}
 	</select>
 	
-	<!-- 복본이 있는지 검사 -->
-	<select id="selectLastCopyCode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+	<!-- 중간에 비어있는 복본 검색 1은 없음 2가 최소, 2를 기준으로 비어 있는 숫자를 찾기 때문에,
+		2가 없이 연속된 숫자면, 최종번호를 보여줌. 따라서 2가 존재해야함. -->
+	<select id="selectLastEmptyCopyCode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
 		SELECT
-			copy_code
+			min(copy_code+1)
 		FROM book_held
 		WHERE book_id_book=#{bookIdBook} AND library_id_lib = #{libraryIdLib}
-		ORDER BY id DESC
+			AND (available = 0 OR available = 1) AND (copy_code != 0)
+			AND copy_code+1
+			NOT IN (SELECT copy_code FROM book_held
+								WHERE book_id_book=#{bookIdBook} AND library_id_lib = #{libraryIdLib}
+								AND (available = 0 OR available = 1) AND (copy_code != 0))
 		LIMIT 1;
+	</select>
+	
+	<!-- 연속된 복본번호 검색을 위해서는 최소값인 2가 존재해야한다. -->
+	<select id="selectFirstCopyCode" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			min(copy_code)
+		FROM book_held
+		WHERE book_id_book=#{bookIdBook} AND library_id_lib = #{libraryIdLib}
+			AND (available = 0 OR available = 1) AND (copy_code != 0)
+	</select>
+	
+	<!-- 결과값이 0이면 복본기호는 0이 아니라는 말이고, 결과값이 1이면 0이라는 말 -->
+	<select id="selectZeroCopyCodeCount" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			COUNT(copy_code)
+		FROM book_held
+		WHERE book_id_book=#{bookIdBook} AND library_id_lib = #{libraryIdLib}
+			AND (available = 0 OR available = 1) AND (copy_code = 0)
 	</select>
 	
 	<!-- 비어있는 번호를 찾기 위한 쿼리, 중간에 비어있는 값이 없으면 이어진 값에서 최대값+1 나옴 

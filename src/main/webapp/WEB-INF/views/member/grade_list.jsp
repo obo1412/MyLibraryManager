@@ -52,6 +52,7 @@
 							<thead>
 								<tr>
 									<th class="info text-center">번호</th>
+									<th class="info text-center">기준여부</th>
 									<th class="info text-center">등급이름</th>
 									<th class="info text-center">대여가능권수</th>
 									<th class="info text-center">대여기한</th>
@@ -63,6 +64,14 @@
 										<c:forEach var="item" items="${gradeList}">
 											<tr>
 												<td class="text-center">${item.gradeId}</td>
+												<c:choose>
+													<c:when test="${item.standard eq 1}">
+														<td class="text-center">기준등급</td>
+													</c:when>
+													<c:otherwise>
+														<td class="text-center">-</td>
+													</c:otherwise>
+												</c:choose>
 												<td class="text-center">
 													<c:url var="readUrl" value="/member/grade_edit.do">
 														<c:param name="gradeId" value="${item.gradeId}" />

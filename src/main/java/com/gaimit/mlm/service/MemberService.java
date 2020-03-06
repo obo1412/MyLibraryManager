@@ -167,4 +167,34 @@ public interface MemberService {
 	 * @throws Exception
 	 */
 	public int selectGradeCountForPage(Member member) throws Exception;
+	
+	/**
+	 * 등급정보 삭제 전, 참조걸린 해당 등급을 변경(제거)함.
+	 * @param member
+	 * @throws Exception
+	 */
+	public void updateMemberGradeStandardToDelete(Member member) throws Exception;
+	
+	/**
+	 * 해당 등급을 삭제함.
+	 * @param member
+	 * @throws Exception
+	 */
+	public void deleteMemberGrade(Member member) throws Exception;
+	
+	/**
+	 * 기준 등급 개수 조사
+	 * @param member
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectGradeStandardCount(Member member) throws Exception;
+	
+	/**
+	 * 기준등급은 하나만 존재해야하기 때문에
+	 * 기존의 기준 등급을 일반등급으로 변경
+	 * @param member
+	 * @throws Exception
+	 */
+	public void updateMemberGradeStandardToNormal(Member member) throws Exception;
 }

@@ -1,48 +1,138 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ page trimDirectiveWhitespaces="true"%>
 <!doctype html>
 <html>
 <head>
-<%@ include file="/WEB-INF/inc/head.jsp" %>
+<%@ include file="/WEB-INF/inc/head.jsp"%>
 
 <style type="text/css">
 .red {
 	color: red;
 }
+
+#background {
+	width: 100%;
+	height: 100%;
+	background-image:
+		url('${pageContext.request.contextPath}/assets/img/background_books.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+
+nav a:hover {
+	text-decoration: none;
+}
 </style>
 
 </head>
 <body>
-<%@ include file="/WEB-INF/inc/topbar.jsp" %>
 
-<!-- 최신 게시물 목록 영역 -->
-<div id="wrapper">
-<%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
-	<div id="content-wrapper">
-		<div class="container-fluid">
-		
-		<p class="red">게시판 댓글 입력 가능, 수정, 삭제부분 작업중</p>
-		<p>member, manager DB테이블 수정 중</p>
-		<p>도서 등록하기/ 도서테이블 별도, 도서관 별 도서테이블 참조 형식</p>
-		<p>댓글 기능 수정 필요</p>
-		
-		
-		<p>로그인시 미납 책 목록</p>
-		<p>현재 상태 표기 각종 정보 수집</p>
-		<p>파일 업로드 경로 테스트 완료</p>
-		<p>고객등록, 등급정보 업데이트.</p>
-		
-		<p class="red">도서 삭제 기능 구현 완료, 수정부분 작업중</p>
-		<p class="red">대여중인 도서 목록 구현 중</p>
-		
-		
-		</div> <!-- container-fluid 종료 -->
-		<%@ include file="/WEB-INF/inc/footer.jsp" %>	
-	</div><!-- content wrapper 끝 -->
-</div>
 
-<%@ include file="/WEB-INF/inc/script-common.jsp" %>
+	<!-- 최신 게시물 목록 영역 -->
+	<div>
+
+		<div id="background" style="width: 100%;">
+			<nav style="background-color: black; opacity: 0.7;">
+				<div style="padding-left: 10pt;">
+					<div style="line-height: 60pt; font-size: 30pt; color: white;">
+						<a href="${pageContext.request.contextPath}/index.do">
+							FineBook <sup style="vertical-align: middle; font-size: 14pt;">Ver
+								4.0</sup>
+						</a>
+					</div>
+					<div
+						style="line-height: 15px; color: white; font-size: 15px; padding-left: 80px; padding-bottom: 10px;">
+						LibShop 도서관리시스템</div>
+				</div>
+			</nav>
+			
+				<!-- login form -->
+				<div style="padding-top: 100px; padding-bottom: 100px;">
+					<div style="margin: auto; text-align: center;">
+						<form
+							class="col-md-3 offset-md-1 col-sm-4 offset-sm-1 col-xm-12 navbar-form navbar-right"
+							method="post"
+							action="${pageContext.request.contextPath}/manager/login_ok.do">
+							<div class="form-group">
+								<input type="text" name="user_id" placeholder="User Id"
+									class="form-control" autofocus>
+							</div>
+							<div class="form-group">
+								<input type="password" name="user_pw" placeholder="Password"
+									class="form-control">
+							</div>
+							<div class="dropdown-divider"></div>
+							<button type="submit" class="btn btn-success btn-block mr-2">
+								Login</button>
+						</form>
+					</div>
+				</div>
+				<!-- log in form 종료 -->
+		</div>
+		<!-- 상단 컨텐츠 -->
+		
+		<!-- 하단 게시판 -->
+		<div style="width: 100%; float:left;">
+		<div id="bottom-left" class="col-xm-12 col-md-6 mt-3"
+			style="float: left;">
+
+			<!-- 공지사항 -->
+			<div class="col-md-12 article-item">
+				<div class="page-header clearfix">
+					<h4 class="float-left">공지사항</h4>
+					<div class="float-right">
+						<a
+							href="${pageContext.request.contextPath}/bbs/document_list.do?category=notice"
+							class="btn btn-warning btn-sm">more</a>
+					</div>
+				</div>
+
+				<ul class="list-group">
+					<c:forEach var="document" items="${noticeList}">
+						<li class="list-group-item list-group-item-action"><a
+							style="display: inline-block;"
+							href="${pageContext.request.contextPath}/bbs/document_read.do?category=${document.category}&document_id=${document.id}">
+								${document.subject} </a></li>
+					</c:forEach>
+				</ul>
+			</div>
+
+		</div>
+		<div id="bottom-right" class="col-sm-12 col-md-6 mt-3"
+			style="float: right;">
+			<!-- 질문답변 -->
+			<div class="col-md-12 article-item">
+				<div class="page-header clearfix">
+					<h4 class="float-left">질문답변</h4>
+					<div class="float-right">
+						<a
+							href="${pageContext.request.contextPath}/bbs/document_list.do?category=qna"
+							class="btn btn-warning btn-sm">more</a>
+					</div>
+				</div>
+
+				<ul class="list-group">
+					<c:forEach var="document" items="${qnaList}">
+						<li class="list-group-item list-group-item-action"
+							style="display: inline-block;"><a
+							style="display: inline-block;"
+							href="${pageContext.request.contextPath}/bbs/document_read.do?category=${document.category}&document_id=${document.id}">${document.subject}</a>
+						</li>
+					</c:forEach>
+				</ul>
+			</div>
+		</div>
+	</div>
+	</div>
+	
+	<!-- wrapper 끝 -->
+
+
+
+	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 </html>

@@ -60,7 +60,24 @@ public interface BookHeldService {
 	 * @return
 	 * @throws Exception
 	 */
-	public int selectLastCopyCode(BookHeld bookHeld) throws Exception;
+	public int selectLastEmptyCopyCode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * copy code가 2를 기준으로 순차적으로 빈곳을 체크함, 따라서 처음값이
+	 * 2 인지 확인할 수 있는 실행문이 필요함
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectFirstCopyCode(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 도서가 0번 복본이 사라졌을 때를 판단하기 위한 실행문
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectZeroCopyCodeCount(BookHeld bookHeld) throws Exception;
 	
 	/**
 	 * local id barcode 마지막 구하기

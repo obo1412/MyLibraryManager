@@ -171,13 +171,37 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 	@Override
-	public int selectLastCopyCode(BookHeld bookHeld) throws Exception {
+	public int selectLastEmptyCopyCode(BookHeld bookHeld) throws Exception {
 		int result = 0;
 		try {
-			result = sqlSession.selectOne("BookHeldMapper.selectLastCopyCode", bookHeld);
+			result = sqlSession.selectOne("BookHeldMapper.selectLastEmptyCopyCode", bookHeld);
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("마지막 복본기호 조회를 실패했습니다.");
+			throw new Exception("비어있는 복본기호 또는 마지막 복본기호 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
+	public int selectFirstCopyCode(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectFirstCopyCode", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("최초(최소) 복본기호 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
+	public int selectZeroCopyCodeCount(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectZeroCopyCodeCount", bookHeld);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("0번 복본기호 조회에 실패했습니다.");
 		}
 		return result;
 	}

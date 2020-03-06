@@ -57,6 +57,8 @@
 									<th class="info text-center">연락처</th>
 									<th class="info text-center">이메일</th>
 									<th class="info text-center">회원등급</th>
+									<th class="info text-center">대여제한(권)</th>
+									<th class="info text-center">대여기한(일)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -81,7 +83,9 @@
 													${birthdateFmt}</td>
 												<td class="text-center">${item.phone}</td>
 												<td class="text-center">${item.email}</td>
-												<td class="text-center">${item.gradeId}</td>
+												<td class="text-center">${item.gradeName}</td>
+												<td class="text-center">${item.brwLimit}</td>
+												<td class="text-center">${item.dateLimit}</td>
 											</tr>
 										</c:forEach>
 									</c:when>

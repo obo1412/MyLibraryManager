@@ -138,14 +138,30 @@ public class SearchBook {
 				if(((Integer) callIdBook.getIdBook() != 0) && ((Integer) callIdBook.getIdBook() != null)) {
 					bookHeld.setBookIdBook(callIdBook.getIdBook());
 					int copyCheckBookHeld = bookHeldService.selectBookHeldCount(bookHeld);
-					if(copyCheckBookHeld > 0) {
-						int lastCopyCode = bookHeldService.selectLastCopyCode(bookHeld);
-						if(lastCopyCode == 0) {
-							copyCode = 2;
+					/*복본이 존재하는지 체크*/
+					if(copyCheckBookHeld > 1) {
+						/* 결과값이 0이면 복본기호는 0이 아니라는 말이고, 결과값이 1이면 0이라는 말 */
+						int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+						if(zeroCopyCode == 1) {
+							/*0번복본이 있는 상태, 최초 복본기호가 2가 아니면 2로 지정
+							 * 중간에 2번 복본이 빠졌다는 것.*/
+							int firstCopyCode = bookHeldService.selectFirstCopyCode(bookHeld);
+							if(firstCopyCode != 2) {
+								copyCode = 2;
+							} else {
+								/*최초 복본기호가 2가 있다면, 그 이상의 빈번호임.*/
+								copyCode = bookHeldService.selectLastEmptyCopyCode(bookHeld);
+							}
 						} else {
-							lastCopyCode += 1;
-							copyCode = lastCopyCode;
+							//0번 복본이 없는 상태엔 걍 0번으로
+							copyCode = 0;
 						}
+						
+					} else if(copyCheckBookHeld == 1) {
+						int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+						if(zeroCopyCode == 1) {
+							copyCode = 2;
+						}//암시롱 안하면 그냥 원래 선언한대로 0
 					}
 				}
 				/* 복본기호 호출 끝 */
@@ -343,14 +359,30 @@ public class SearchBook {
 					if(((Integer) callIdBook.getIdBook() != 0) && ((Integer) callIdBook.getIdBook() != null)) {
 						bookHeld.setBookIdBook(callIdBook.getIdBook());
 						int copyCheckBookHeld = bookHeldService.selectBookHeldCount(bookHeld);
-						if(copyCheckBookHeld > 0) {
-							int lastCopyCode = bookHeldService.selectLastCopyCode(bookHeld);
-							if(lastCopyCode == 0) {
-								copyCode = 2;
+						/*복본이 존재하는지 체크*/
+						if(copyCheckBookHeld > 1) {
+							/* 결과값이 0이면 복본기호는 0이 아니라는 말이고, 결과값이 1이면 0이라는 말 */
+							int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+							if(zeroCopyCode == 1) {
+								/*0번복본이 있는 상태, 최초 복본기호가 2가 아니면 2로 지정
+								 * 중간에 2번 복본이 빠졌다는 것.*/
+								int firstCopyCode = bookHeldService.selectFirstCopyCode(bookHeld);
+								if(firstCopyCode != 2) {
+									copyCode = 2;
+								} else {
+									/*최초 복본기호가 2가 있다면, 그 이상의 빈번호임.*/
+									copyCode = bookHeldService.selectLastEmptyCopyCode(bookHeld);
+								}
 							} else {
-								lastCopyCode += 1;
-								copyCode = lastCopyCode;
+								//0번 복본이 없는 상태엔 걍 0번으로
+								copyCode = 0;
 							}
+							
+						} else if(copyCheckBookHeld == 1) {
+							int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+							if(zeroCopyCode == 1) {
+								copyCode = 2;
+							}//암시롱 안하면 그냥 원래 선언한대로 0
 						}
 					}
 					/* 복본기호 호출 끝 */

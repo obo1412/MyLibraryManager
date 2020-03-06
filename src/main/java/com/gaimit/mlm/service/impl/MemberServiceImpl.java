@@ -403,4 +403,59 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 
+	@Override
+	public void updateMemberGradeStandardToDelete(Member member) throws Exception {
+		try {
+			int result =sqlSession.update("MemberMapper.updateMemberGradeStandardToDelete", member);
+			if(result == 0) {
+				logger.debug("해당 등급을 사용중인 회원이 없으므로 변경된 내용 없습니다.");
+			}
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("기준 등급으로 정보 수정에 실패했습니다.");
+		}
+	}
+
+	@Override
+	public void deleteMemberGrade(Member member) throws Exception {
+		try {
+			int result = sqlSession.delete("MemberMapper.deleteMemberGrade", member);
+			// 삭제된 데이터가 없다는 것은 WHERE절의 조건값이 맞지 않다는 의미.
+			// 이 경우, 첫 번째 WHERE조건에서 사용되는 id값에 대한 회원을 찾을 수 없다는 의미
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("기준 등급은 삭제할 수 없습니다.(혹은 이미 삭제된 회원 등급입니다.)");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("회원 등급 삭제에 실패했습니다1.");
+		}
+		
+	}
+
+	@Override
+	public int selectGradeStandardCount(Member member) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("MemberMapper.selectGradeStandardCount", member);
+		} catch (Exception e) {
+			throw new Exception("기준 등급 개수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public void updateMemberGradeStandardToNormal(Member member) throws Exception {
+		try {
+			int result =sqlSession.update("MemberMapper.updateMemberGradeStandardToNormal", member);
+			if(result == 0) {
+				logger.debug("기준 등급 -> 일반 등급 변경된 내용이 없습니다.");
+			}
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("기준등급 -> 일반등급 정보 수정에 실패했습니다.");
+		}
+	}
+
 }

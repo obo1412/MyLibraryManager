@@ -19,7 +19,7 @@
 
 @media print {
 	@page {
-		size: 262mm 371mm; /* A4 */
+		size: 262.5mm 371.25mm; /* A4 */
 		margin: 0;
 	}
 	html, body {
@@ -46,7 +46,7 @@
 		<%-- <%@ include file="/WEB-INF/inc/sidebar_left.jsp"%> --%>
 		<div id="content-wrapper">
 
-			<div class="container-fluid">
+			<div class="container-fluid" style="margin-left:-1.25mm; margin-top:-1.9mm;">
 
 				<h1 class="prtNone">인쇄 페이지</h1>
 				<!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
@@ -60,16 +60,27 @@
 						onclick="window.open('','window팝업','width=300, height=300, menubar=no, status=no, tollbar=no');">
 				</div> -->
 
-				<c:forEach var="item" items="${bookHeldList}">
-					<div style="/* border:1px dashed red; */ width: 131mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
+				<c:forEach var="item" items="${bookHeldList}" varStatus="status">
+					<c:choose>
+						<c:when test="${(status.count ne 1) and((status.count mod 18) eq 1)}">
+							<div style="/* border:1px dashed red; */ width: 100%; height:19mm; float: left; ">
+							<!-- 18로 나눈 나머지 간격 조정 -->
+							</div>
+						</c:when>
+						<c:otherwise>
+							<!-- 아무것도 만들지 않는다ㅇ -->
+						</c:otherwise>
+					</c:choose>
+					<div style="/* border:1px dashed red; */ width: 125mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
 						<div id="titleRmk"
-							style="line-height:4mm; padding-left: 8pt; font-size: 6pt; font-weight: bold; width:100%; overflow:hidden">${item.titleBook}</div>
+							style="line-height:4mm; padding-left: 6.25mm; font-size: 6pt; font-weight: bold; width:100%; overflow:hidden">${item.titleBook}</div>
 						<div id="wholeBox"
 							style="/* border:1px solid black; */ margin-left:6.2mm; width: 117mm; height: 35mm; float: left;">
 							<div id="leftBox"
-								style="text-align: center; float: left; width: 56mm; height: 100%;">
+								style="padding-left:4mm; text-align: center; float: left; width: 56mm; height: 100%;">
 								<div
-									style="width: 100%; height: 35%; font-weight: 900; font-size: 20pt; padding-top: 20pt;">
+									style="width: 100%; height: 35%; font-weight: 900; font-size: 18pt; padding-top: 20pt;
+									line-height:20pt;">
 									${item.nameLib}</div>
 								<div
 									style="height: 35%; font-family: 'Free 3 of 9'; font-size: 35pt;">

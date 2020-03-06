@@ -6,7 +6,7 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
 
 	<a class="navbar-brand mr-3"
-		href="${pageContext.request.contextPath}/index.do">FineBook v4</a>
+		href="${pageContext.request.contextPath}/index_login.do">FineBook v4</a>
 
 	<button class="btn btn-link btn-sm text-white order-1 order-sm-1"
 		id="sidebarToggle">

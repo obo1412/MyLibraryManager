@@ -95,12 +95,12 @@ public class LoginOk {
 
 		/** (9) 페이지 이동 */
 		// 이전 페이지 구하기 (javascript로 이동된 경우 조회 안됨)
-		String movePage = request.getHeader("referer");
+		/*String movePage = request.getHeader("referer");
 		if (movePage == null) {
 			movePage = web.getRootPath() + "/index.do";
-		}
+		}*/
 
-		return web.redirect(movePage, null);
+		return web.redirect(web.getRootPath() + "/index_login.do", null);
 	}
 
 }

@@ -59,8 +59,6 @@ public class RegBook {
 		String barcodeInit = "";
 		String newBarcode = "";
 		int barcodeInitCount = 0;
-		
-		/*String cc = "-";*/
 	
 		//barcode 호출
 		try {
@@ -94,7 +92,6 @@ public class RegBook {
 		
 		model.addAttribute("newBarcode", newBarcode);
 		model.addAttribute("barcodeInit", barcodeInit);
-		/*model.addAttribute("cc", cc);*/
 
 		return new ModelAndView("book/reg_book");
 	}
