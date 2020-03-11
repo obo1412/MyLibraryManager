@@ -42,37 +42,90 @@
 
 			<div class="container-fluid">
 
-				<h1 class="prtNone">인쇄 페이지</h1>
+				<h1 class="prtNone">인쇄 설정 페이지</h1>
 				<!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
 
 				<form class="form-horizontal search-box prtNone"
 					name="search-mbr-form" id="search-mbr-form" method="get"
-					action="${pageContext.request.contextPath}/book/print_tag_default.do">
-					<div class="form-group form-inline">
-						<button class="btn btn-danger" id="btn-print">인쇄</button>
-						<label for='search-book-info' class="col-md-2">도서 검색</label>
-						<div class="input-group col-md-4">
-							<input type="text" name="search-book-info" id="search-book-info"
-								class="form-control" placeholder="ISBN 검색" /> <span
-								class="input-group-append">
-								<button class="btn btn-warning" id="btn-search-bookinfo"
-									type="submit">
-									<i class="fas fa-search"></i>
-								</button>
-								<button class="btn btn-info" id="searchEx">
-									<i class="fas fa-question"></i>
-								</button>
+					<%-- action="${pageContext.request.contextPath}/book/print_tag_page.do" --%>>
+				
+				<div class="col-md-12">
+					<label>
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagA.jpg"
+							style="display:block;"/>
+						<input style="margin:auto;" type="radio" name="tagType"
+							id="tag_default" value="0" checked />기본형
+					</label>
+					<label>
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagB.jpg"
+							style="display:block;"/>
+						<input type="radio" name="tagType" id="tag_opt1" value="1"/>바코드(우)
+					</label>
+					<label>
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagC.jpg"
+							style="display:block;"/>
+						<input type="radio" name="tagType" id="tag_opt2" value="2"/>바코드(중)
+					</label>
+				</div>
+				
+				<div class="form-group">
+					<label for="dateSorting">날짜별 인쇄</label>
+					<div class="col-sm-12 col-md-6 mb-3 input-group">
+						<input type="date" class="form-control" max="9999-12-31"
+							name="dateSorting" id="dateSorting" value="" placeholder="날짜별 인쇄"/>
+							<span class="input-group-append">
+								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
+									onclick="openPopup()" />
+							</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="targetSorting">단일 인쇄</label>
+					<div class="col-sm-12 col-md-6 mb-3 input-group">
+						<input type="text" class="form-control"
+							name="targetSorting" id="targetSorting" value="" placeholder="도서sorting 조건"/>
+						<span class="input-group-append">
+								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
+									onclick="openPopup()" />
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group col-sm-12 col-md-6 mb-3">
+					<label for="rangeSorting">바코드 범위 인쇄</label>
+					<div class="col-sm-12 col-md-9">
+						<div class="">
+							<select name="rangeStart" id="rangeStart" class="form-control">
+								<c:forEach var="start" items="${bookHeldList}" varStatus="startStatus">
+								<option value="${startStatus.index}">
+									${start.localIdBarcode} / (${start.titleBook})
+								</option>
+								</c:forEach>
+							</select>
+						</div>
+						
+						<label for="rangeSorting"></label>
+						<div class="input-group">
+							<select name="rangeEnd" id="rangeEnd" class="form-control">
+								<c:forEach var="end" items="${bookHeldList}" varStatus="endStatus">
+								<option value="${endStatus.index}">
+									${end.localIdBarcode} / (${end.titleBook})
+								</option>
+								</c:forEach>
+							</select>
+							<span class="input-group-append">
+								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
+									onclick="openPopup()" />
 							</span>
 						</div>
 					</div>
+				</div>
+				
 				</form>
-
-				<!-- <div>
-					<input type="button" value="출력"
-						onclick="window.open('','window팝업','width=300, height=300, menubar=no, status=no, tollbar=no');">
-				</div> -->
-
-					<input name="" id="" value="" placeholder="도서sorting 조건"/>
 				
 			</div>
 			<!-- container-fluid 끝 -->
@@ -85,67 +138,33 @@
 </body>
 
 
-
 <script type="text/javascript">
-	function printPage() {
-		var initBody;
-		window.onbeforeprint = function() {
-			initBody = document.body.innerHTML;
-			document.body.innerHTML = document.getElementByClassName('print').innerHTML;
-		};
-		window.onafterprint = function() {
-			document.body.innerHTML = initBody;
-		};
-		window.print();
-		return false;
-	};
-
 	$(function() {
-
-		/* function PrintElem(elem) {
-			Popup($(elem).html());
-		}
-		
-		function Popup(data) {
-			var mywindow = window.open('', 'my div', 'height=400,width=600');
-			mywindow.document.write('<html><head><title>my div</title>');
-			mywindow.document.write('</head><body >');
-			mywindow.document.write(data);
-			mywindow.document.write('</body></html>');
-			mywindow.document.close(); // IE >= 10에 필요
-			mywindow.focus(); // necessary for IE >= 10
-			mywindow.print();
-			mywindow.close();
-			return true;	
-		} */
-
-		$("#searchEx").click(function(e) {
-			e.preventDefault();
-			$("#search-book-info").val("9788984314818");
-
-		});
-
-		/* $("#btn-print").click(function() {
-			if (navigator.userAgent.indexOf("MSIE") > 0) {
-				printPage();
-			} else if (navigator.userAgent.indexOf("Chrome") > 0) {
-				window.print();
-			}
-		}); */
-		$("#btn-print").click(functione() {
-			e.preventDefault();
-			window.open('${pageContext.request.contextPath}/book/print_tag_default.do', '_blank', 'width=750,height=700,scrollbars=yes')
-		});
-
-		var sVal = null;
-		$("#btn-search-bookinfo").click(function(e) {
-			e.preventDefault();
-			sVal = $("#search-book-info").val();
-			$("#search-state").text(sVal);
-		});
-		
-		$("#bctarget").barcode("000006","codabar");
-
+		//시작시 실행
 	});
+	
+	function openPopup() {
+		var tagT = 0;
+		
+		$('#sbmBtn').click(function (){
+			tagT = $('input:radio[name=tagType]:checked').val();
+			alert(tagT);
+		});
+		
+		var targetBarcode = $("#targetSorting").val();
+		var dateBarcode = $("#dateSorting").val();
+		var rangeS = $("#rangeStart").val();
+		var rangeE = $("#rangeEnd").val();
+		
+		var url = '${pageContext.request.contextPath}/book/print_tag_page.do?tagType='+tagT;
+		if(targetBarcode != '' || dateBarcode != ''){
+			url = url + '?targetSorting='+targetBarcode +'?dateSorting='+dateBarcode;
+		} else if(rangeE != 0){
+			url = url + '?rangeStart='+rangeS +'?rangeEnd='+rangeE;
+		} else {
+			url = '${pageContext.request.contextPath}/book/print_tag_page.do';
+		}
+		window.open(url, '_blank', 'width=1080,height=800,scrollbars=yes');
+	};
 </script>
 </html>

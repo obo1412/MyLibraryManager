@@ -66,27 +66,6 @@ public class BrwBook {
 			idLib = loginInfo.getIdLibMng();
 		}
 		
-		// 검색어 파라미터 받기 + Beans 설정
-		/*String keyword = web.getString("keyword", "");
-		member.setName(keyword);*/
-		
-		// 현재 페이지 번호에 대한 파라미터 받기
-		/*int nowPage = web.getInt("page", 1);*/
-		
-		/** 2) 페이지 번호 구현하기 */
-		// 전체 데이터 수 조회하기
-		/*int totalCount = 0;
-		try {
-			totalCount = memberService.getMemberCount(member);
-		}  catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}*/
-		
-		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		/*page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());*/
-		
 		String searchName = web.getString("search-name", "");
 		int memberId = web.getInt("memberId", 0);
 		String name = web.getString("name", "");
@@ -107,6 +86,13 @@ public class BrwBook {
 		int brwNow = 0;
 		//앞으로 대여가능한 도서 권수
 		int brwPsb = 0;
+		
+		//미반납 연체
+		int overDueCount = 0;
+		//반납된 연체 기간이 남아있을 경우
+		Borrow overDueDate = new Borrow();
+		String restrictDate = null;
+		
 		
 		if(!memberName.equals("")) {
 			try {
@@ -134,6 +120,12 @@ public class BrwBook {
 					brwTemp.setIdLibBrw(idLib);
 					brwTemp.setIdMemberBrw(memberId);
 					brwNow = brwService.selectBrwBookCountByMemberId(brwTemp);
+					//연체 제한 정보 호출
+					overDueCount = brwService.selectOverDueCountByMemberId(brwTemp);
+					overDueDate = brwService.selectRestrictDate(brwTemp);
+					if(overDueDate != null) {
+						restrictDate = overDueDate.getRestrictDateBrw();
+					}
 				} catch (Exception e) {
 					return web.redirect(null, e.getLocalizedMessage());
 				}
@@ -149,6 +141,8 @@ public class BrwBook {
 				model.addAttribute("memberId", memberId);
 				model.addAttribute("name", name);
 				model.addAttribute("phone", phone);
+				model.addAttribute("overDueCount", overDueCount);
+				model.addAttribute("restrictDate", restrictDate);
 			}
 		}
 		
@@ -160,6 +154,12 @@ public class BrwBook {
 		brw.setIdMemberBrw(memberId);
 		
 		try {
+			overDueCount = brwService.selectOverDueCountByMemberId(brw);
+			overDueDate = brwService.selectRestrictDate(brw);
+			if(overDueDate != null) {
+				restrictDate = overDueDate.getRestrictDateBrw();
+			}
+			
 			if(brwLimit != 0) {
 				brwNow = brwService.selectBrwBookCountByMemberId(brw);
 				brwPsb = brwLimit - brwNow;
@@ -183,9 +183,9 @@ public class BrwBook {
 		model.addAttribute("brwPsb", brwPsb);
 		model.addAttribute("brwRmnList", brwRmnList);
 		model.addAttribute("brwListToday", brwListToday);
-		/*model.addAttribute("keyword", keyword);*/
-		model.addAttribute("page", page);
+		model.addAttribute("overDueCount", overDueCount);
+		model.addAttribute("restrictDate", restrictDate);
 		
 		return new ModelAndView("book/brw_book");
-	}	
+	}
 }

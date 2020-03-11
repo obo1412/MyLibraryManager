@@ -74,10 +74,12 @@ public class BookHeldDelete {
 		}
 		
 		String localIdBarcode = web.getString("localIdBarcode");
+		int bookHeldId = web.getInt("bookHeldId");
 		
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		bookHeld.setLocalIdBarcode(localIdBarcode);
+		bookHeld.setId(bookHeldId);
 		
 		try {
 			bookHeldService.updateBookHeldDiscard(bookHeld);

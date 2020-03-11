@@ -15,12 +15,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
-import com.gaimit.mlm.service.MemberService;
 
 @Controller
 public class PrintTag {
@@ -32,9 +30,6 @@ public class PrintTag {
 	
 	@Autowired
 	PageHelper page;
-	
-	@Autowired
-	MemberService memberService;
 	
 	@Autowired
 	ManagerService managerService;
@@ -49,73 +44,37 @@ public class PrintTag {
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
 		
-		int idLib = 0;
-		String ttbKey = "ttbanfyanfy991303001";
-		
 		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
-		} else {
-			idLib = loginInfo.getIdLibMng();
 		}
 		
-		String searchName = web.getString("search-name", "");
-		
-		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
-		member.setName(searchName);
-		
 		BookHeld bookHeld = new BookHeld();
-		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 		
-		// 검색어 파라미터 받기 + Beans 설정
-		/*String keyword = web.getString("keyword", "");
-		member.setName(keyword);*/
-		
-		// 현재 페이지 번호에 대한 파라미터 받기
-		int nowPage = web.getInt("page", 1);
-		
-		/** 2) 페이지 번호 구현하기 */
-		// 전체 데이터 수 조회하기
-		int totalCount = 0;
+		List<BookHeld> bookHeldList = null;
 		try {
-			totalCount = memberService.getMemberCount(member);
-		}  catch (Exception e) {
+			bookHeldList = bookHeldService.getPrintBookHeldList(bookHeld);
+		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());
-		
-		/** 3) Service를 통한 SQL 수행 */
-		// 조회 결과를 저장하기 위한 객체
-		
-		
-		
-		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		/*model.addAttribute("keyword", keyword);*/
-		model.addAttribute("page", page);
-		model.addAttribute("ttbKey", ttbKey);
+		model.addAttribute("bookHeldList", bookHeldList);
 		
 		return new ModelAndView("book/print_tag_setup");
 	}
 	
 	/** 교수 목록 페이지 */
-	@RequestMapping(value = "/book/print_tag_default.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/print_tag_page.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView printTag(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
 		web.init();
-		
-		int idLib = 0;
 		
 		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
@@ -123,42 +82,37 @@ public class PrintTag {
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
-		} else {
-			idLib = loginInfo.getIdLibMng();
 		}
 		
-		/*String searchName = web.getString("search-name", "");
+		int tagType = web.getInt("tagType", 0);
 		
-		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
-		member.setName(searchName);*/
+		String dateSorting = web.getString("dateSorting", "");
+		String targetSorting = web.getString("targetSorting", "");
 		
-		/*// 검색어 파라미터 받기 + Beans 설정
-		String keyword = web.getString("keyword", "");
-		member.setName(keyword);
+		int rangeStart = web.getInt("rangeStart", 0);
+		int rangeEnd = web.getInt("rangeEnd", 0);
+		//range는 최종에서 +1 해줘야된다. 안그러면 숫자가 생겨버려서 실행조건이됨.
+		int rangeLength = rangeEnd - rangeStart;
 		
-		// 현재 페이지 번호에 대한 파라미터 받기
-		int nowPage = web.getInt("page", 1);
-		
-		*//** 2) 페이지 번호 구현하기 *//*
-		// 전체 데이터 수 조회하기
-		int totalCount = 0;
-		try {
-			totalCount = memberService.getMemberCount(member);
-		}  catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		
-		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());*/
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 		BookHeld bookHeld = new BookHeld();
-		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
+		
+		if(dateSorting !="") {
+			bookHeld.setRegDate(dateSorting);
+		}
+		
+		if(targetSorting!=""&&targetSorting!=null) {
+			targetSorting = targetSorting.toUpperCase();
+			bookHeld.setLocalIdBarcode(targetSorting);
+		}
+		
+		if(rangeEnd!=0 && rangeLength != 0) {
+			bookHeld.setLimitStart(rangeStart);
+			bookHeld.setListCount(rangeLength+1);
+		}
 		
 		List<BookHeld> bookHeldList = null;
 		try {
@@ -178,7 +132,6 @@ public class PrintTag {
 			} else {
 				int classHead1 = classCodeInt/100;
 				int classCodeHead = classHead1 * 100;
-				System.out.println(classCodeHead);
 				bookHeldList.get(i).setClassCodeHead(classCodeHead);
 			}
 		}
@@ -186,10 +139,14 @@ public class PrintTag {
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		/*model.addAttribute("keyword", keyword);*/
-		/*model.addAttribute("page", page);*/
 		model.addAttribute("bookHeldList", bookHeldList);
 		
-		return new ModelAndView("book/print_tag_default");
+		String movePage = "default";
+		if(tagType == 1) {
+			movePage = "opt1";
+		} else if(tagType == 2) {
+			movePage = "opt2";
+		}
+		return new ModelAndView("book/print_tag_"+ movePage);
 	}
 }

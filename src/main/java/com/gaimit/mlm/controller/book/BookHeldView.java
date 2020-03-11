@@ -60,11 +60,13 @@ public class BookHeldView {
 		}
 		
 		String barcodeBook = web.getString("localIdBarcode");
+		int bookHeldId = web.getInt("bookHeldId");
 		
 		// 파라미터를 저장할 Beans
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		bookHeld.setLocalIdBarcode(barcodeBook);
+		bookHeld.setId(bookHeldId);
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체

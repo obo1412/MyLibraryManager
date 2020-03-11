@@ -115,4 +115,20 @@ public interface BrwService {
 	 */
 	public int selectBorrowListCount(Borrow borrow) throws Exception;
 	
+	/**
+	 * 반납되지 않은 연체도서가 있는 경우
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectOverDueCountByMemberId(Borrow borrow) throws Exception;
+	
+	/**
+	 * 반납된 연체도서가 있는 경우 반납일로부터 연체일수만큼 대출 제한됨.
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public Borrow selectRestrictDate(Borrow borrow) throws Exception;
+	
 }

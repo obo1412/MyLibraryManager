@@ -96,17 +96,14 @@
 												<td class="text-center">${item.titleBook}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
 												<td class="text-center">${item.startDateBrw}</td>
-													<c:if test="${item.dueDateBrw < currentDate}">
-														<c:set var="delay" value="text-danger" />
-													</c:if>
-												<td class="text-center ${delay}">${item.dueDateBrw}</td>
+												<td class="text-center">${item.dueDateBrw}</td>
 												<fmt:parseDate var="parseDueDateBrw" value="${item.dueDateBrw}" pattern="yyyy-MM-dd"/>
 												<fmt:parseNumber value="${parseDueDateBrw.time/(1000*60*60*24)}" integerOnly="true" var="dueDate" />
 												<%-- <fmt:formatDate value="${parseDueDateBrw}" type="date"/> --%>
 												<fmt:parseDate var="parseCurrentDate" value="${currentDate}" pattern="yyyy-MM-dd" />
 												<fmt:parseNumber value="${parseCurrentDate.time/(1000*60*60*24)}" integerOnly="true" var="curDate" />
 												<%-- <fmt:formatDate value="${parseCurrentDate}" type="date" /> --%>
-												<td class="text-center">${curDate - dueDate}</td>
+												<td class="text-center text-danger">${curDate - dueDate}</td>
 											</tr>
 										</c:forEach>
 									</c:when>
@@ -183,6 +180,7 @@
 												<td class="text-center">${item.titleBook}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
 												<td class="text-center">${item.startDateBrw}</td>
+													<c:set var="delay" value="" />
 													<c:if test="${item.dueDateBrw < currentDate}">
 														<c:set var="delay" value="text-danger" />
 													</c:if>

@@ -18,6 +18,9 @@ public class PageHelper {
     private int prevPage = 0;		// 이전 그룹의 마지막 페이지
     private int nextPage = 0;		// 이전 그룹의 첫 페이지
     private int limitStart = 0;		// MySQL의 Limit 시작 위치
+    
+    //리스트 호출시 그 리스트의 index 값
+    private int indexStart = 0;
 	
 	/** 페이지 구현에 필요한 계산식을 처리하는 메서드 */
 	public void pageProcess(int page, int totalCount, int listCount, int groupCount) {
@@ -25,6 +28,8 @@ public class PageHelper {
 		this.totalCount = totalCount;
 		this.listCount = listCount;
 		this.groupCount = groupCount;
+		
+		indexStart = ((page - 1)*listCount)+1;
 
 		// 전체 페이지 수
 	    totalPage = ((totalCount-1)/listCount)+1;
@@ -147,12 +152,19 @@ public class PageHelper {
 		this.limitStart = limitStart;
 	}
 
+	public int getIndexStart() {
+		return indexStart;
+	}
+
+	public void setIndexStart(int indexStart) {
+		this.indexStart = indexStart;
+	}
+
 	@Override
 	public String toString() {
-		return "PageHelper [page=" + page + ", totalCount=" + totalCount
-				+ ", listCount=" + listCount + ", groupCount=" + groupCount
-				+ ", totalPage=" + totalPage + ", startPage=" + startPage
-				+ ", endPage=" + endPage + ", prevPage=" + prevPage
-				+ ", nextPage=" + nextPage + ", limitStart=" + limitStart + "]";
+		return "PageHelper [page=" + page + ", totalCount=" + totalCount + ", listCount=" + listCount + ", groupCount="
+				+ groupCount + ", totalPage=" + totalPage + ", startPage=" + startPage + ", endPage=" + endPage
+				+ ", prevPage=" + prevPage + ", nextPage=" + nextPage + ", limitStart=" + limitStart + ", indexStart="
+				+ indexStart + "]";
 	}
 }

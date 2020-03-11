@@ -153,6 +153,7 @@
 							</div>
 							<form name="book_held_delete" method="post">
 							<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
+							<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
 							<div class="modal-body">
 								<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
 								<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>

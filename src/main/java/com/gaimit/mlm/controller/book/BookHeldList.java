@@ -63,16 +63,18 @@ public class BookHeldList {
 		// 검색어 파라미터 받기 + Beans 설정
 		int searchOpt = web.getInt("searchOpt");
 		String keyword = web.getString("keyword", "");
-		switch (searchOpt) {
-		case 1:
-			bookHeld.setTitleBook(keyword);
-			break;
-		case 2:
-			bookHeld.setWriterBook(keyword);
-			break;
-		case 3:
-			bookHeld.setPublisherBook(keyword);
-			break;
+		if(keyword!=null||keyword!=""){
+			switch (searchOpt) {
+			case 1:
+				bookHeld.setTitleBook(keyword);
+				break;
+			case 2:
+				bookHeld.setWriterBook(keyword);
+				break;
+			case 3:
+				bookHeld.setPublisherBook(keyword);
+				break;
+			}
 		}
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
@@ -91,6 +93,7 @@ public class BookHeldList {
 		page.pageProcess(nowPage, totalCount, 10, 5);
 		bookHeld.setLimitStart(page.getLimitStart());
 		bookHeld.setListCount(page.getListCount());
+		//bookHeld.setCurrentListIndex(page.getIndexStart());
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체

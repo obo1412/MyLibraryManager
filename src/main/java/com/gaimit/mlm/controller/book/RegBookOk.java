@@ -201,6 +201,9 @@ public class RegBookOk {
 				lastEmptyLocalBarcode = 1;
 			}
 			
+			//위 비어있는 바코드 번호를 솔팅index에 주입
+			bookHeld.setSortingIndex(lastEmptyLocalBarcode);
+			
 			/*뷰페이지에서 넘어온 바코드 숫자와 ok컨트롤러에서 조사한 바코드 뒤숫자가
 			 * 같지 않으면, 콜백 발생. */
 			if(viewBarNum != lastEmptyLocalBarcode) {

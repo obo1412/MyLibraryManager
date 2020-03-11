@@ -4,6 +4,7 @@ public class Pagination {
 	// 페이지 구현을 위해서 추가된 값
 	private int limitStart;
 	private int listCount;
+	private int currentListIndex;
 	
 	public int getLimitStart() {
 		return limitStart;
@@ -17,9 +18,15 @@ public class Pagination {
 	public void setListCount(int listCount) {
 		this.listCount = listCount;
 	}
+	public int getCurrentListIndex() {
+		return currentListIndex;
+	}
+	public void setCurrentListIndex(int currentListIndex) {
+		this.currentListIndex = currentListIndex;
+	}
 	@Override
 	public String toString() {
-		return "Pagination [limitStart=" + limitStart + ", listCount=" + listCount + "]";
+		return "Pagination [limitStart=" + limitStart + ", listCount=" + listCount + ", currentListIndex="
+				+ currentListIndex + "]";
 	}
-
 }

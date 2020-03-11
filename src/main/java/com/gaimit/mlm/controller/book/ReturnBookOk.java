@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
-import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.service.BookService;
@@ -90,12 +89,8 @@ public class ReturnBookOk {
 		}
 		
 		// 파라미터를 저장할 Beans
-		Member member = new Member();
-		member.setIdLib(idLib);
-		
-		/*Book book = new Book();
-		book.setIdLibBook(idLib);
-		book.setIdCodeBook(bookCode);*/
+		/*Member member = new Member();
+		member.setIdLib(idLib);*/
 		
 		Borrow brw = new Borrow();
 		// 아래 brw로 idBrw 호출을 위한 객체
@@ -107,6 +102,12 @@ public class ReturnBookOk {
 		brw.setIdLibBrw(idLib);
 		brw.setLocalIdBarcode(barcodeBook);
 		
+		//미반납 연체
+		int overDueCount = 0;
+		//반납된 연체 기간이 남아있을 경우
+		Borrow overDueDate = new Borrow();
+		String restrictDate = null;
+		
 		if(!(barcodeBook.equals(""))) {
 			try {
 				brwSe = brwService.getBorrowItemByBarcodeBook(brw);
@@ -115,6 +116,7 @@ public class ReturnBookOk {
 				phone = brwSe.getPhone();
 				brw.setIdBrw(brwSe.getIdBrw());
 				brw.setIdMemberBrw(brwSe.getIdMemberBrw());
+				
 				brwService.updateBorrowEndDate(brw);
 				brwNow = brwService.selectBrwBookCountByMemberId(brw);
 				//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
@@ -122,6 +124,13 @@ public class ReturnBookOk {
 				//오늘 대출/반납 도서 조회
 				brwListToday = brwService.selectBorrowListToday(brw);
 				
+				//연체 제한 정보 호출 도서 숫자 반영을 위하여
+				//update보다 이후에 실행문 호출
+				overDueCount = brwService.selectOverDueCountByMemberId(brw);
+				overDueDate = brwService.selectRestrictDate(brw);
+				if(overDueDate != null) {
+					restrictDate = overDueDate.getRestrictDateBrw();
+				}
 			}  catch (Exception e) {
 				return web.redirect(null, e.getLocalizedMessage());
 			}
@@ -130,48 +139,8 @@ public class ReturnBookOk {
 		// 대출가능 권수 계산
 		brwPsb = brwLimit - brwNow;
 		
-		/*brw.setIdBrw(idBrw);*/
-		
-		/*Map<String, Object> data = new HashMap<String, Object>();
-		data.put("rtndItem", brwSe);
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			mapper.writeValue(response.getWriter(), data);
-		} catch (Exception e) {
-			web.printJsonRt(e.getLocalizedMessage());	
-		}*/
-		
-		// 검색어 파라미터 받기 + Beans 설정
-		/*String keyword = web.getString("keyword", "");
-		member.setName(keyword);*/
-		
-		// 현재 페이지 번호에 대한 파라미터 받기
-		/*int nowPage = web.getInt("page", 1);*/
-		
-		/** 2) 페이지 번호 구현하기 */
-		// 전체 데이터 수 조회하기
-		/*int totalCount = 0;
-		try {
-			totalCount = memberService.getMemberCount(member);
-		}  catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}*/
-		
-		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
-		/*page.pageProcess(nowPage, totalCount, 10, 5);
-		member.setLimitStart(page.getLimitStart());
-		member.setListCount(page.getListCount());*/
-		
-		
-		/*if(brw != null) {
-			model.addAttribute("brwItem", brw);
-		}*/
-		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		/*model.addAttribute("keyword", keyword);*/
-		/*model.addAttribute("page", page);*/
 		model.addAttribute("memberId", idMemberBrw);
 		model.addAttribute("name", name);
 		model.addAttribute("phone", phone);
@@ -180,6 +149,8 @@ public class ReturnBookOk {
 		model.addAttribute("brwPsb", brwPsb);
 		model.addAttribute("brwListToday", brwListToday);
 		model.addAttribute("brwRmnList", brwRmnList);
+		model.addAttribute("overDueCount", overDueCount);
+		model.addAttribute("restrictDate", restrictDate);
 		
 		return new ModelAndView("book/brw_book");
 		/*return web.redirect(web.getRootPath() + "/book/brw_book.do", "도서 반납이 완료되었습니다.");*/
@@ -226,6 +197,13 @@ public class ReturnBookOk {
 		List<Borrow> brwRmnList = null;
 		List<Borrow> brwListToday = null;
 		
+		//미반납 연체
+		int overDueCount = 0;
+		//반납된 연체 기간이 남아있을 경우
+		Borrow overDueDate = new Borrow();
+		String restrictDate = null;
+		
+		
 		try {
 			brwService.updateCancelBorrowEndDate(brw);
 			//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
@@ -233,6 +211,14 @@ public class ReturnBookOk {
 			brwRmnList = brwService.getBorrowListByMbrId(brw);
 			//오늘 대출/반납 도서 조회
 			brwListToday = brwService.selectBorrowListToday(brw);
+			
+			//연체 제한 정보 호출
+			//update 이후에 실행문 호출
+			overDueCount = brwService.selectOverDueCountByMemberId(brw);
+			overDueDate = brwService.selectRestrictDate(brw);
+			if(overDueDate != null) {
+				restrictDate = overDueDate.getRestrictDateBrw();
+			}
 			
 		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
@@ -248,6 +234,8 @@ public class ReturnBookOk {
 		model.addAttribute("brwPsb", brwPsb);
 		model.addAttribute("brwListToday", brwListToday);
 		model.addAttribute("brwRmnList", brwRmnList);
+		model.addAttribute("overDueCount", overDueCount);
+		model.addAttribute("restrictDate", restrictDate);
 		
 		return new ModelAndView("book/brw_book");
 	}

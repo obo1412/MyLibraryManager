@@ -13,6 +13,8 @@
 		<result property="endDateBrw" column="end_date_brw"/>
 		<result property="dueDateBrw" column="due_date_brw"/>
 		
+		<result property="restrictDateBrw" column="restrict_date_brw"/>
+		
 		<!-- member beans -->
 		<result property="name" column="name"/>
 		<result property="phone" column="phone"/>
@@ -169,6 +171,7 @@
 		INNER JOIN book_held h ON b.book_held_id = h.id
 		WHERE id_lib_brw=#{idLibBrw}
 			AND (end_date_brw is NULL OR end_date_brw = '')
+			AND (available=0 OR available=1)
 			AND local_id_barcode = #{localIdBarcode}
 	</select>
 	
@@ -239,5 +242,29 @@
 		ORDER BY due_date_brw ASC
 	</select>
 	
+	<!-- 연체중인지 체크하기 -->
+	<select id="selectOverDueCountByMemberId" parameterType="com.gaimit.mlm.model.Borrow" resultType="int">
+		SELECT
+			COUNT(id_brw)
+		FROM borrow r
+		INNER JOIN member m ON r.id_member_brw = m.id
+		WHERE id_lib_brw=#{idLibBrw} AND id_member_brw = #{idMemberBrw}
+			AND (end_date_brw is NULL  OR end_date_brw = '')
+			AND (due_date_brw &lt; curdate())
+	</select>
+	
+	<!-- 연체도서를 반납하였다면 -->
+	<select id="selectRestrictDate" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">
+		SELECT
+			DATE_ADD(end_date_brw, INTERVAL DATEDIFF(end_date_brw, due_date_brw) DAY) as restrict_date_brw
+		FROM borrow r
+		INNER JOIN member m ON r.id_member_brw = m.id
+		WHERE id_lib_brw = #{idLibBrw} AND id_member_brw = #{idMemberBrw}
+			AND (end_date_brw is NOT NULL  OR end_date_brw != '')
+			AND (end_date_brw &gt; due_date_brw)
+			AND (date_add(end_date_brw, INTERVAL DATEDIFF(end_date_brw, due_date_brw) DAY) &gt; curdate())
+		ORDER BY restrict_date_brw DESC
+		LIMIT 1
+	</select>
 	
 </mapper>

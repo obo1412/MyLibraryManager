@@ -83,7 +83,6 @@ public class BrwServiceImpl implements BrwService {
 			logger.error(e.getLocalizedMessage());
 			throw new Exception("도서대출 조회에 실패했습니다.");
 		}
-		
 		return result;
 	}
 
@@ -242,6 +241,32 @@ public class BrwServiceImpl implements BrwService {
 			throw new Exception("대출중인 도서count 조회에 실패했습니다.");
 		}
 
+		return result;
+	}
+
+	@Override
+	public int selectOverDueCountByMemberId(Borrow borrow) throws Exception {
+		int result = 0;
+		try {
+			// 연체된 도서가 없는 경우도 있으니, 0 체크하지 않는다.
+			result = sqlSession.selectOne("BorrowMapper.selectOverDueCountByMemberId", borrow);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("반납되지 않은 연체도서수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public Borrow selectRestrictDate(Borrow borrow) throws Exception {
+		Borrow result = null;
+		try {
+			//연체 도서가 없는 경우 null 정상상태
+			result = sqlSession.selectOne("BorrowMapper.selectRestrictDate", borrow);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("반납된 연체도서 조회에 실패했습니다.");
+		}
 		return result;
 	}
 

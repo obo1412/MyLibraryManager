@@ -34,7 +34,7 @@
 								style="width: 300px;">
 								<div class="input-group">
 									<input type="text" name='keyword' class="form-control"
-										placeholder="등급 검색" value="${keyword}" /> <span
+										placeholder="등급 검색" value="${keyword}" autofocus/> <span
 										class="input-group-append">
 											<button class="btn btn-success" type="submit">
 												<i class='fas fa-search'></i>
@@ -61,9 +61,9 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(gradeList) > 0}">
-										<c:forEach var="item" items="${gradeList}">
+										<c:forEach var="item" items="${gradeList}" varStatus="status">
 											<tr>
-												<td class="text-center">${item.gradeId}</td>
+												<td class="text-center">${page.indexStart + status.index}</td>
 												<c:choose>
 													<c:when test="${item.standard eq 1}">
 														<td class="text-center">기준등급</td>

@@ -44,7 +44,7 @@
 										</select>
 									</span> <input type="text" name='keyword'
 										class="form-control form-control-sm" placeholder="도서 검색"
-										value="${keyword}" /> <span class="input-group-append">
+										value="${keyword}" autofocus/> <span class="input-group-append">
 										<button class="btn btn-success btn-sm" type="submit">
 											<i class='fas fa-search'></i>
 										</button> <a href="${pageContext.request.contextPath}/book/reg_book.do"
@@ -73,13 +73,15 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(bookHeldList) > 0}">
-										<c:forEach var="item" items="${bookHeldList}">
+										<c:forEach var="item" items="${bookHeldList}" varStatus="status">
 											<tr>
-												<td class="text-center">${item.id}</td>
+												<td class="text-center">${page.indexStart + status.index}</td>
 												<td class="text-center"><c:url var="viewUrl"
 														value="/book/book_held_view.do">
 														<c:param name="localIdBarcode"
 															value="${item.localIdBarcode}" />
+															<c:param name="bookHeldId"
+															value="${item.id}" />
 													</c:url> <a href="${viewUrl}"
 													onclick="window.open(this.href, '_blank','width=600,height=800,scrollbars=yes');return false;">${item.titleBook}</a>
 												</td>

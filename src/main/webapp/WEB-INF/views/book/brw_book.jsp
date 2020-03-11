@@ -167,8 +167,8 @@
 
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
-									<label for='name' class="col-md-3">회원 이름</label>
-									<div class="input-group input-group-sm col-md-9">
+									<label for='name' class="col-md-4">회원이름</label>
+									<div class="input-group input-group-sm col-md-7">
 										<input type="text" name="name" id="name" class="form-control"
 											value="${name}" readonly />
 									</div>
@@ -177,17 +177,17 @@
 
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
-									<label for='phone' class="col-md-3">연락처</label>
-									<div class="input-group input-group-sm col-md-9">
+									<label for='phone' class="col-md-4">연락처</label>
+									<div class="input-group input-group-sm col-md-7">
 										<input type="tel" name="phone" id="phone" class="form-control"
 											value="${phone}" readonly />
 									</div>
 								</div>
 							</div>
 							
-							<div class="form-inline mb-2">
+							<div class="form-inline mb-3">
 								<div class="form-group col-md-4">
-									<label for='brwLimit' class="col-md-12">대여한도</label>
+									<label for='brwLimit' class="col-md-12">대출한도</label>
 									<div class="col-md-12">
 										<input type="text" name="brwLimit" id="brwLimit"
 											class="form-control form-control-sm" value="${brwLimit}"
@@ -196,7 +196,7 @@
 								</div>
 
 								<div class="form-group col-md-4">
-									<label for='brwNow' class="col-md-12">대여중</label>
+									<label for='brwNow' class="col-md-12">대출중</label>
 									<div class="col-md-12">
 										<input type="text" name="brwNow" id="brwNow"
 											class="form-control form-control-sm" value="${brwNow}"
@@ -205,7 +205,7 @@
 								</div>
 
 								<div class="form-group col-md-4">
-									<label for='brwPsb' class="col-md-12">대여가능</label>
+									<label for='brwPsb' class="col-md-12">대출가능</label>
 									<div class="col-md-12">
 										<c:set var="brwWarning" value="" />
 									<c:if test="${brwLimit != 0 and (brwPsb < 1)}">
@@ -217,11 +217,27 @@
 									</div>
 								</div>
 							</div>
+							
+							<div class="col-md-12 mb-3" style="font-size:14px;">
+								<c:choose>
+								<c:when test="${overDueCount > 0}">
+									<p class="bg-danger text-white">${overDueCount}권의 연체중인 도서가 존재합니다.</p>
+								</c:when>
+								<c:when test="${restrictDate ne null}">
+									<fmt:parseDate var="rstDate" value="${restrictDate}" pattern="yyyy-MM-dd" />
+									<fmt:formatDate var="viewRstDate" value="${rstDate}" pattern="yyyy-MM-dd" />
+									<p class="bg-danger text-white">${viewRstDate}까지 도서 대출이 제한됩니다.</p>
+								</c:when>
+								<c:otherwise>
+									<p>대출 가능 회원입니다.</p>
+								</c:otherwise>
+								</c:choose>
+							</div>
 
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
-									<label for='barcodeBook' class="col-md-3">도서바코드</label>
-									<div class="input-group input-group-sm col-md-9">
+									<label for='barcodeBook' class="col-md-4">도서바코드</label>
+									<div class="input-group input-group-sm col-md-7">
 										<span class="input-group-prepend"> <input type="button"
 											value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
 											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
@@ -246,8 +262,6 @@
 										class="form-control" value="${dateLimit}" />
 								</div>
 							</div>
-
-
 
 							<div class="form-group">
 								<div class="offset-md-7 col-md-5">

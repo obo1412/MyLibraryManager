@@ -64,11 +64,6 @@ public class BrwBookOk {
 
 		/** (3) 로그인 여부 검사 */
 		// 로그인 중이라면 이 페이지를 동작시켜서는 안된다.
-		/*if (web.getSession("loginInfo") != null) {
-			return web.redirect(web.getRootPath() + "/index.do", "이미 로그인 하셨습니다.");
-		}*/
-		/** 로그인 여부 검사 */
-		// 로그인중인 회원 정보 가져오기
 		int idLib = 0;
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
@@ -77,20 +72,7 @@ public class BrwBookOk {
 		} else {
 			idLib = loginInfo.getIdLibMng();
 		}
-
-		/** (4) 파일이 포함된 POST 파라미터 받기 */
-		// <form>태그 안에 <input type="file">요소가 포함되어 있고,
-		// <form>태그에 enctype="multipart/form-data"가 정의되어 있는 경우
-		// WebHelper의 getString()|getInt() 메서드는 더 이상 사용할 수 없게 된다.
-		/*try {
-			upload.multipartRequest();
-		} catch (Exception e) {
-			return web.redirect(null, "multipart 데이터가 아닙니다.");
-		}
-*/
-		// UploadHelper에서 텍스트 형식의 파라미터를 분류한 Map을 리턴받아서 값을 추출한다.
-		//Map<String, String> paramMap = upload.getParamMap();
-				
+		
 		/** brw_book에서 전달받은 member 파라미터를 Beans 객체에 담는다. */
 		int memberId = web.getInt("memberId");
 		String name = web.getString("name");
@@ -124,6 +106,13 @@ public class BrwBookOk {
 		int brwNow = 0;
 		int brwPsb = 0;
 		
+		//미반납 연체
+		int overDueCount = 0;
+		//반납된 연체 기간이 남아있을 경우
+		Borrow overDueDate = new Borrow();
+		String restrictDate = null;
+		
+		
 		//bookCode를 이용하여 도서 정보 호출
 		try {
 			//barcode로 id_brw count 검사, 있으면 대출중 NPE 반환
@@ -150,6 +139,15 @@ public class BrwBookOk {
 		
 		// 대출도서 정보가 다모이면 borrow insert
 		try {
+			//연체 제한 정보 호출 도서 숫자 반영을 위하여
+			//update보다 이후에 실행문 호출
+			//아래 정보 근거로 대출 제한 조건 문 실행하고 현재는 그냥 대출 가능
+			overDueCount = brwService.selectOverDueCountByMemberId(brw);
+			overDueDate = brwService.selectRestrictDate(brw);
+			if(overDueDate != null) {
+				restrictDate = overDueDate.getRestrictDateBrw();
+			}
+			
 			brwService.insertBorrow(brw);
 			brwListToday = brwService.selectBorrowListToday(brw);
 			//대출 후 대출 권수 최신화
@@ -159,25 +157,6 @@ public class BrwBookOk {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-
-		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
-		
-
-		/** (6) 업로드 된 파일 정보 추출 */
-		/*List<FileInfo> fileList = upload.getFileList();
-		// 업로드 된 프로필 사진 경로가 저장될 변수
-		String profileImg = null;
-
-		// 업로드 된 파일이 존재할 경우만 변수값을 할당한다.
-		if (fileList.size() > 0) {
-			// 단일 업로드이므로 0번째 항목만 가져온다.
-			FileInfo info = fileList.get(0);
-			profileImg = info.getFileDir() + "/" + info.getFileName();
-		}
-
-		// 파일경로를 로그로 기록
-		logger.debug("profileImg=" + profileImg);*/
-		
 		// 조회 결과를 View에게 전달한다.
 		model.addAttribute("memberId", memberId);
 		model.addAttribute("name", name);
@@ -186,6 +165,8 @@ public class BrwBookOk {
 		model.addAttribute("brwNow", brwNow);
 		model.addAttribute("brwPsb", brwPsb);
 		model.addAttribute("brwListToday", brwListToday);
+		model.addAttribute("overDueCount", overDueCount);
+		model.addAttribute("restrictDate", restrictDate);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
 		return new ModelAndView("book/brw_book");

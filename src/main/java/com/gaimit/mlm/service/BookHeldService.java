@@ -156,4 +156,12 @@ public interface BookHeldService {
 	 * @throws Exception
 	 */
 	public List<BookHeld> getPrintBookHeldList(BookHeld bookHeld) throws Exception;
+	
+	
+	/**
+	 * sortingIndex에 바코드 뒷번호만 넣어주기
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void updateSortingIndex(BookHeld bookHeld) throws Exception;
 }

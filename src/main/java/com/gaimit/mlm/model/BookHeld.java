@@ -10,6 +10,7 @@ public class BookHeld extends Book{
 	private String regDate;
 	private String editDate;
 	private String localIdBarcode;
+	private int sortingIndex;
 	private int purchasedOrDonated;
 	private int available;
 	private String additionalCode;
@@ -59,6 +60,12 @@ public class BookHeld extends Book{
 	public void setLocalIdBarcode(String localIdBarcode) {
 		this.localIdBarcode = localIdBarcode;
 	}
+	public int getSortingIndex() {
+		return sortingIndex;
+	}
+	public void setSortingIndex(int sortingIndex) {
+		this.sortingIndex = sortingIndex;
+	}
 	public int getPurchasedOrDonated() {
 		return purchasedOrDonated;
 	}
@@ -99,9 +106,8 @@ public class BookHeld extends Book{
 	public String toString() {
 		return "BookHeld [id=" + id + ", libraryIdLib=" + libraryIdLib + ", bookIdBook=" + bookIdBook + ", bookShelf="
 				+ bookShelf + ", regDate=" + regDate + ", editDate=" + editDate + ", localIdBarcode=" + localIdBarcode
-				+ ", purchasedOrDonated=" + purchasedOrDonated + ", available=" + available + ", additionalCode="
-				+ additionalCode + ", copyCode=" + copyCode + ", barcodeInitCount=" + barcodeInitCount
-				+ ", newBarcodeForDupCheck=" + newBarcodeForDupCheck + "]";
+				+ ", sortingIndex=" + sortingIndex + ", purchasedOrDonated=" + purchasedOrDonated + ", available="
+				+ available + ", additionalCode=" + additionalCode + ", copyCode=" + copyCode + ", barcodeInitCount="
+				+ barcodeInitCount + ", newBarcodeForDupCheck=" + newBarcodeForDupCheck + "]";
 	}
-	
 }

@@ -1,6 +1,7 @@
-package com.gaimit.mlm.controller.book;
+package com.gaimit.mlm.controller;
 
 
+import java.util.List;
 import java.util.Locale;
 
 //import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
 
 @Controller
-public class RegBook {
+public class LogicTask {
 	/** log4j 객체 생성 및 사용할 객체 주입받기 */
 	//private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
 	// --> import study.spring.helper.WebHelper;
@@ -37,7 +38,7 @@ public class RegBook {
 	BookHeldService bookHeldService;
 	
 	/** 도서 등록 페이지 */
-	@RequestMapping(value = "/book/reg_book.do", method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = "/book/update_sorting_index.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
 		
 		/** 1) WebHelper 초기화 및 파라미터 처리 */
@@ -54,45 +55,22 @@ public class RegBook {
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 		
-		int lastEmptyLocalBarcode = 0;
-		BookHeld lastLocalBarcode = new BookHeld();
-		String barcodeInit = "";
-		String newBarcode = "";
-		int barcodeInitCount = 0;
-	
+		List<BookHeld> bookHeldList = null;
 		//barcode 호출
 		try {
-			//바코드 헤드 검사
-			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
-			//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
-			if(lastLocalBarcode != null) {
-				barcodeInit = lastLocalBarcode.getLocalIdBarcode();
-				barcodeInit = util.strExtract(barcodeInit);
-				//바코드말머리가 있다면 말머리의 길이를 구한다.
-				// *말머리의 길이로 mapper에서 바코드 select함
-				barcodeInitCount = barcodeInit.length();
+			bookHeldList = bookHeldService.getPrintBookHeldList(bookHeld);
+			for(int i=0; i<bookHeldList.size(); i++) {
+				String barcode = bookHeldList.get(i).getLocalIdBarcode();
+				int sortingIdx = util.numExtract(barcode);
+				System.out.println(sortingIdx);
+				bookHeld.setId(bookHeldList.get(i).getId());
+				bookHeld.setSortingIndex(sortingIdx);
+				bookHeldService.updateSortingIndex(bookHeld);
 			}
-			//바코드 말머리의 길이를 bookHeld에 주입
-			bookHeld.setBarcodeInitCount(barcodeInitCount);
-			
-			//바코드 번호가 1번인지 검사
-			int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
-			//1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록
-			//1이 아니면 1로 바코드 등록
-			if(firstBarcode == 1 ) {
-				lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
-			} else {
-				lastEmptyLocalBarcode = 1;
-			}
-			
-			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
-		
-		model.addAttribute("newBarcode", newBarcode);
-		model.addAttribute("barcodeInit", barcodeInit);
 
-		return new ModelAndView("book/reg_book");
+		return new ModelAndView("index_login");
 	}
 }

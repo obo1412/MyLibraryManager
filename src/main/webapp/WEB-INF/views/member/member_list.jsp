@@ -34,7 +34,7 @@
 								style="width: 300px;">
 								<div class="input-group input-group-sm">
 									<input type="text" name='keyword' class="form-control"
-										placeholder="회원 이름 검색" value="${keyword}" /> <span
+										placeholder="회원 이름 검색" value="${keyword}" autofocus/> <span
 										class="input-group-append">
 											<button class="btn btn-success btn-sm" type="submit">
 												<i class='fas fa-search'></i>
@@ -51,7 +51,7 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
-									<th class="info text-center">등록번호</th>
+									<th class="info text-center">번호</th>
 									<th class="info text-center">이름</th>
 									<th class="info text-center">생년월일</th>
 									<th class="info text-center">연락처</th>
@@ -64,9 +64,9 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(list) > 0}">
-										<c:forEach var="item" items="${list}">
+										<c:forEach var="item" items="${list}" varStatus="status">
 											<tr>
-												<td class="text-center">${item.id}</td>
+												<td class="text-center">${page.indexStart + status.index}</td>
 												<td><c:url var="readUrl" value="/member/member_view.do">
 														<c:param name="memberId" value="${item.id}" />
 													</c:url>

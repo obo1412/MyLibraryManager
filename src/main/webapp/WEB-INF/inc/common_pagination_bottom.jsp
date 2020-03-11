@@ -14,6 +14,9 @@
 					<c:if test="${category ne null}">
 						<c:param name="category" value="${category}"></c:param>
 					</c:if>
+					<c:if test="${searchOpt ne null}">
+						<c:param name="searchOpt" value="${searchOpt}"></c:param>
+					</c:if>
 					<c:param name="keyword" value="${keyword}"></c:param>
 					<c:param name="page" value="${page.prevPage}"></c:param>
 				</c:url>
@@ -35,6 +38,9 @@
 			<c:url var="pageUrl" value="${pageDefUrl}" >
 				<c:if test="${category ne null}">
 					<c:param name="category" value="${category}"></c:param>
+				</c:if>
+				<c:if test="${searchOpt ne null}">
+					<c:param name="searchOpt" value="${searchOpt}"></c:param>
 				</c:if>
 				<c:param name="keyword" value="${keyword}"></c:param>
 				<c:param name="page" value="${i}"></c:param>
@@ -60,6 +66,9 @@
 				<c:url var="nextUrl" value="${pageDefUrl}">
 					<c:if test="${category ne null}">
 						<c:param name="category" value="${category}"></c:param>
+					</c:if>
+					<c:if test="${searchOpt ne null}">
+						<c:param name="searchOpt" value="${searchOpt}"></c:param>
 					</c:if>
 					<c:param name="keyword" value="${keyword}"></c:param>
 					<c:param name="page" value="${page.nextPage}"></c:param>

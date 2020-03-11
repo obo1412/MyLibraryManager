@@ -370,5 +370,22 @@ public class BookHeldServiceImpl implements BookHeldService {
 
 
 
+	@Override
+	public void updateSortingIndex(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.update("BookHeldMapper.updateSortingIndex", bookHeld);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("변경된 도서 sortingIndex 데이터가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("sortingIndex 데이터 주입 실패했습니다.");
+		}
+	}
+
+
+
+
 
 }
