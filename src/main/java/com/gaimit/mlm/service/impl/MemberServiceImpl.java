@@ -228,9 +228,9 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public void deleteMember(Member member) throws Exception {
+	public void updateMemberInactive(Member member) throws Exception {
 		try {
-			int result = sqlSession.delete("MemberMapper.deleteMember", member);
+			int result = sqlSession.update("MemberMapper.updateMemberInactive", member);
 			// 삭제된 데이터가 없다는 것은 WHERE절의 조건값이 맞지 않다는 의미.
 			// 이 경우, 첫 번째 WHERE조건에서 사용되는 id값에 대한 회원을 찾을 수 없다는 의미
 			if (result == 0) {
@@ -238,11 +238,11 @@ public class MemberServiceImpl implements MemberService {
 			}
 		} catch (NullPointerException e) {
 			// sqlSession.rollback();
-			throw new Exception("이미 탈퇴된 회원 입니다.");
+			throw new Exception("이미 비화성화된 회원 입니다.");
 		} catch (Exception e) {
 			// sqlSession.rollback();
 			logger.error(e.getLocalizedMessage());
-			throw new Exception("회원탈퇴에 실패했습니다.");
+			throw new Exception("회원정보 비활성화에 실패했습니다.");
 		} finally {
 			// sqlSession.commit();
 		}

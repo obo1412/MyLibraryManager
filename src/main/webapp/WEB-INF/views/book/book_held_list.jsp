@@ -60,13 +60,13 @@
 								<tr>
 									<th class="info text-center">번호</th>
 									<th class="info text-center">도서명</th>
-									<th class="info text-center">도서저자</th>
+									<th class="info text-center">저자명</th>
 									<th class="info text-center">출판사</th>
 									<th class="info text-center">출판일</th>
 									<th class="info text-center">ISBN13</th>
 									<th class="info text-center">청구기호</th>
 									<th class="info text-center">등록일</th>
-									<th class="info text-center">바코드</th>
+									<th class="info text-center">등록번호</th>
 									<th class="info text-center">복본기호</th>
 								</tr>
 							</thead>

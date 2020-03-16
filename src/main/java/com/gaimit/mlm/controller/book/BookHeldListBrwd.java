@@ -61,16 +61,25 @@ public class BookHeldListBrwd {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		}
 		
-		String keyword = web.getString("keyword", "");
-		// 파라미터를 저장할 Beans
-		
-		
 		Borrow brw = new Borrow();
 		brw.setIdLibBrw(loginInfo.getIdLibMng());
 		
-		brw.setName(keyword);
-		// 검색어 분기에 대한 설정 해야된다. 맵퍼에서도 아직 작업전
-		
+		// 검색어 파라미터 받기 + Beans 설정
+		int searchOpt = web.getInt("searchOpt");
+		String keyword = web.getString("keyword", "");
+		if(keyword!=null||keyword!=""){
+			switch (searchOpt) {
+			case 1:
+				brw.setName(keyword);
+				break;
+			case 2:
+				brw.setTitleBook(keyword);
+				break;
+			case 3:
+				brw.setLocalIdBarcode(keyword);
+				break;
+			}
+		}
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
 		int nowPage = web.getInt("page", 1);
@@ -108,6 +117,7 @@ public class BookHeldListBrwd {
 		model.addAttribute("brwList", brwList);
 		model.addAttribute("brwListRtnToday", brwListRtnToday);
 		model.addAttribute("keyword", keyword);
+		model.addAttribute("searchOpt", searchOpt);
 		model.addAttribute("page", page);
 		
 		return new ModelAndView("book/book_held_list_brwd");

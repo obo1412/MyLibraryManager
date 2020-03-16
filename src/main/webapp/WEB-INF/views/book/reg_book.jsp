@@ -145,7 +145,7 @@
 										<div class="col-md-10">
 											<input type="text" name="bookCateg" id="bookCateg"
 												class="form-control form-control-sm input-clear" style='width: 97.5%;'
-												placeholder="도서 분류 / 서가 지정"
+												placeholder="도서 분류"
 												value="${jsonAladin.item[0].categoryName}" />
 										</div>
 									</div>
@@ -239,7 +239,7 @@
 										<div class="col-md-6"></div>
 										
 										<label for='newBarcode' class="col-md-2 control-label">
-											바코드넘버</label>
+											도서등록번호</label>
 										<div class="col-md-4">
 											<input type="text" name="newBarcode" id="newBarcode"
 												class="form-control form-control-sm input-clear" value="${newBarcode}"

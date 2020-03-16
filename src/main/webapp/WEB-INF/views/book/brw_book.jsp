@@ -88,8 +88,8 @@
 													<!-- <th class="info text-center">회원코드</th> -->
 													<th class="table-info text-center">연락처</th>
 													<th class="table-info text-center">회원등급</th>
-													<th class="table-info text-center">대여권수</th>
-													<th class="table-info text-center">대여기한</th>
+													<th class="table-info text-center">대출권수</th>
+													<th class="table-info text-center">대출기한</th>
 													<th class="table-info text-center">선택</th>
 												</tr>
 											</thead>
@@ -126,8 +126,8 @@
 													<!-- <th class="info text-center">회원코드</th> -->
 													<th class="table-info text-center">연락처</th>
 													<th class="table-info text-center">회원등급</th>
-													<th class="table-info text-center">대여권수</th>
-													<th class="table-info text-center">대여기한</th>
+													<th class="table-info text-center">대출권수</th>
+													<th class="table-info text-center">대출기한</th>
 													<th class="table-info text-center">선택</th>
 												</tr>
 											</thead>
@@ -236,7 +236,7 @@
 
 							<div class="form-inline mb-2">
 								<div class="form-group col-md-12">
-									<label for='barcodeBook' class="col-md-4">도서바코드</label>
+									<label for='barcodeBook' class="col-md-4">도서등록번호</label>
 									<div class="input-group input-group-sm col-md-7">
 										<span class="input-group-prepend"> <input type="button"
 											value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
@@ -308,8 +308,8 @@
 											<thead>
 												<tr>
 													<th class="table-info text-center">도서제목</th>
-													<th class="table-info text-center">바코드</th>
-													<th class="table-info text-center">대여일</th>
+													<th class="table-info text-center">등록번호</th>
+													<th class="table-info text-center">대출일</th>
 													<th class="table-info text-center">반납일</th>
 													<th class="table-info text-center">상태</th>
 												</tr>
@@ -397,9 +397,9 @@
 										<th class="info text-center">연락처</th>
 										<th class="info text-center">회원등급</th>
 										<th class="info text-center">도서명</th>
-										<th class="info text-center">바코드</th>
+										<th class="info text-center">도서등록번호</th>
 										<th class="info text-center">반납예정일</th>
-										<th class="info text-center">대여일</th>
+										<th class="info text-center">대출일</th>
 										<th class="info text-center">반납일</th>
 									</tr>
 								</thead>

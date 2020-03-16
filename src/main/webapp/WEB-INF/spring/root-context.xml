@@ -65,9 +65,10 @@
 	<bean id="web" class="com.gaimit.helper.WebHelper" scope="singleton" />
 	<bean id="upload" class="com.gaimit.helper.UploadHelper" scope="singleton">
 		<!-- local테스트용upload download 경로 -->
-		<constructor-arg value="E:\Works\Coding\workspace_library\MLM\downloads" />
+		<!-- <constructor-arg value="E:\Works\Coding\workspace_library\MLM\downloads" /> -->
+		<!-- <constructor-arg value="E:\downloads\imgTemp" /> -->
 		<!-- server용 업로드 경로 -->
-		<!-- <constructor-arg value="/var/packages/Tomcat7/target/src/webapps/MLM/downloads" /> -->
+		<constructor-arg value="/var/packages/Tomcat7/target/src/webapps/downloads" />
 	</bean>
 	<bean id="mail" class="com.gaimit.helper.MailHelper" scope="singleton">
 		<constructor-arg ref="mailSender" />

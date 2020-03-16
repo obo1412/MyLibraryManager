@@ -6,13 +6,14 @@
 <!doctype html>
 <html>
 <head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/fonts.css" />
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/barcode/jquery-barcode.js"></script>
 <style type="text/css">
-@font-face{
+@font-face {
 	font-family: 'Free 3 of 9';
-	src:url(${pageContext.request.contextPath}/assets/fonts/free3of9.ttf);
+	src: url(${pageContext.request.contextPath}/assets/fonts/free3of9.ttf) format('truetype');
 }
 
 .barCode {
@@ -43,7 +44,8 @@
 			<div class="container-fluid">
 
 				<h1 class="prtNone">인쇄 설정 페이지</h1>
-				<!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
+					<a class="btn btn-secondary"
+						href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" download>폰트다운로드</a>
 
 				<form class="form-horizontal search-box prtNone"
 					name="search-mbr-form" id="search-mbr-form" method="get"

@@ -16,23 +16,30 @@
 <!-- Sidebar -->
 <ul class="sidebar navbar-nav">
 	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"
+		href="#" id="brwRtnDropdown" role="button" data-toggle="dropdown"
+		aria-haspopup="true" aria-expanded="false"> <i
+			class="fas fa-fw fa-book-reader"></i> <span>도서 대출/반납</span>
+	</a>
+		<div class="dropdown-menu" aria-labelledby="brwRtnDropdown">
+			<a class="dropdown-item"
+				href="${pageContext.request.contextPath}/book/brw_book.do">도서
+				대출/반납</a> <a class="dropdown-item"
+				href="${pageContext.request.contextPath}/book/book_held_list_brwd.do">대출된
+				도서 목록</a>
+		</div></li>
+	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"
 		href="#" id="bookDropdown" role="button" data-toggle="dropdown"
 		aria-haspopup="true" aria-expanded="false"> <i
 			class="fas fa-fw fa-book"></i> <span>도서 관리</span>
 	</a>
 		<div class="dropdown-menu" aria-labelledby="bookDropdown">
-			<h6 class="dropdown-header">도서</h6>
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/book_held_list.do">도서 목록</a>
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/reg_book.do">도서 등록하기</a>
+			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/reg_book_batch.do">도서 일괄 등록하기</a>
 			
 			<div class="dropdown-divider"></div>
-			<h6 class="dropdown-header">점검</h6>
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/book_held_discard_list.do">폐기도서 목록</a>
-			<a class="dropdown-item notyet" href="#">장서 점검</a> <a
-				class="dropdown-item notyet" href="#">보고서 출력</a> <a
-				class="dropdown-item"
-				href="${pageContext.request.contextPath}/book/print_tag_setup.do">태그
-				인쇄하기</a>
+			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/print_tag_setup.do">라벨 출력</a>
 		</div></li>
 	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"
 		href="#" id="memberDropdown" role="button" data-toggle="dropdown"
@@ -40,7 +47,6 @@
 			class="fas fa-fw fa-address-book"></i> <span>회원 관리</span>
 	</a>
 		<div class="dropdown-menu" aria-labelledby="memberDropdown">
-			<h6 class="dropdown-header">회원</h6>
 			<a class="dropdown-item"
 				href="${pageContext.request.contextPath}/member/member_list.do">회원
 				목록</a> <a class="dropdown-item"
@@ -53,19 +59,7 @@
           <a class="dropdown-item" href="#">404 Page</a>
           <a class="dropdown-item" href="#">Blank Page</a> -->
 		</div></li>
-	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"
-		href="#" id="brwRtnDropdown" role="button" data-toggle="dropdown"
-		aria-haspopup="true" aria-expanded="false"> <i
-			class="fas fa-fw fa-book-reader"></i> <span>도서 대출/반납</span>
-	</a>
-		<div class="dropdown-menu" aria-labelledby="brwRtnDropdown">
-			<h6 class="dropdown-header">도서 대출</h6>
-			<a class="dropdown-item"
-				href="${pageContext.request.contextPath}/book/brw_book.do">도서
-				대출/반납</a> <a class="dropdown-item"
-				href="${pageContext.request.contextPath}/book/book_held_list_brwd.do">대출된
-				도서 목록</a>
-		</div></li>
+
 	<li class="nav-item"><a class="nav-link notyet" href="#"> <i
 			class="fas fa-fw fa-cogs"></i> <span>환경 설정</span></a></li>
 </ul>

@@ -96,11 +96,11 @@ public interface MemberService {
 	public void selectMemberPasswordCount(Member member) throws Exception;
 	
 	/**
-	 * 회원탈퇴
+	 * 회원 비활성화
 	 * @param member - 회원번호, 비밀번호
 	 * @throws Exception
 	 */
-	public void deleteMember(Member member) throws Exception;
+	public void updateMemberInactive(Member member) throws Exception;
 	
 	/**
 	 * 회원정보 수정

@@ -33,31 +33,6 @@
 					</div>
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
-						<div style='margin-top: 30px;' class="pull-right">
-							<form method='get'
-								action='${pageContext.request.contextPath}/book/book_list_return_today.do'
-								style="width: 300px;">
-								<div class="input-group input-group-sm">
-									<span class="input-group-prepend">
-										<select name="searchOpt" class="form-control form-control-sm">
-												<option value="1"
-													<c:if test="${searchOpt == 1}">selected</c:if>>대출회원</option>
-												<option value="2"
-													<c:if test="${searchOpt == 2}">selected</c:if>>도서제목</option>
-												<option value="3"
-													<c:if test="${searchOpt == 3}">selected</c:if>>바코드</option>
-										</select>
-									</span>
-									<input type="text" name='keyword' class="form-control form-control-sm"
-										placeholder="검색" value="${keyword}" /> <span
-										class="input-group-append">
-										<button class="btn btn-success btn-sm" type="submit">
-											<i class='fas fa-search'></i>
-										</button>
-									</span>
-								</div>
-							</form>
-						</div>
 
 						<!-- 조회결과를 출력하기 위한 표 -->
 						<table class="table table-sm">
@@ -132,7 +107,7 @@
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
 							<form method='get'
-								action='${pageContext.request.contextPath}/book/book_list_brwd.do'
+								action='${pageContext.request.contextPath}/book/book_held_list_brwd.do'
 								style="width: 300px;">
 								<div class="input-group input-group-sm">
 									<span class="input-group-prepend">
@@ -142,7 +117,7 @@
 												<option value="2"
 													<c:if test="${searchOpt == 2}">selected</c:if>>도서제목</option>
 												<option value="3"
-													<c:if test="${searchOpt == 3}">selected</c:if>>바코드</option>
+													<c:if test="${searchOpt == 3}">selected</c:if>>도서등록번호</option>
 										</select>
 									</span>
 									<input type="text" name='keyword' class="form-control form-control-sm"

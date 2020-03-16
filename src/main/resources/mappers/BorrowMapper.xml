@@ -63,19 +63,19 @@
 		INNER JOIN book b ON b.id_book = h.book_id_book
 		INNER JOIN member m ON r.id_member_brw = m.id
 		WHERE id_lib_brw = #{idLibBrw} AND (end_date_brw is NULL OR end_date_brw = '')
-		<!-- <if test="(titleBook != null) || (writerBook != null) || (publisherBook != null)">
+		<if test="(name != null) || (titleBook != null) || (localIdBarcode != null)">
 				AND (
+					<if test="name != null">
+						name LIKE concat('%', #{name}, '%')
+					</if>
 					<if test="titleBook != null">
 						title_book LIKE concat('%', #{titleBook}, '%')
 					</if>
-					<if test="writerBook != null">
-						writer_book LIKE concat('%', #{writerBook}, '%')
-					</if>
-					<if test="publisherBook != null">
-						publisher_book LIKE concat('%', #{publisherBook}, '%')
+					<if test="localIdBarcode != null">
+						local_id_barcode LIKE concat('%', #{localIdBarcode}, '%')
 					</if>
 				)
-			</if> -->
+			</if>
 		ORDER BY m.name ASC
 		LIMIT #{limitStart}, #{listCount}
 	</select>
@@ -88,6 +88,19 @@
 		INNER JOIN book b ON b.id_book = h.book_id_book
 		INNER JOIN member m ON r.id_member_brw = m.id
 		WHERE id_lib_brw = #{idLibBrw} AND (end_date_brw is NULL OR end_date_brw = '')
+		<if test="(name != null) || (titleBook != null) || (localIdBarcode != null)">
+				AND (
+					<if test="name != null">
+						name LIKE concat('%', #{name}, '%')
+					</if>
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
+					</if>
+					<if test="localIdBarcode != null">
+						local_id_barcode LIKE concat('%', #{localIdBarcode}, '%')
+					</if>
+				)
+			</if>
 		<!-- 위 selectBorrowList에 if 조건 똑같이 넣어야된다. -->
 	</select>
 	

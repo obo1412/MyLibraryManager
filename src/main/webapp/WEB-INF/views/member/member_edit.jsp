@@ -9,7 +9,7 @@
 <meta charset='utf-8' />
 <meta name="viewport"
 	content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>회원 상세 보기</title>
+<title>회원 정보 수정</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 </head>
@@ -18,17 +18,93 @@
 	<div id="wrapper">
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<h4 class='page-header'>회원 상세 보기</h4>
+				<h4 class='page-header'>회원 정보 수정</h4>
 				
-				<!-- 버튼 -->
-				<div class="text-right">
-					<a
-						href="${pageContext.request.contextPath}/member/member_edit.do?memberId=${memberItem.id}"
-						class="btn btn-warning">수정</a> <a
-						href="${pageContext.request.contextPath}/member/member_delete.do?memberId=${memberItem.id}"
-						class="btn btn-danger" data-toggle="modal" data-target="#inactive_member_modal">삭제</a> <input type="button"
-						class="btn btn-primary" value="닫기" onclick="self.close()" />
-				</div>
+				<form class="horizontal" name="edit_member" method="post"
+					enctype="multipart/form-data"
+					action="${pageContext.request.contextPath}/member/member_edit_ok.do">
+					
+					<input type="hidden" name="memberId" id="memberId" value="${memberItem.id}"/>
+					
+					<div class="form-inline mb-2">
+						<label for="name" class="col-2">회원 이름</label>
+						<div class="col-10">
+							<input name="name" id="name" class="form-control form-control-sm"
+								value="${memberItem.name}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="phone" class="col-2">연락처</label>
+						<div class="col-10">
+							<input name="phone" id="phone" class="form-control form-control-sm"
+								value="${memberItem.phone}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="birthdate" class="col-2">생년월일</label>
+						<div class="col-10">
+							<input name="date" id="birthdate" class="form-control form-control-sm"
+								value="${memberItem.birthdate}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="email" class="col-2">이메일</label>
+						<div class="col-10">
+							<input type="email" name="email" id="email" class="form-control form-control-sm"
+								value="${memberItem.email}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for="barcodeMbr" class="col-2">회원등록번호</label>
+						<div class="col-10">
+							<p class="form-control-static form-control-sm">${memberItem.barcodeMbr}</p>
+						</div>
+					</div>
+					
+					<%-- <div class="form-inline mb-2">
+						<label for="profileImg" class="col-2">프로필이미지</label>
+						<div class="col-10">
+							<input type="file" name="profileImg" id="profileImg" class="form-control form-control-sm"
+								value="${memberItem.profileImg}"/>
+						</div>
+					</div> --%>
+					
+					<div class="form-inline mb-2">
+						<label for="rfuid" class="col-2">RF-UID</label>
+						<div class="col-10">
+							<input type="text" name="rfuid" id="rfuid" class="form-control form-control-sm"
+								value="${memberItem.rfUid}"/>
+						</div>
+					</div>
+					
+					<div class="form-inline mb-2">
+						<label for='grade' class="col-2">회원등급</label>
+						<div class="col-10">
+							<select name="grade" class="form-control form-control-sm">
+								<option value="">--고객등급을 선택하세요--</option>
+								<c:forEach var="l" items="${gradeList}">
+									<c:set var="choice_grade" value="" />
+									<c:if test="${l.gradeId == memberItem.gradeId}">
+										<c:set var="choice_grade" value="selected" />
+									</c:if>
+									<option value="${l.gradeId}">${l.gradeName}(대여가능권수:${l.brwLimit}권
+										/ 대여기간:${l.dateLimit}일)</option>
+								</c:forEach>
+							</select>
+						</div>
+					</div>
+					
+					<div class="form-group mt-2">
+						<div class="col-md-offset-2 col-md-6">
+							<button type="submit" class="btn btn-primary btn-sm Refresh">수정하기</button>
+							<button type="reset" class="btn btn-danger btn-sm">다시작성</button>
+						</div>
+					</div>
+				</form>
 				
 				<!-- 조회결과를 출력하기 위한 표 -->
 				<table class="table table-sm table-bordered mt-2">

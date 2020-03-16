@@ -12,10 +12,12 @@ public class Member extends MemberGrade{
 	private String addr2;
 	private String remarks;
 	private String regDate;
+	private String editDate;
 	private String barcodeMbr;
 	private String profileImg;
 	private String rfUid;
 	private int gradeId;
+	private int status;
 	private int limitStart;
 	private int listCount;
 	
@@ -85,6 +87,12 @@ public class Member extends MemberGrade{
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
+	public String getEditDate() {
+		return editDate;
+	}
+	public void setEditDate(String editDate) {
+		this.editDate = editDate;
+	}
 	public String getBarcodeMbr() {
 		return barcodeMbr;
 	}
@@ -109,6 +117,12 @@ public class Member extends MemberGrade{
 	public void setGradeId(int gradeId) {
 		this.gradeId = gradeId;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
 	public int getLimitStart() {
 		return limitStart;
 	}
@@ -125,8 +139,8 @@ public class Member extends MemberGrade{
 	public String toString() {
 		return "Member [id=" + id + ", idLib=" + idLib + ", name=" + name + ", phone=" + phone + ", birthdate="
 				+ birthdate + ", email=" + email + ", postcode=" + postcode + ", addr1=" + addr1 + ", addr2=" + addr2
-				+ ", remarks=" + remarks + ", regDate=" + regDate + ", barcodeMbr=" + barcodeMbr + ", profileImg="
-				+ profileImg + ", rfUid=" + rfUid + ", gradeId=" + gradeId + ", limitStart=" + limitStart
-				+ ", listCount=" + listCount + "]";
+				+ ", remarks=" + remarks + ", regDate=" + regDate + ", editDate=" + editDate + ", barcodeMbr="
+				+ barcodeMbr + ", profileImg=" + profileImg + ", rfUid=" + rfUid + ", gradeId=" + gradeId + ", status="
+				+ status + ", limitStart=" + limitStart + ", listCount=" + listCount + "]";
 	}
 }

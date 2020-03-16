@@ -6,29 +6,27 @@
 <!doctype html>
 <html>
 <head>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/fonts.css" />
+	<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" as="font" crossorigin >
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/assets/js/barcode/jquery-barcode.js"></script>
-
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/fre3of9x.ttf" />
+	
 
 <style type="text/css">
 
-@font-face {
+/* @font-face {
 	font-family: 'Free 3 of 9';
-	src: url(${pageContext.request.contextPath}/assets/fonts/fre3of9x.ttf) format('ttf');
-	src: url(${pageContext.request.contextPath}/assets/fonts/free3of9.ttf) format('ttf');
-	
-}
+	src:  url(${pageContext.request.contextPath}/assets/fonts/free3of9.ttf) format('truetype');
+} */
 
-@font-face {
+/* @font-face {
 	font-family: NanumSquareWeb;
 	src: url(NanumSquareR.woff) format('woff');
 	
-}
+} */
 
 @media print {
 	@page {
