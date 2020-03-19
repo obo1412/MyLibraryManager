@@ -82,7 +82,7 @@
 					</if>
 				)
 			</if>
-		ORDER BY id ASC
+		ORDER BY id DESC
 		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
@@ -279,7 +279,13 @@
 		</where>
 	</select>
 	
-	<!-- 도서 폐기 bookHeldDelete.java -->
+	<!-- 도서 삭제 bookHeldDelete.java -->
+	<delete id="deleteBookHeldItem" parameterType="com.gaimit.mlm.model.BookHeld">
+		DELETE FROM book_held
+		WHERE id=#{id} AND library_id_lib=#{libraryIdLib}
+	</delete>
+	
+	<!-- 도서 폐기 -->
 	<update id="updateBookHeldDiscard" parameterType="com.gaimit.mlm.model.BookHeld">
 		UPDATE book_held SET
 			edit_date=now(), local_id_barcode=CONCAT(#{localIdBarcode}, 'x'),
@@ -312,7 +318,7 @@
 					</if>
 				)
 			</if>
-		ORDER BY id ASC
+		ORDER BY edit_date DESC
 		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
@@ -359,7 +365,8 @@
 		INNER JOIN book b ON h.book_id_book = b.id_book
 		INNER JOIN library l ON h.library_id_lib = l.id_lib
 		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
-		<if test="(regDate != null) || (localIdBarcode != null)">
+		<if test="(regDate != null) || (localIdBarcode != null) 
+			|| (titleBook != null)">
 				AND (
 					<if test="regDate != null">
 						<!-- 날짜비교할 수 있게 포멧 변경. -->
@@ -367,6 +374,9 @@
 					</if>
 					<if test="localIdBarcode != null">
 						local_id_barcode = #{localIdBarcode}
+					</if>
+					<if test="titleBook != null">
+						title_book LIKE concat('%', #{titleBook}, '%')
 					</if>
 				)
 			</if>

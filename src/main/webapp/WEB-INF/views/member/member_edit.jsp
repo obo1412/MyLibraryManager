@@ -26,72 +26,71 @@
 					
 					<input type="hidden" name="memberId" id="memberId" value="${memberItem.id}"/>
 					
-					<div class="form-inline mb-2">
-						<label for="name" class="col-2">회원 이름</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="name" class="col-12">회원 이름</label>
+						<div class="col-8">
 							<input name="name" id="name" class="form-control form-control-sm"
 								value="${memberItem.name}"/>
 						</div>
 					</div>
 					
-					<div class="form-inline mb-2">
-						<label for="phone" class="col-2">연락처</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="phone" class="col-12">연락처</label>
+						<div class="col-8">
 							<input name="phone" id="phone" class="form-control form-control-sm"
 								value="${memberItem.phone}"/>
 						</div>
 					</div>
 					
-					<div class="form-inline mb-2">
-						<label for="birthdate" class="col-2">생년월일</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="birthdate" class="col-12">생년월일</label>
+						<div class="col-8">
 							<input name="date" id="birthdate" class="form-control form-control-sm"
 								value="${memberItem.birthdate}"/>
 						</div>
 					</div>
 					
-					<div class="form-inline mb-2">
-						<label for="email" class="col-2">이메일</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="email" class="col-12">이메일</label>
+						<div class="col-8">
 							<input type="email" name="email" id="email" class="form-control form-control-sm"
 								value="${memberItem.email}"/>
 						</div>
 					</div>
 					
-					<div class="form-inline mb-2">
-						<label for="barcodeMbr" class="col-2">회원등록번호</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="barcodeMbr" class="col-12">회원등록번호</label>
+						<div class="col-8">
 							<p class="form-control-static form-control-sm">${memberItem.barcodeMbr}</p>
 						</div>
 					</div>
 					
-					<%-- <div class="form-inline mb-2">
-						<label for="profileImg" class="col-2">프로필이미지</label>
-						<div class="col-10">
+					<%-- <div class="form-group mb-2">
+						<label for="profileImg" class="col-12">프로필이미지</label>
+						<div class="col-8">
 							<input type="file" name="profileImg" id="profileImg" class="form-control form-control-sm"
 								value="${memberItem.profileImg}"/>
 						</div>
 					</div> --%>
 					
-					<div class="form-inline mb-2">
-						<label for="rfuid" class="col-2">RF-UID</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for="rfuid" class="col-12">RF-UID</label>
+						<div class="col-8">
 							<input type="text" name="rfuid" id="rfuid" class="form-control form-control-sm"
 								value="${memberItem.rfUid}"/>
 						</div>
 					</div>
 					
-					<div class="form-inline mb-2">
-						<label for='grade' class="col-2">회원등급</label>
-						<div class="col-10">
+					<div class="form-group mb-2">
+						<label for='grade' class="col-12">회원등급</label>
+						<div class="col-8">
 							<select name="grade" class="form-control form-control-sm">
-								<option value="">--고객등급을 선택하세요--</option>
 								<c:forEach var="l" items="${gradeList}">
 									<c:set var="choice_grade" value="" />
 									<c:if test="${l.gradeId == memberItem.gradeId}">
 										<c:set var="choice_grade" value="selected" />
 									</c:if>
-									<option value="${l.gradeId}">${l.gradeName}(대여가능권수:${l.brwLimit}권
+									<option value="${l.gradeId}" ${choice_grade}>${l.gradeName}(대여가능권수:${l.brwLimit}권
 										/ 대여기간:${l.dateLimit}일)</option>
 								</c:forEach>
 							</select>

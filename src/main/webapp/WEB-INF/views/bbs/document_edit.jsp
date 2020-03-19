@@ -28,7 +28,7 @@
 
 					<!-- 작성자,비밀번호,이메일은 자신의 글을 수정하는 경우만 생략한다. -->
 					<c:if
-						test="${loginInfo == null || loginInfo.id != readDocument.memberId}">
+						test="${loginInfo == null || loginInfo.idMng != readDocument.managerId}">
 						<!-- 작성자 -->
 						<div class="form-group">
 							<label for="writer_name" class="col-sm-2 control-label">작성자</label>

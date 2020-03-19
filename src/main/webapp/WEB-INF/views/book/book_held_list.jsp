@@ -75,7 +75,7 @@
 									<c:when test="${fn:length(bookHeldList) > 0}">
 										<c:forEach var="item" items="${bookHeldList}" varStatus="status">
 											<tr>
-												<td class="text-center">${page.indexStart + status.index}</td>
+												<td class="text-center">${page.indexLast - status.index}</td>
 												<td class="text-center"><c:url var="viewUrl"
 														value="/book/book_held_view.do">
 														<c:param name="localIdBarcode"

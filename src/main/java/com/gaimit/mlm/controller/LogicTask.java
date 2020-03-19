@@ -73,4 +73,5 @@ public class LogicTask {
 
 		return new ModelAndView("index_login");
 	}
+	
 }

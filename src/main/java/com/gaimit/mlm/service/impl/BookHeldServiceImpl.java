@@ -278,7 +278,23 @@ public class BookHeldServiceImpl implements BookHeldService {
 	}
 
 
-
+	@Override
+	public void deleteBookHeldItem(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.delete("BookHeldMapper.deleteBookHeldItem", bookHeld);
+			// 삭제된 데이터가 없다는 것은 WHERE절의 조건값이 맞지 않다는 의미.
+			// 이 경우, 첫 번째 WHERE조건에서 사용되는 id값에 대한 데이터를 찾을 수 없다는 의미
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("이미 삭제된 도서입니다.");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서 삭제에 실패했습니다.");
+		}
+	}
+	
 
 	@Override
 	public void updateBookHeldDiscard(BookHeld bookHeld) throws Exception {
@@ -383,9 +399,6 @@ public class BookHeldServiceImpl implements BookHeldService {
 			throw new Exception("sortingIndex 데이터 주입 실패했습니다.");
 		}
 	}
-
-
-
 
 
 }

@@ -69,6 +69,7 @@
 										<th class="info text-center">도서명</th>
 										<th class="info text-center">도서저자</th>
 										<th class="info text-center">출판사</th>
+										<th class="info text-center">ISBN</th>
 										<th class="info text-center">분류기호</th>
 										<th class="info text-center">선택</th>
 									</tr>
@@ -81,12 +82,14 @@
 													<td class="text-center">${item.title_info}</td>
 													<td class="text-center">${item.author_info}</td>
 													<td class="text-center">${item.pub_info}</td>
+													<td class="text-center">${item.isbn}</td>
 													<td class="text-center">${item.class_no}</td>
 													<td class="text-center">
 														<button class="pick-book btn btn-primary btn-sm"
 															thisTitle="${item.title_info}"
 															thisAuthor="${item.author_info}"
 															thisPub="${item.pub_info}"
+															thisIsbn="${item.isbn}"
 															thisClassNo="${item.class_no}">
 															선택</button></td>
 												</tr>
@@ -125,11 +128,13 @@
 			var titleR = $(this).attr('thisTitle');
 			var authorR = $(this).attr('thisAuthor');
 			var pubR = $(this).attr('thisPub');
+			var isbnR = $(this).attr('thisIsbn');
 			var classNoR = $(this).attr('thisClassNo');
 			
 			$(opener.document).find("#bookTitle").val(titleR);
 			$(opener.document).find("#author").val(authorR);
 			$(opener.document).find("#publisher").val(pubR);
+			$(opener.document).find("#isbn13").val(isbnR);
 			$(opener.document).find("#classificationCode").val(classNoR);
 			window.close();
 		});

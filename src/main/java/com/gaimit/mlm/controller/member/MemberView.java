@@ -275,6 +275,6 @@ public class MemberView {
 		model.addAttribute("memberItem", memberItem);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
-		return web.redirect(web.getRootPath() + "/member/member_view.do", "회원 정보가 수정되었습니다.");
+		return web.redirect(web.getRootPath() + "/member/member_view.do?memberId="+memberId, "회원 정보가 수정되었습니다.");
 	}
 }

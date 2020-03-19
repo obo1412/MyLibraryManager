@@ -66,7 +66,7 @@
 									<c:when test="${fn:length(list) > 0}">
 										<c:forEach var="item" items="${list}" varStatus="status">
 											<tr>
-												<td class="text-center">${page.indexStart + status.index}</td>
+												<td class="text-center">${page.indexLast - status.index}</td>
 												<td><c:url var="readUrl" value="/member/member_view.do">
 														<c:param name="memberId" value="${item.id}" />
 													</c:url>

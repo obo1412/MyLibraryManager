@@ -270,4 +270,22 @@ public class BrwServiceImpl implements BrwService {
 		return result;
 	}
 
+	@Override
+	public int selectBorrowCountDeleteBookHeldId(Borrow borrow) throws Exception {
+		int result = 0;
+		try {
+			// 0일 경우 삭제로 넘어가고, 0보다 클 경우 폐기 처리를 위하여 에러 발생
+			result = sqlSession.selectOne("BorrowMapper.selectBorrowCountDeleteBookHeldId", borrow);
+			if(result > 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("대출내역이 존재하는 도서입니다 폐기 처리로 진행하세요.");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서 삭제를 위한 대출내역 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
 }

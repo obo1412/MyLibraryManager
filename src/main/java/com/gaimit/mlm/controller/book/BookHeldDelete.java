@@ -24,8 +24,10 @@ import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.Util;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.service.BookHeldService;
+import com.gaimit.mlm.service.BrwService;
 
 @Controller
 public class BookHeldDelete {
@@ -53,6 +55,9 @@ public class BookHeldDelete {
 	
 	@Autowired
 	BookHeldService bookHeldService;
+	
+	@Autowired
+	BrwService brwService;
 
 	@RequestMapping(value = "/book/book_held_discard_ok.do", method = RequestMethod.POST)
 	public void discardBook(Locale locale, Model model, HttpServletRequest request,
@@ -92,7 +97,7 @@ public class BookHeldDelete {
 	}
 	
 	@RequestMapping(value = "/book/book_held_delete_ok.do", method = RequestMethod.POST)
-	public void deleteBook(Locale locale, Model model, HttpServletRequest request,
+	public ModelAndView deleteBook(Locale locale, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		/** (2) 사용하고자 하는 Helper+Service 객체 생성 */
@@ -103,14 +108,28 @@ public class BookHeldDelete {
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
-			/*return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");*/
-			web.printJsonRt("로그인 상태가 아닙니다.");
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+		}
+		
+		int bookHeldId = web.getInt("bookHeldId", 0);
+		
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
+		bookHeld.setId(bookHeldId);
+		
+		Borrow borrow = new Borrow();
+		borrow.setIdLibBrw(loginInfo.getIdLibMng());
+		borrow.setBookHeldId(bookHeldId);
+		
+		try {
+			brwService.selectBorrowCountDeleteBookHeldId(borrow);
+			bookHeldService.deleteBookHeldItem(bookHeld);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
 		}
 
-		
-
 		/** (9) 완료되었으므로 이전 페이지로 이동 */
-		/*return web.redirect(null, "삭제되었습니다.");*/
+		return web.redirect(null, "삭제되었습니다.");
 	}
 	
 	@RequestMapping(value = "/book/book_held_discard_list.do")

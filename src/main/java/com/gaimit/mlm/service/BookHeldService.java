@@ -120,6 +120,13 @@ public interface BookHeldService {
 	public int selectBookCountForPage(BookHeld bookHeld) throws Exception;
 	
 	/**
+	 * 도서 기록삭제 잘못올린 도서 같은 경우 삭제함
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void deleteBookHeldItem(BookHeld bookHeld) throws Exception;
+	
+	/**
 	 * 도서 폐기 반환값 없음
 	 * @param bookHeld
 	 * @throws Exception

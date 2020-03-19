@@ -27,7 +27,7 @@
 						class="btn btn-warning">수정</a> <a
 						href="${pageContext.request.contextPath}/member/member_delete.do?memberId=${memberItem.id}"
 						class="btn btn-danger" data-toggle="modal" data-target="#inactive_member_modal">삭제</a> <input type="button"
-						class="btn btn-primary" value="닫기" onclick="self.close()" />
+						class="btn btn-primary closeRefresh" value="닫기" onclick="self.close()" />
 				</div>
 				
 				<!-- 조회결과를 출력하기 위한 표 -->

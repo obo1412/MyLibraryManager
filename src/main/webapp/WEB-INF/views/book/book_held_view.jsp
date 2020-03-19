@@ -25,9 +25,9 @@
 					<a
 						href="${pageContext.request.contextPath}/book/book_held_edit.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
 						class="btn btn-warning">수정</a> <a
-						href="${pageContext.request.contextPath}/book/book_held_delete.do?localIdBarcode=${bookHeldItem.localIdBarcode}"
+						href="#"
 						class="btn btn-danger" data-toggle="modal" data-target="#delete_book_modal">삭제</a> <input type="button"
-						class="btn btn-primary" value="닫기" onclick="self.close()" />
+						class="btn btn-primary closeRefresh" value="닫기" onclick="self.close()" />
 				</div>
 				
 				<!-- 조회결과를 출력하기 위한 표 -->
@@ -164,7 +164,7 @@
 								<c:if test="${bookHeldItem.available < 2 }">
 								<input type="submit" class="btn btn-warning closeRefresh" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
 								</c:if>
-								<input type="submit" class="btn btn-danger closeRefresh" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
+								<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
 							</div>
 							</form>
 						</div>

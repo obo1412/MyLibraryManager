@@ -61,14 +61,6 @@
 
 			<div class="container-fluid" style="margin-left:0mm; margin-top:1.85mm;">
 				
-				<h1 class="prtNone" style="font-family: 'Free 3 of 9'">123456나눔고딕코딩lI바코드</h1>
-				<h1 class="prtNone" style="font-family:'나눔고딕코딩'">123456나눔고딕코딩lI</h1>
-				<h1 class="prtNone" style="font-family:'굴림'">123456나눔고딕코딩lI굴림</h1>
-				<h1 class="prtNone" style="font-family:'NanumSquareWeb'">123456나눔고딕코딩lI나눔스퀘어</h1>
-				<h1 class="prtNone" >123456나눔고딕코딩lI일반</h1>
-				<h1 class="prtNone" style="font-family:'꾸잉뽕'">123456나눔고딕코딩lI잘못된폰트</h1>
-				<!-- <input type="button" name="print" value="Print This Page..." onClick="printWindow();"> -->
-
 				<div class="prtNone">
 					<button class="btn btn-danger prtNone" id="btn-print">인쇄</button>
 				</div>

@@ -112,8 +112,16 @@ public class JoinOk {
 		
 		logger.debug("checkNum=" + checkNum);
 		
-		//paramMap으로 받은 String grade를 int형으로 변환
-		int grade = Integer.parseInt(gradeStr);
+		if(gradeStr==null||gradeStr.equals("")) {
+			return web.redirect(null, "회원 등급을 선택해주세요.");
+		}
+		
+		int grade = 0;
+		if(gradeStr!=null&&!gradeStr.equals("")) {
+			//paramMap으로 받은 String grade를 int형으로 변환
+			grade = Integer.parseInt(gradeStr);
+		}
+		
 		
 		// 중복검사를 실행한 번호와 가입완료로 넘기는 번호가 다를경우 검사.
 		if (!phone.equals(checkNum)) {

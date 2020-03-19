@@ -99,15 +99,23 @@
 										<label for='classificationCode' class="col-md-2 control-label">
 											분류기호</label>
 										<div class="col-md-4">
+											<c:set var="viewClassNo" value="${xmlClassNoArray[0]}" />
+											<c:if test="${not empty classCode}">
+												<c:set var="viewClassNo" value="${classCode}" />
+											</c:if>
 											<input type="text" name="classificationCode"
 												id="classificationCode" class="form-control form-control-sm input-clear"
-												value="${xmlClassNoArray[0]}" />
+												value="${viewClassNo}" />
 										</div>
 
 										<label for='additionalCode' class="col-md-2 control-label">별치기호</label>
 										<div class="col-md-4">
+											<c:set var="viewAddCode" value="" />
+											<c:if test="${not empty additionalCode}">
+												<c:set var="viewAddCode" value="${additionalCode}" />
+											</c:if>
 											<input type="text" name="additionalCode" id="additionalCode"
-												class="form-control form-control-sm input-clear" value="" placeholder="유(유아), 아(아동)" />
+												class="form-control form-control-sm input-clear" value="${viewAddCode}" placeholder="유(유아), 아(아동)" />
 										</div>
 									</div>
 								</div>
@@ -117,8 +125,12 @@
 										<label for='volumeCode' class="col-md-2 control-label">
 											권차기호</label>
 										<div class="col-md-4">
+											<c:set var="viewVolumeCode" value="${jsonSeoji.docs[0].VOL}" />
+											<c:if test="${not empty volumeCode}">
+												<c:set var="viewVolumeCode" value="${volumeCode}" />
+											</c:if>
 											<input type="text" name="volumeCode" id="volumeCode"
-												class="form-control form-control-sm input-clear" value="${jsonSeoji.docs[0].VOL}"
+												class="form-control form-control-sm input-clear" value="${viewVolumeCode}"
 												placeholder="숫자만 기입하세요." />
 										</div>
 										
@@ -143,27 +155,39 @@
 											<label for='bookCateg' class="control-label">도서분류</label>
 										</div>
 										<div class="col-md-10">
+											<c:set var="viewBookCateg" value="${jsonAladin.item[0].categoryName}" />
+											<c:if test="${not empty bookCateg}">
+												<c:set var="viewBookCateg" value="${bookCateg}" />
+											</c:if>
 											<input type="text" name="bookCateg" id="bookCateg"
 												class="form-control form-control-sm input-clear" style='width: 97.5%;'
 												placeholder="도서 분류"
-												value="${jsonAladin.item[0].categoryName}" />
+												value="${viewBookCateg}" />
 										</div>
 									</div>
 								</div>
 
 								<div class="form-inline mb-1">
 									<div class="form-group col-md-12">
+										<c:set var="viewPublisher" value="${jsonAladin.item[0].publisher}" />
+										<c:if test="${not empty publisher}">
+											<c:set var="viewPublisher" value="${publisher}" />
+										</c:if>
 										<label for='publisher' class="col-md-2 control-label">출판사</label>
 										<div class="col-md-4">
 											<input type="text" name="publisher" id="publisher"
-												class="form-control form-control-sm input-clear" value="${jsonAladin.item[0].publisher}" />
+												class="form-control form-control-sm input-clear" value="${viewPublisher}" />
 										</div>
 
 										<label for='pubDate'
 											class="col-md-2 col-md-offset-1 control-label">출판일</label>
 										<div class="col-md-4">
+											<c:set var="viewPubDate" value="${jsonAladin.item[0].pubDate}" />
+											<c:if test="${not empty pubDate}">
+												<c:set var="viewPubDate" value="${pubDate}" />
+											</c:if>
 											<input type="text" name="pubDate" id="pubDate"
-												class="form-control form-control-sm input-clear" value="${jsonAladin.item[0].pubDate}" />
+												class="form-control form-control-sm input-clear" value="${viewPubDate}" />
 										</div>
 									</div>
 								</div>
@@ -174,16 +198,24 @@
 											<label for='page' class="control-label">페이지</label>
 										</div>
 										<div class="col-md-4">
+											<c:set var="viewPage" value="${jsonAladin.item[0].subInfo.itemPage}" />
+											<c:if test="${not empty page}">
+												<c:set var="viewPage" value="${page}" />
+											</c:if>
 											<input type="text" name="page" id="page" class="form-control form-control-sm input-clear"
-												value="${jsonAladin.item[0].subInfo.itemPage}" />
+												value="${viewPage}" />
 										</div>
 										<div class="col-md-2">
 											<label for='price' class="control-label">가격</label>
 										</div>
 										<div class="col-md-4">
+											<c:set var="viewPrice" value="${jsonAladin.item[0].priceStandard}" />
+											<c:if test="${not empty price}">
+												<c:set var="viewPrice" value="${price}" />
+											</c:if>
 											<input type="text" name="price" id="price"
 												class="form-control form-control-sm input-clear"
-												value="${jsonAladin.item[0].priceStandard}" />
+												value="${viewPrice}" />
 										</div>
 									</div>
 								</div>
@@ -219,17 +251,25 @@
 											<label for='isbn13' class="control-label">ISBN13</label>
 										</div>
 										<div class="col-md-4">
+											<c:set var="viewIsbn13" value="${jsonAladin.item[0].isbn13}" />
+											<c:if test="${not empty isbn13}">
+												<c:set var="viewIsbn13" value="${isbn13}" />
+											</c:if>
 											<input type="text" name="isbn13" id="isbn13"
 												class="form-control form-control-sm input-clear" placeholder="ISBN 13자리"
-												value="${jsonAladin.item[0].isbn13}" />
+												value="${viewIsbn13}" />
 										</div>
 										<div class="col-md-2">
 											<label for='isbn10' class="control-label">ISBN10</label>
 										</div>
 										<div class="col-md-4">
+											<c:set var="viewIsbn10" value="${jsonAladin.item[0].isbn}" />
+											<c:if test="${not empty isbn10}">
+												<c:set var="viewIsbn10" value="${isbn10}" />
+											</c:if>
 											<input type="text" name="isbn10" id="isbn10"
 												class="form-control form-control-sm input-clear" placeholder="ISBN 10자리"
-												value="${jsonAladin.item[0].isbn}" />
+												value="${viewIsbn10}" />
 										</div>
 									</div>
 								</div>
@@ -253,16 +293,24 @@
 										<label for='bookDesc' class="col-md-4">도서 설명</label>
 
 										<div class="form-inline">
+											<c:set var="viewBookCover" value="${jsonAladin.item[0].cover}" />
+											<c:if test="${not empty bookCover}">
+												<c:set var="viewBookCover" value="${bookCover}" />
+											</c:if>
 											<div class="form-control form-control-sm col-md-2 input-clear"
 												style="border: 1px solid black; width: 100px; height: 130px;">
 												<img id="bookCover"
-													src="${jsonAladin.item[0].cover}" />
-												<input type="hidden" name="bookCover" value="${jsonAladin.item[0].cover}" />
+													src="${viewBookCover}" />
+												<input type="hidden" name="bookCover" value="${viewBookCover}" />
 											</div>
+											<c:set var="viewBookDesc" value="${jsonAladin.item[0].description}" />
+											<c:if test="${not empty bookDesc}">
+												<c:set var="viewBookDesc" value="${bookDesc}" />
+											</c:if>
 											<textarea
 												class="txt-box form-control form-control-sm custom-control col-md-8 input-clear"
 												name='bookDesc' id="bookDesc"
-												style="resize: none; height: 130px; width: 60%;">${jsonAladin.item[0].description}</textarea>
+												style="resize: none; height: 130px; width: 60%;">${viewBookDesc}</textarea>
 										</div>
 									</div>
 								</div>
@@ -308,7 +356,7 @@
 		var isbn = $("#search-book-info").val();
 		var url = '';
 		if(isbn != ''){
-			url = '${pageContext.request.contextPath}/book/search_nl_book.do?search-book-info='+isbn;
+			url = '${pageContext.request.contextPath}/book/search_nl_book.do?searchOpt=1&search-book-info='+isbn;
 		} else{
 			url = '${pageContext.request.contextPath}/book/search_nl_book.do';
 		}

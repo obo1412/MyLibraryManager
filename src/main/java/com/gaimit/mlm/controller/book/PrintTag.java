@@ -88,6 +88,7 @@ public class PrintTag {
 		
 		String dateSorting = web.getString("dateSorting", "");
 		String targetSorting = web.getString("targetSorting", "");
+		String titleSorting = web.getString("titleSorting", "");
 		
 		int rangeStart = web.getInt("rangeStart", 0);
 		int rangeEnd = web.getInt("rangeEnd", 0);
@@ -100,11 +101,15 @@ public class PrintTag {
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 		
-		if(dateSorting !="") {
+		if(!dateSorting.equals("")&&dateSorting!=null) {
 			bookHeld.setRegDate(dateSorting);
 		}
 		
-		if(targetSorting!=""&&targetSorting!=null) {
+		if(!titleSorting.equals("")&&titleSorting!=null) {
+			bookHeld.setTitleBook(titleSorting);
+		}
+		
+		if(!targetSorting.equals("")&&targetSorting!=null) {
 			targetSorting = targetSorting.toUpperCase();
 			bookHeld.setLocalIdBarcode(targetSorting);
 		}

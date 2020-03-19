@@ -21,6 +21,7 @@ public class PageHelper {
     
     //리스트 호출시 그 리스트의 index 값
     private int indexStart = 0;
+    private int indexLast = 0;
 	
 	/** 페이지 구현에 필요한 계산식을 처리하는 메서드 */
 	public void pageProcess(int page, int totalCount, int listCount, int groupCount) {
@@ -30,6 +31,7 @@ public class PageHelper {
 		this.groupCount = groupCount;
 		
 		indexStart = ((page - 1)*listCount)+1;
+		indexLast = totalCount-((page -1)*listCount);
 
 		// 전체 페이지 수
 	    totalPage = ((totalCount-1)/listCount)+1;
@@ -160,11 +162,21 @@ public class PageHelper {
 		this.indexStart = indexStart;
 	}
 
+	public int getIndexLast() {
+		return indexLast;
+	}
+
+	public void setIndexLast(int indexLast) {
+		this.indexLast = indexLast;
+	}
+
 	@Override
 	public String toString() {
 		return "PageHelper [page=" + page + ", totalCount=" + totalCount + ", listCount=" + listCount + ", groupCount="
 				+ groupCount + ", totalPage=" + totalPage + ", startPage=" + startPage + ", endPage=" + endPage
 				+ ", prevPage=" + prevPage + ", nextPage=" + nextPage + ", limitStart=" + limitStart + ", indexStart="
-				+ indexStart + "]";
+				+ indexStart + ", indexLast=" + indexLast + "]";
 	}
+
+	
 }

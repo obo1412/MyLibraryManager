@@ -131,4 +131,12 @@ public interface BrwService {
 	 */
 	public Borrow selectRestrictDate(Borrow borrow) throws Exception;
 	
+	/**
+	 * 도서 삭제를 위해 대출내역이 있는지 확인
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectBorrowCountDeleteBookHeldId(Borrow borrow) throws Exception;
+	
 }

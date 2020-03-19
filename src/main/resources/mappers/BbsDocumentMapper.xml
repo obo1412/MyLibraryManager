@@ -175,7 +175,7 @@
 			subject=#{subject},
 			content=#{content},
 			ip_address=#{ipAddress},
-			edit_date+now()
+			edit_date=now()
 		WHERE id=#{id}
 	</update>
 	

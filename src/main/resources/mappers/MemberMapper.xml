@@ -65,7 +65,7 @@
 		<if test="(name != null) and (name != '')">
 			AND name LIKE concat('%', #{name}, '%')
 		</if>
-		ORDER BY id ASC
+		ORDER BY id DESC
 		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
@@ -166,7 +166,7 @@
 		UPDATE member SET
 			name=#{name}, email=#{email}, <!-- birthdate=#{birthdate}, -->
 			phone=#{phone}, postcode=#{postcode}, addr1=#{addr1}, addr2=#{addr2},
-			rf_uid=#{rfUid}, 
+			rf_uid=#{rfUid}, grade_id=#{gradeId},
 			edit_date=now()
 			
 			<choose>

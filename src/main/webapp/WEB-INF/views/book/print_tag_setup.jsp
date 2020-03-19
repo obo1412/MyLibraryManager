@@ -63,20 +63,20 @@
 							style="display:block;"/>
 						<input type="radio" name="tagType" id="tag_opt1" value="1"/>바코드(우)
 					</label>
-					<label>
+					<%-- <label>
 						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagC.jpg"
 							style="display:block;"/>
 						<input type="radio" name="tagType" id="tag_opt2" value="2"/>바코드(중)
-					</label>
+					</label> --%>
 				</div>
 				
 				<div class="form-group">
-					<label for="dateSorting">날짜별 인쇄</label>
+					<label for="dateSorting">날짜별 출력</label>
 					<div class="col-sm-12 col-md-6 mb-3 input-group">
 						<input type="date" class="form-control" max="9999-12-31"
-							name="dateSorting" id="dateSorting" value="" placeholder="날짜별 인쇄"/>
+							name="dateSorting" id="dateSorting" value="" placeholder="날짜별 출력"/>
 							<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 							</span>
@@ -84,12 +84,25 @@
 				</div>
 				
 				<div class="form-group">
-					<label for="targetSorting">단일 인쇄</label>
+					<label for="titleSorting">단일 출력(도서명)</label>
 					<div class="col-sm-12 col-md-6 mb-3 input-group">
 						<input type="text" class="form-control"
-							name="targetSorting" id="targetSorting" value="" placeholder="도서sorting 조건"/>
+							name="titleSorting" id="titleSorting" value="" placeholder="도서명으로 출력"/>
 						<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
+									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
+									onclick="openPopup()" />
+						</span>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="targetSorting">단일 출력(등록번호)</label>
+					<div class="col-sm-12 col-md-6 mb-3 input-group">
+						<input type="text" class="form-control"
+							name="targetSorting" id="targetSorting" value="" placeholder="도서등록번호로 출력"/>
+						<span class="input-group-append">
+								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 						</span>
@@ -97,7 +110,7 @@
 				</div>
 				
 				<div class="form-group col-sm-12 col-md-6 mb-3">
-					<label for="rangeSorting">바코드 범위 인쇄</label>
+					<label for="rangeSorting">범위 출력(등록번호)</label>
 					<div class="col-sm-12 col-md-9">
 						<div class="">
 							<select name="rangeStart" id="rangeStart" class="form-control">
@@ -119,7 +132,7 @@
 								</c:forEach>
 							</select>
 							<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="인쇄" id="sbmBtn"
+								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 							</span>
@@ -145,14 +158,16 @@
 		//시작시 실행
 	});
 	
+	var tagT = 0;
+	
+	$('#sbmBtn').click(function (){
+		tagT = $('input:radio[name=tagType]:checked').val();
+		alert(tagT);
+	});
+	
 	function openPopup() {
-		var tagT = 0;
 		
-		$('#sbmBtn').click(function (){
-			tagT = $('input:radio[name=tagType]:checked').val();
-			alert(tagT);
-		});
-		
+		var titleBook = $("#titleSorting").val();
 		var targetBarcode = $("#targetSorting").val();
 		var dateBarcode = $("#dateSorting").val();
 		var rangeS = $("#rangeStart").val();
@@ -160,9 +175,11 @@
 		
 		var url = '${pageContext.request.contextPath}/book/print_tag_page.do?tagType='+tagT;
 		if(targetBarcode != '' || dateBarcode != ''){
-			url = url + '?targetSorting='+targetBarcode +'?dateSorting='+dateBarcode;
+			url = url + '&targetSorting='+targetBarcode +'&dateSorting='+dateBarcode;
 		} else if(rangeE != 0){
-			url = url + '?rangeStart='+rangeS +'?rangeEnd='+rangeE;
+			url = url + '&rangeStart='+rangeS +'&rangeEnd='+rangeE;
+		} else if (titleBook != '') {
+			url = url + '&titleSorting='+titleBook;
 		} else {
 			url = '${pageContext.request.contextPath}/book/print_tag_page.do';
 		}

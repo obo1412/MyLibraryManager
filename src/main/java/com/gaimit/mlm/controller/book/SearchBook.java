@@ -220,9 +220,11 @@ public class SearchBook {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		//알라딘 api 정보를 토대로 저자기호 만들기
-		String atcOut =
-				authorCode.authorCodeGen(authorToCode)
-				+ authorCode.titleFirstLetter(titleToCode);
+		String atcOut = null;
+		if(authorToCode!=null&&!authorToCode.equals("")) {
+			atcOut = authorCode.authorCodeGen(authorToCode)
+					+ authorCode.titleFirstLetter(titleToCode);
+		}
 		
 		
 		String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
@@ -330,12 +332,27 @@ public class SearchBook {
 		String isbn = web.getString("search-book-info", "");
 		String bookTitle = web.getString("bookTitle", "");
 		String author = web.getString("author", "");
+		String classCode = web.getString("classificationCode","");
+		String additionalCode = web.getString("additionalCode","");
+		String volumeCode = web.getString("volumeCode","");
+		String bookCateg = web.getString("bookCateg","");
+		String publisher = web.getString("publisher","");
+		String pubDate = web.getString("pubDate","");
+		String page = web.getString("page","");
+		String price = web.getString("price","");
+		//검색창 아닌 아래 isbn 항목
+		String isbn13 = web.getString("isbn13","");
+		String isbn10 = web.getString("isbn10","");
+		String bookCover = web.getString("bookCover","");
+		String bookDesc = web.getString("bookDesc","");
 		
 		int copyCode = 0;
 		
-		String atcOut =
-				authorCode.authorCodeGen(bookTitle)
-				+ authorCode.titleFirstLetter(author);
+		String atcOut = null;
+		if(author!=null&&!author.equals("")) {
+			atcOut = authorCode.authorCodeGen(author)
+					+ authorCode.titleFirstLetter(bookTitle);
+		}
 		
 		if(!bookTitle.equals("") && !author.equals("")) {
 			/* 바코드 호출 */
@@ -397,7 +414,19 @@ public class SearchBook {
 		model.addAttribute("copyCode", copyCode);
 		model.addAttribute("bookTitle", bookTitle);
 		model.addAttribute("author", author);
+		model.addAttribute("classCode", classCode);
+		model.addAttribute("additionalCode", additionalCode);
+		model.addAttribute("volumeCode", volumeCode);
+		model.addAttribute("bookCateg", bookCateg);
 		model.addAttribute("atcOut", atcOut);
+		model.addAttribute("publisher", publisher);
+		model.addAttribute("pubDate", pubDate);
+		model.addAttribute("page", page);
+		model.addAttribute("price", price);
+		model.addAttribute("isbn13", isbn13);
+		model.addAttribute("isbn10", isbn10);
+		model.addAttribute("bookCover", bookCover);
+		model.addAttribute("bookDesc", bookDesc);
 		model.addAttribute("newBarcode", newBarcode);
 		
 		return new ModelAndView("book/reg_book");
@@ -480,6 +509,9 @@ public class SearchBook {
 						}
 						if(node.getNodeName().equals("pub_info")) {
 							tempMap.put("pub_info", node.getTextContent());
+						}
+						if(node.getNodeName().equals("isbn")) {
+							tempMap.put("isbn", node.getTextContent());
 						}
 						if(node.getNodeName().equals("class_no")) {
 							tempMap.put("class_no", node.getTextContent());
