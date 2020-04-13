@@ -166,6 +166,7 @@
 			count(id)
 		FROM book_held
 		WHERE book_id_book = #{bookIdBook} AND library_id_lib = #{libraryIdLib}
+			AND (available = 0 OR available = 1)
 	</select>
 	
 	<!-- bookHeld 도서 첫등록체크

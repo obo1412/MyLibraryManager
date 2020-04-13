@@ -51,8 +51,9 @@ public class LoginOk {
 		String userIdMng = web.getString("user_id");
 		String userPwMng = web.getString("user_pw");
 
-		logger.debug("userId=" + userIdMng);
-		logger.debug("userPw=" + userPwMng);
+		// console창에 계속 뜸
+		/*logger.debug("userId=" + userIdMng);
+		logger.debug("userPw=" + userPwMng);*/
 
 		if (userIdMng == null || userPwMng == null) {
 			return web.redirect(null, "아이디나 비밀번호가 없습니다.");

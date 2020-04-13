@@ -33,12 +33,14 @@
 					<div class="card-body">
 						<!-- 검색폼 + 추가버튼 -->
 						<div style='margin-top: 30px;' class="pull-right">
+							<!-- search-submit 버튼에 e.preventDefault()를 걸어두어서
+								form action과 submit 버튼 타입은 소용이 없으나, 그냥 남겨둠. -->
 							<form method='get'
 								action='${pageContext.request.contextPath}/book/search_nl_book.do'
 								style="width: 300px;">
 								<div class="input-group input-group-sm">
 									<span class="input-group-prepend">
-										<select name="searchOpt" class="form-control form-control-sm">
+										<select name="searchOpt" id="searchOptId" class="form-control form-control-sm">
 											<option value="1" <c:if test="${searchOpt == 1}">selected</c:if>>
 												ISBN</option>
 											<option value="2" <c:if test="${searchOpt == 2}">selected</c:if>>
@@ -52,7 +54,7 @@
 									<input type="text" name='search-book-info' id='search-book-info'
 										class="form-control form-control-sm" placeholder="검색" value="${keyword}" />
 									<span class="input-group-append">
-										<button class="btn btn-sm btn-success" type="submit">
+										<button id="search-submit" class="btn btn-sm btn-success" type="submit">
 											<i class='fas fa-search'></i>
 										</button>
 									</span>
@@ -83,7 +85,11 @@
 													<td class="text-center">${item.author_info}</td>
 													<td class="text-center">${item.pub_info}</td>
 													<td class="text-center">${item.isbn}</td>
-													<td class="text-center">${item.class_no}</td>
+													<td class="text-center">
+														<a class="pick-clscode" thisClassNo="${item.class_no}">
+															${item.class_no}
+														</a>
+													</td>
 													<td class="text-center">
 														<button class="pick-book btn btn-primary btn-sm"
 															thisTitle="${item.title_info}"
@@ -136,7 +142,65 @@
 			$(opener.document).find("#publisher").val(pubR);
 			$(opener.document).find("#isbn13").val(isbnR);
 			$(opener.document).find("#classificationCode").val(classNoR);
+			
+			var url = location.search;
+			var params = url.substr(url.indexOf("?")+1);
+			var sval = "";
+			params = params.split("&");
+			for(var i=0; i<params.length; i++){
+				temp=params[i].split("=");
+				if(temp[0]=='sort-idx') {
+					sval=temp[1];
+				}
+			}
+			if(sval != "") {
+				var preState = window.opener.document;
+				preState.getElementById('title'+sval).value = titleR;
+				preState.getElementById('author'+sval).value = authorR;
+				preState.getElementById('cls'+sval).value = classNoR;
+			}
+			
 			window.close();
+		});
+		
+		$(document).on('click', '.pick-clscode', function() {
+			var url = location.search;
+			var params = url.substr(url.indexOf("?")+1);
+			var sval = "";
+			params = params.split("&");
+			for(var i=0; i<params.length; i++){
+				temp=params[i].split("=");
+				if(temp[0]=='this-clscode-idx') {
+					sval=temp[1];
+				}
+			}
+			var classNoR = $(this).attr('thisClassNo');
+			window.opener.document.getElementById(sval).value = classNoR;
+			window.close();
+		});
+		
+		/* 일괄등록시 sortidx와clscodeidx를 계속 전달하기 위해서 js사용 */
+		$(document).on('click', '#search-submit', function(e) {
+			e.preventDefault();
+			var urlParams = location.search;
+			var params = urlParams.substr(urlParams.indexOf("?")+1);
+			var clsval="";
+			var sortval="";
+			params = params.split("&");
+			for(var i=0; i<params.length; i++){
+				temp=params[i].split("=");
+				if(temp[0]=='this-clscode-idx') {
+					clsval=temp[1];
+				} else if(temp[0]=='sort-idx'){
+					sortval=temp[1];
+				}
+			}
+			
+			var keyword = $("#search-book-info").val();
+			var searchOpt = $("#searchOptId").val();
+			var url = '${pageContext.request.contextPath}/book/search_nl_book.do?searchOpt='+searchOpt+'&search-book-info='+keyword;
+			url = url +'&sort-idx='+sortval+'&this-clscode-idx='+clsval;
+			window.open(url, '_self', 'width=800,height=600,scrollbars=yes');
 		});
 	</script>
 </body>

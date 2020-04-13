@@ -10,6 +10,7 @@ public class BbsFile {
 	private String regDate;
 	private String editDate;
 	private int bbsDocumentId;
+	private int idLibFile;
 
 	/** getter, setter, toString() 추가 - 코드 제시는 생략합니다. */
 	public int getId() {
@@ -84,10 +85,19 @@ public class BbsFile {
 		this.bbsDocumentId = bbsDocumentId;
 	}
 
+	public int getIdLibFile() {
+		return idLibFile;
+	}
+
+	public void setIdLibFile(int idLibFile) {
+		this.idLibFile = idLibFile;
+	}
+
 	@Override
 	public String toString() {
 		return "BbsFile [id=" + id + ", originName=" + originName + ", fileDir=" + fileDir + ", fileName=" + fileName
 				+ ", contentType=" + contentType + ", fileSize=" + fileSize + ", regDate=" + regDate + ", editDate="
-				+ editDate + ", bbsDocumentId=" + bbsDocumentId + "]";
+				+ editDate + ", bbsDocumentId=" + bbsDocumentId + ", idLibFile=" + idLibFile + "]";
 	}
+
 }

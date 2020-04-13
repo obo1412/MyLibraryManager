@@ -8,6 +8,10 @@
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <style type="text/css">
+.card {
+	float:left;
+}
+
 .card-body {
 	font-size: 11pt;
 }
@@ -20,7 +24,28 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<div class="card mb-3">
+				<div class="card mb-3 mr-2" style="width:200px;">
+					<div class="card-header">
+						<h4>ISBN text</h4>
+					</div>
+					<div class="card-body">
+						<form class="form-horizontal info-section" name="batchForm"
+								enctype="multipart/form-data"
+								method="post">
+							<div>
+								<textarea id="txtBox" style="min-height:350px;"></textarea>
+							</div>
+							
+							<div class="form-group">
+								<div class="col-12">
+									<button type="submit" class="btn btn-primary btn-sm" formaction="${pageContext.request.contextPath}/book/reg_book_batch_check.do">일괄 등록하기</button>
+									<input type="button" class="btn btn-danger btn-sm" onclick="clearInput()" value="다시작성" />
+								</div>
+							</div>
+						</form>
+					</div><!-- card body text box 끝 -->
+				</div><!-- card text box 끝 -->
+				<div class="card mb-3 mr-2" style="width:400px;">
 					<div class="card-header">
 						<h4>도서 일괄 등록하기</h4>
 					</div>
@@ -32,23 +57,21 @@
 								enctype="multipart/form-data"
 								method="post">
 
-								<div class="form-inline mb-1">
-									<div class="form-group col-md-12">
-										<label for='batchFile' class="col-md-2 control-label">도서명</label>
-										<div class="col-md-10">
+									<div class="form-group col-12">
+										<label for='batchFile' class="col-12 control-label">txt File</label>
+										<div class="col-10">
 											<input type="file" name="batchFile" id="batchFile"
 												class="form-control form-control-sm input-clear"
 												placeholder="파일 로드" />
 										</div>
 									</div>
-								</div>
 
 								
 
 								<div class="form-group">
-									<div class="offset-md-5 col-md-6">
-										<button type="submit" class="btn btn-primary" formaction="${pageContext.request.contextPath}/book/reg_book_batch_ok.do">일괄 등록하기</button>
-										<input type="button" class="btn btn-danger" onclick="clearInput()" value="다시작성" />
+									<div class="col-12">
+										<button type="submit" class="btn btn-primary btn-sm" formaction="${pageContext.request.contextPath}/book/reg_book_batch_check.do">검증하기</button>
+										<input type="button" class="btn btn-danger btn-sm" onclick="clearInput()" value="다시작성" />
 									</div>
 								</div>
 								
@@ -56,11 +79,37 @@
 							<!-- 회원정보, 도서정보 끝 -->
 						</div>
 						<!-- table responsive 끝 -->
-
 					</div>
 					<!-- card body 끝 -->
 				</div>
 				<!-- card 끝 -->
+				<div class="card mb-3 mr-2" style="width:200px;">
+					<div class="card-header">
+						<h4>오늘 등록된 ISBN 목록</h4>
+					</div>
+					<div class="card-body">
+						<!-- 첨부파일 목록 표시하기 -->
+						<c:if test="${fileList != null}">
+							<!-- 첨부파일 목록 -->
+							<table class="table table-bordered">
+								<tbody>
+									<tr>
+										<th class="warning" style="width: 100px">파일목록</th>
+										<td><c:forEach var="file" items="${fileList}">
+												<!-- 다운로드를 위한 URL만들기 -->
+												<c:url var="downloadUrl" value="/download.do">
+													<c:param name="file" value="${file.fileDir}/${file.fileName}" />
+													<c:param name="orgin" value="${file.originName}" />
+												</c:url>
+												<!-- 다운로드 링크 -->
+												<a href="${downloadUrl}" class="btn btn-link btn-xs">${file.originName}</a>
+											</c:forEach></td>
+									</tr>
+								</tbody>
+							</table>
+						</c:if>
+					</div><!-- card-body 3 끝 -->
+				</div><!-- card3 끝 -->
 			</div>
 			<!-- container fluid 끝 -->
 			<%@ include file="/WEB-INF/inc/footer.jsp"%>
@@ -72,6 +121,10 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
+$(function() {
+	/* 페이지 호출시 회원검색에 포커싱 */
+	document.getElementById('txtBox').focus();
 
+});
 </script>
 </html>

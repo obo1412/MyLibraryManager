@@ -12,11 +12,11 @@
 		
 		$.ajax({
 			url: "${pageContext.request.contextPath}/member/member_list.do?name="+name,
-			method: 'get',
+			type: 'get',
 			data: {
 			},
 			dataType: 'html',
-			sucess: function() {
+			success: function() {
 				pop.location;
 			}
 		});
@@ -305,5 +305,23 @@
 		-ms-ime-mode: disabled;
 		ime-mode: disabled;
 	}
+	
+	
+	url을 받아와서 url의 파라미터를 추출하는 메서드
+	<!-- function getUrlParam(sname) {
+			var url = location.search;
+			var params = url.substr(url.indexOf("?")+1);
+			var sval = "";
+			params = params.split("&");
+			for(var i=0; i<params.length; i++){
+				temp=params[i].split("=");
+				if(temp[0]==sname) {
+					sval=temp[1];
+				}
+				return sval;
+			}
+		}; -->
+		
+
 
 

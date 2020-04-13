@@ -93,7 +93,7 @@
 														test="${not empty item.additionalCode}">${item.additionalCode}</c:if>
 													<c:if test="${not empty item.classificationCode}">${item.classificationCode}</c:if>
 													<c:if test="${not empty item.authorCode}">${item.authorCode}</c:if>
-													<c:if test="${item.volumeCode ne '0'}">${item.volumeCode}</c:if>
+													<c:if test="${item.volumeCode ne '0' and (not empty item.volumeCode)}">v${item.volumeCode}</c:if>
 													<c:if test="${item.copyCode ne '0'}">C${item.copyCode}</c:if>
 												</td>
 												<td class="text-center">${item.regDate}</td>

@@ -170,6 +170,11 @@ public class SearchBook {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
+		//분류기호 3단계 절차 아래 순서대로
+		String kdcStr = null;	// 서지 KDC
+		String clsNo = null;	// 국중 class_no
+		String eac3 = null;		// 서지 EA_ADD_CODE
+		String clsCode = null;	// view전달 변수
 		
 		//알라딘api에서 저자이름을 가지고 올 변수 선언
 		String authorToCode = null;
@@ -251,6 +256,17 @@ public class SearchBook {
 
 			JSONParser jsonParser = new JSONParser();
 			jsonSeoji = (JSONObject) jsonParser.parse(result);
+			JSONArray itemArray = (JSONArray) jsonSeoji.get("docs");
+			JSONObject itemObj = (JSONObject) itemArray.get(0);
+			
+			Object kdc = itemObj.get("KDC");
+			Object eac = itemObj.get("EA_ADD_CODE");
+			kdcStr = String.valueOf(kdc);
+			
+			String eacStr = String.valueOf(eac);
+			//5자리중 뒤에 3자리만
+			eac3 = eacStr.substring(2);
+			
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -284,7 +300,7 @@ public class SearchBook {
 					}
 				}
 			}
-				
+			clsNo = xmlClassNoArray.get(0);
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -293,7 +309,13 @@ public class SearchBook {
 		/*xmlClassNoArray.set(0, "asdfa");
 		System.out.println(xmlClassNoArray.get(0));*/
 		
-		
+		if((!kdcStr.equals(""))&&kdcStr!=null) {
+			clsCode = kdcStr;
+		} else if((!clsNo.equals(""))&&clsNo!=null) {
+			clsCode = clsNo;
+		} else {
+			clsCode = eac3;
+		}
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
@@ -306,6 +328,7 @@ public class SearchBook {
 		model.addAttribute("jsonAladin", jsonAladin);
 		model.addAttribute("jsonSeoji", jsonSeoji);
 		model.addAttribute("xmlClassNoArray", xmlClassNoArray);
+		model.addAttribute("clsCode", clsCode);
 		
 		return new ModelAndView("book/reg_book");
 	}

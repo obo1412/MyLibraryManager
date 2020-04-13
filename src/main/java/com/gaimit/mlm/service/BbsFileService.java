@@ -41,4 +41,20 @@ public interface BbsFileService {
 	 * @throws Exception
 	 */
 	public void deleteFile(BbsFile file) throws Exception;
+	
+	/**
+	 * 도서일괄등록을 위한 txt 파일 저장
+	 * @param file
+	 * @throws Exception
+	 */
+	public void insertRegBookFile(BbsFile file) throws Exception;
+	
+	/**
+	 * 도서일괄등록을 위한 txt 파일 목록
+	 * @param file
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BbsFile> selectRegBookFileListToday(BbsFile file) throws Exception;
+	
 }

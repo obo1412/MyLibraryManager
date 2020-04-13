@@ -96,12 +96,12 @@ public class RegBookOk {
 		String additionalCode = web.getString("additionalCode");
 		
 		String volumeCode = web.getString("volumeCode");
-		String volumeCode2 = "0";
+		/*String volumeCode2 = "0";
 		if(volumeCode!=null) {
 			volumeCode2 = "v" + volumeCode;
 		} else {
 			volumeCode2 = "0";
-		}
+		}*/
 		
 		String newBarcode = web.getString("newBarcode");
 		String bookCover = web.getString("bookCover");
@@ -124,7 +124,7 @@ public class RegBookOk {
 		logger.debug("classificationCode=" + classificationCode);
 		logger.debug("additionalCode=" + additionalCode);
 		logger.debug("volumeCode=" + volumeCode);
-		logger.debug("volumeCode2=" + volumeCode2);
+		/*logger.debug("volumeCode2=" + volumeCode2);*/
 		logger.debug("bookCover=" + bookCover);
 		logger.debug("bookDesc=" + bookDesc);
 		logger.debug("newBarcode=" + newBarcode);
@@ -150,7 +150,7 @@ public class RegBookOk {
 		bookHeld.setPurchasedOrDonated(purOrDon);
 		bookHeld.setClassificationCode(classificationCode);
 		bookHeld.setAdditionalCode(additionalCode);
-		bookHeld.setVolumeCode(volumeCode2);
+		bookHeld.setVolumeCode(volumeCode);
 		bookHeld.setImageLink(bookCover);
 		bookHeld.setDescriptionBook(bookDesc);
 		bookHeld.setAvailable(1);

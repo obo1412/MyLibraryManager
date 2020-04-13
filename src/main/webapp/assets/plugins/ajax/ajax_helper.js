@@ -37,7 +37,8 @@ $(function() {
             alert(error_msg);
 		},
 		// 성공,실패에 상관 없이 맨 마지막에 무조건 호출됨 ex) 로딩바 닫기
-		complete: function() {
+		complete: function(data) {
+			console.log(data);
 			console.log(">> Ajax 통신 종료!!!!");
 			loader.hide();
 		}

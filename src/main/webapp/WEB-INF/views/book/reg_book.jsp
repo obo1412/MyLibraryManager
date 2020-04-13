@@ -99,7 +99,7 @@
 										<label for='classificationCode' class="col-md-2 control-label">
 											분류기호</label>
 										<div class="col-md-4">
-											<c:set var="viewClassNo" value="${xmlClassNoArray[0]}" />
+											<c:set var="viewClassNo" value="${clsCode}" />
 											<c:if test="${not empty classCode}">
 												<c:set var="viewClassNo" value="${classCode}" />
 											</c:if>

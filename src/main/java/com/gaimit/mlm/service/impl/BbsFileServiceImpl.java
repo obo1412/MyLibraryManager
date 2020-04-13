@@ -112,4 +112,36 @@ public class BbsFileServiceImpl implements BbsFileService {
 			// sqlSession.commit();
 		}
 	}
+
+	@Override
+	public void insertRegBookFile(BbsFile file) throws Exception {
+		try {
+			int result = sqlSession.insert("BbsFileMapper.insertRegBookFile", file);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			// sqlSession.rollback();
+			throw new Exception("저장된 도서일괄등록 파일정보가 없습니다.");
+		} catch (Exception e) {
+			// sqlSession.rollback();
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서일괄등록 파일정보 등록에 실패했습니다.");
+		} finally {
+			// sqlSession.commit();
+		}
+	}
+
+	@Override
+	public List<BbsFile> selectRegBookFileListToday(BbsFile file) throws Exception {
+		List<BbsFile> result = null;
+		try {
+			// 첨부파일이 없는 경우도 있으므로, 조회결과가 null인 경우 예외를 발생하지 않는다.
+			result = sqlSession.selectList("BbsFileMapper.selectRegBookFileListToday", file);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("일괄등록 파일 정보 조회에 실패했습니다.");
+		}
+		return result;
+	}
 }

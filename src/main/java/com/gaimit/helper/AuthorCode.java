@@ -1,26 +1,95 @@
 package com.gaimit.helper;
 
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class AuthorCode {
+	/**
+	 * 주어진 문자열이 공백이거나 null인지를 검사
+	 * 
+	 * @param str
+	 *            - 검사할 문자열
+	 * @return boolean - 공백,null이 아닐 경우 true 리턴
+	 */
+	public boolean isValue(String str) {
+		boolean result = false;
+		if (str != null) {
+			result = !str.trim().equals("");
+		}
+		return result;
+	}
+	/**
+	 * 한글로만 구성되었는지에 대한 형식 검사
+	 * 
+	 * @param str
+	 *            - 검사할 문자열
+	 * @return boolean - 형식에 맞을 경우 true, 맞지 않을 경우 false
+	 */
+	public boolean isKor(String str) {
+		boolean result = false;
+		if (isValue(str)) {
+			result = Pattern.matches("^[ㄱ-ㅎ가-힣]*$", str);
+		}
+		return result;
+	}
+	
 	
 	public String titleFirstLetter(String str) {
 		String result = null;
+		str = str.replaceAll("\\(", "");
 		String FirstLett = str.substring(0,1);
-		result = toKoChosung(FirstLett);
+		
+		if(isKor(FirstLett)) {
+			result = toKoChosung(FirstLett);
+		} else {
+			result = FirstLett;
+		}
 		return result;
 	}
 
 	public String authorCodeGen(String str) {
 		String result = null;
-
-		String FirstLet = str.substring(0, 1);
-		String SecLet = str.substring(1, 2);
-
-		String SecAlp = toKoJaso(SecLet);
-		String SecCode = ac5th(SecAlp.substring(0, 1), SecAlp.substring(1, 2));
-
-		result = FirstLet + SecCode;
+		
+		// 문자열 좌우, 문자열 안의 공백 제거
+		str = str.trim();
+		str = str.replaceAll(" ", "");
+		str = str.replaceAll("\\p{Z}", "");
+		str = str.replaceAll("\\[", "");
+		
+		String[] arrAuth = str.split(":");
+		if(arrAuth.length>1) {
+			if(arrAuth[0].equals("글")||arrAuth[0].equals("저자")
+				||arrAuth[0].equals("글쓴이")||arrAuth[0].equals("지은이")
+				||arrAuth[0].equals("엮은이")||arrAuth[0].equals("원작")
+				||arrAuth[0].equals("기획")
+				||(arrAuth[0].indexOf("그림")>1)||(arrAuth[0].indexOf("사진")>1)
+				||(arrAuth[0].indexOf("·")>1)) {
+				arrAuth[1] = arrAuth[1].replaceAll("\\[", "");
+				str = arrAuth[1];
+			} else {
+				arrAuth[0] = arrAuth[0].replaceAll("\\[", "");
+				str = arrAuth[0];
+			}
+		} else {
+			arrAuth[0] = arrAuth[0].replaceAll("\\[", "");
+			str = arrAuth[0];
+		}
+		
+		if(str.length()>1) {
+			String FirstLet = str.substring(0, 1);
+			String SecLet = str.substring(1, 2);
+			String twoWord = FirstLet + SecLet;
+			if(isKor(twoWord)) {
+				String SecAlp = toKoJaso(SecLet);
+				String SecCode = ac5th(SecAlp.substring(0, 1), SecAlp.substring(1, 2));
+				result = FirstLet + SecCode;
+			} else {
+				result = FirstLet;
+			}
+		} else if(str.length()==1) {
+			String FirstLet = str.substring(0, 1);
+			result = FirstLet;
+		}
 		return result;
 	}
 
