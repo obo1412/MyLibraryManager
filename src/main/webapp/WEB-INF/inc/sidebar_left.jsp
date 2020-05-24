@@ -41,11 +41,12 @@
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/book_held_discard_list.do">폐기도서 목록</a>
 			<a class="dropdown-item" href="${pageContext.request.contextPath}/book/print_tag_setup.do">라벨 출력</a>
 		</div></li>
-	<li class="nav-item dropdown"><a class="nav-link dropdown-toggle"
-		href="#" id="memberDropdown" role="button" data-toggle="dropdown"
-		aria-haspopup="true" aria-expanded="false"> <i
-			class="fas fa-fw fa-address-book"></i> <span>회원 관리</span>
-	</a>
+	<li class="nav-item dropdown">
+		<a class="nav-link dropdown-toggle" href="#"
+			id="memberDropdown" role="button" data-toggle="dropdown"
+			aria-haspopup="true" aria-expanded="false">
+			<i class="fas fa-fw fa-address-book"></i> <span>회원 관리</span>
+		</a>
 		<div class="dropdown-menu" aria-labelledby="memberDropdown">
 			<a class="dropdown-item"
 				href="${pageContext.request.contextPath}/member/member_list.do">회원
@@ -60,6 +61,38 @@
           <a class="dropdown-item" href="#">Blank Page</a> -->
 		</div></li>
 
-	<li class="nav-item"><a class="nav-link notyet" href="#"> <i
-			class="fas fa-fw fa-cogs"></i> <span>환경 설정</span></a></li>
+	<li class="nav-item dropdown">
+		<a class="nav-link notyet" href="#"
+			id="settingDropdown" role="button" data-toggle="dropdown"
+			aria-haspopup="true" aria-expanded="false">
+			<i class="fas fa-fw fa-cogs"></i> <span>환경 설정</span>
+		</a>
+		<div class="dropdown-menu" aria-labelledby="settingDropdown">
+			<a class="dropdown-item"
+				href="${pageContext.request.contextPath}/book/db_transfer.do">
+				데이터베이스 이관
+			</a>
+			<a class="dropdown-item" id="btn_export_excel">
+				Export Excel
+			</a>
+		</div>
+	</li>
 </ul>
+
+<script>
+	const btnExportExcel = document.getElementById('btn_export_excel');
+	btnExportExcel.addEventListener("click", exportExcelOk);
+	
+	function exportExcelOk() {
+		$.ajax({
+			url: "${pageContext.request.contextPath}/export_bookheld_excel_ok.do",
+			type: 'POST',
+			dataType: "text",
+			data: {},
+			success: function(data) {
+				/* location.href=document.URL; */
+				alert("도서등록정보를 엑셀 파일로 저장하였습니다.");
+			}
+		});
+	};
+</script>

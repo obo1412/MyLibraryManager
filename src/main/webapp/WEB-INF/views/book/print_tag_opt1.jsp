@@ -103,7 +103,9 @@
 										style="float:left; font-size: 10pt; line-height:12pt; margin: 10px auto; transform: rotate(90deg);">
 										<div>${item.classificationCode}</div>
 										<div>${item.authorCode}</div>
-										<div>C${item.copyCode}</div>
+										<c:if test="${(item.copyCode gt 0) and (not empty item.copyCode)}">
+											<div>C${item.copyCode}</div>
+										</c:if>
 									</div>
 								</div>
 							</div>

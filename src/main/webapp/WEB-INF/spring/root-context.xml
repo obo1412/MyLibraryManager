@@ -78,6 +78,8 @@
 	<bean id="util" class="com.gaimit.helper.Util" scope="singleton" />
 	<!-- 저자기호 생성 코드 -->
 	<bean id="authorCode" class="com.gaimit.helper.AuthorCode" scope="singleton" />
+	<!-- QR Code Helper -->
+	<bean id="qrCode" class="com.gaimit.helper.QRCodeHelper" scope="singleton" />
 	
 	<!-- 싱글톤 객체의 생성 -->
 	<bean id="bbsCommon" class="com.gaimit.mlm.controller.bbs.BBSCommon" 

@@ -13,7 +13,6 @@
 	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/assets/js/barcode/jquery-barcode.js"></script>
-	
 
 <style type="text/css">
 
@@ -78,7 +77,7 @@
 							</div>
 						</c:when>
 						<c:otherwise>
-							<!-- 아무것도 만들지 않는다ㅇ -->
+							<!-- 아무것도 만들지 않는다 -->
 						</c:otherwise>
 					</c:choose>
 					<div style="/* border:1px dashed red; */ width: 125mm; float: left;"><!-- float left를 사용해서 나란히 놓기 -->
@@ -105,7 +104,10 @@
 									<div
 										style="float:left; line-height:12pt; margin-top: 10mm; margin-left: 2.5mm; transform: rotate(90deg);">
 										<div style="font-weight:bold;">${item.localIdBarcode}</div>
-										<div>${item.localIdBarcode}</div>
+										<div id="qrImg">
+											<img style="width:50px;" 
+												src="http://nuts.i234.me:7070/files/upload/finebook4/qrcode/libNo${loginInfo.idLibMng}/${item.localIdBarcode}.png" alt="profileImg""/>
+										</div>
 									</div>
 								</div>
 								<div id="callNoBox"
@@ -114,7 +116,9 @@
 										style="float:left; font-size: 10pt; line-height:12pt; margin-top: 3.4mm; margin-left: 5.2mm; transform: rotate(90deg);">
 										<div>${item.classificationCode}</div>
 										<div>${item.authorCode}</div>
-										<div>C${item.copyCode}</div>
+										<c:if test="${(item.copyCode gt 0) and (not empty item.copyCode)}">
+											<div>C${item.copyCode}</div>
+										</c:if>
 									</div>
 								</div>
 							</div>
@@ -220,7 +224,6 @@
 <script type="text/javascript">
 
 	$(function() {
-
 		$("#btn-print").click(function() {
 			if (navigator.userAgent.indexOf("MSIE") > 0) {
 				printPage();
@@ -228,7 +231,7 @@
 				window.print();
 			}
 		});
-
 	});
+	
 </script>
 </html>

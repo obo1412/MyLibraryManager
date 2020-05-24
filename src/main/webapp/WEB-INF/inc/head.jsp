@@ -11,6 +11,9 @@
 <script src="http://code.jquery.com/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script> -->
 <script src="http://code.jquery.com/jquery.min.js"></script>
+<!-- QR Code -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/qrcode/jquery.qrcode.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/qrcode/qrcode.js"></script>
 
 <!-- Bootstrap4 Local Page level plugin CSS-->
 <link href="${pageContext.request.contextPath}/assets/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet">

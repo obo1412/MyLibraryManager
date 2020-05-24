@@ -591,13 +591,8 @@ public class RegBook {
 		/*Map<String, String> paramMap = upload.getParamMap();*/
 		/*String name = paramMap.get("name");*/
 		
-		
-		/*String[] regExceptionArray = web.getStringArray("regException");
-		System.out.println("regException의 길이="+regExceptionArray.length);
-		for(int i=0; i<regExceptionArray.length; i++) {
-			System.out.println(i+"번째값="+regExceptionArray[i]);
-		}*/
-		
+		String[] regExceptionArray = web.getStringArray("regException");
+		//위 값이 1이면 등록제외, 0이면 등록진행
 		String[] isbnArray = web.getStringArray("isbn");
 		String[] titleArray = web.getStringArray("title");
 		String[] authorArray = web.getStringArray("author");
@@ -618,6 +613,7 @@ public class RegBook {
 		String[] bookDescArray = web.getStringArray("bookDesc");
 		
 		/*for(int i=0; i<titleArray.length; i++) {
+			System.out.println(i+"번째 값 regException="+regExceptionArray[i]);
 			System.out.println(i+"번째 값 isbn="+isbnArray[i]);
 			System.out.println(i+"번째 값 title="+titleArray[i]);
 			System.out.println(i+"번째 값 author="+authorArray[i]);
@@ -641,6 +637,9 @@ public class RegBook {
 		
 		try {
 			for(int i=0; i<titleArray.length; i++) {
+				if(regExceptionArray[i].equals("1")) {
+					continue;
+				}
 				BookHeld bookHeld = new BookHeld();
 				bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 				
@@ -652,12 +651,22 @@ public class RegBook {
 				
 				bookHeld.setIsbn10Book(isbn10Array[i]);
 				bookHeld.setPublisherBook(publisherArray[i]);
-				bookHeld.setPubDateBook(pubDateArray[i]);
+				String thisPubDate = null;
+				if(pubDateArray[i].length()>0) {
+					thisPubDate = pubDateArray[i];
+				}
+				bookHeld.setPubDateBook(thisPubDate);
 				bookHeld.setCategoryBook(bookCategArray[i]);
 				
-				int thisPage = Integer.parseInt(pageArray[i]);
+				int thisPage = 0;
+				if(pageArray[i]!=null&&(pageArray[i].length()>0)) {
+					thisPage = Integer.parseInt(pageArray[i]);
+				}
 				bookHeld.setPage(thisPage);
-				int thisPrice = Integer.parseInt(priceArray[i]);
+				int thisPrice = 0;
+				if(priceArray[i]!=null&&(priceArray[i].length()>0)) {
+				thisPrice = Integer.parseInt(priceArray[i]);
+				}
 				bookHeld.setPriceBook(thisPrice);
 				bookHeld.setBookOrNot(bookOrNotArray[i]);
 				int thisPurOrDon = Integer.parseInt(purOrDonArray[i]);
@@ -729,12 +738,12 @@ public class RegBook {
 						}
 						
 					} else if(copyCheckBookHeld == 1) {
-						/*위 경우 도서관에 책이 반드시 있는 경우다.
-						 * 아래의 최초복본기호 체크가 copy_code != 0이 아닌 조건으로
-						 * 검색했기 때문에, null이 나올 수 있다.
-						 * 따라서 firstcopycode가 null이면 도서의 복본기호는 0이라는 뜻.
-						 * 이 경우엔 복본기호를 2로 지정하고
-						 * 0이 아닌 모든 경우엔 새로등록할 도서의 복본기호를 0으로 설정 */
+						//위 경우 도서관에 책이 반드시 있는 경우다.
+						 //아래의 최초복본기호 체크가 copy_code != 0이 아닌 조건으로
+						 //검색했기 때문에, null이 나올 수 있다.
+						 //따라서 firstcopycode가 null이면 도서의 복본기호는 0이라는 뜻.
+						 //이 경우엔 복본기호를 2로 지정하고
+						 //0이 아닌 모든 경우엔 새로등록할 도서의 복본기호를 0으로 설정
 						int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
 						if(zeroCopyCode == 1) {
 							bookHeld.setCopyCode(2);
@@ -871,6 +880,6 @@ public class RegBook {
 		} catch (Exception e) {
 			web.printJsonRt(e.getLocalizedMessage());	
 		}
-
 	}
+	
 }

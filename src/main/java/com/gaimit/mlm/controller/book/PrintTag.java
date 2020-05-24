@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.PageHelper;
+import com.gaimit.helper.QRCodeHelper;
 import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Manager;
@@ -36,6 +37,9 @@ public class PrintTag {
 	
 	@Autowired
 	BookHeldService bookHeldService;
+	
+	@Autowired
+	QRCodeHelper qrCode;
 	
 	/** 교수 목록 페이지 */
 	@RequestMapping(value = "/book/print_tag_setup.do", method = {RequestMethod.GET, RequestMethod.POST})
@@ -127,6 +131,7 @@ public class PrintTag {
 		}
 		
 		for(int i=0; i<bookHeldList.size(); i++) {
+			//3자리 분류기호 100자리 숫자만 남기고 편집.
 			String classCode = bookHeldList.get(i).getClassificationCode();
 			if(classCode == null) {
 				classCode = "-1";
@@ -139,7 +144,15 @@ public class PrintTag {
 				int classCodeHead = classHead1 * 100;
 				bookHeldList.get(i).setClassCodeHead(classCodeHead);
 			}
+			
+			//QR코드 생성
+			qrCode.makeQR(bookHeldList.get(i).getLocalIdBarcode(), 100, 100
+					,"/var/packages/Tomcat7/target/src/webapps/downloads/upload/finebook4/qrcode/libNo"+loginInfo.getIdLibMng()+"/"
+					,bookHeldList.get(i).getLocalIdBarcode()+".png" );
+			
 		}
+		
+		
 		
 		
 		/** 4) View 처리하기 */

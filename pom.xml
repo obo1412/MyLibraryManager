@@ -228,6 +228,39 @@
 			<artifactId>json</artifactId>
 			<version>20190722</version>
 		</dependency>
+		
+		<!-- mdb 데이터 이관 lib -->
+		<dependency>
+			<groupId>net.sf.ucanaccess</groupId>
+			<artifactId>ucanaccess</artifactId>
+			<version>4.0.4</version>
+		</dependency>
+		
+		<!-- xls 엑셀 제어 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		<!-- xlsx 엑셀 제어 -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>4.1.2</version>
+		</dependency>
+		
+		<!-- QR CODE -->
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>core</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.zxing</groupId>
+			<artifactId>javase</artifactId>
+			<version>3.3.3</version>
+		</dependency>
 
 	</dependencies>
 	<build>

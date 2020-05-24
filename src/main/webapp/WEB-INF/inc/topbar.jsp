@@ -109,7 +109,8 @@
 				<li class="nav-item dropdown no-arrow mx-1"><a
 					class="nav-link dropdown-toggle" href="#" id="alertsDropdown"
 					role="button" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="false"> <!-- 쿠키값에 따른 프로필 이미지 표시 --> <c:if
+					aria-expanded="false">
+					<!-- 쿠키값에 따른 프로필 이미지 표시 --> <c:if
 							test="${cookie.profileThumbnail!=null}">
 							<img
 								src="${pageContext.request.contextPath}/

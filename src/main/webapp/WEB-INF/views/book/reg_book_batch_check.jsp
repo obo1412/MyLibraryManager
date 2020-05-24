@@ -52,9 +52,11 @@ label {
 													<input name="author" id="author${status.index}" value="${authorArr[status.index]}"
 														class="makeAtc form-control form-control-sm col-3 mr-2" sort-idx="${status.index}" />
 													<div class="col-2 form-inline">
-														<input type="checkbox" name="regException" id="regExcept${status.index}"
-															sort-idx="${status.index}" class="regExceptCls" value="0" />
-														<label for="regExcept${status.index}" style="font-size:11px;">등록제외</label>
+														<input type="hidden" name="regException" id="regExcept${status.index}" value="0" />
+														<input type="checkbox" class="regExceptCls" id="regExcPin${status.index}" sort-idx="${status.index}" />
+														<!-- value없는 checkbox에 name을 똑같이 넣어주면 value 값이 on으로
+															컨트롤러로 넘어감. -->
+														<label for="regExcPin${status.index}" style="font-size:11px;">등록제외</label>
 													</div>
 												</div>
 												<div class="col-12 form-group form-inline mb-0">
@@ -199,17 +201,17 @@ label {
 		document.getElementById('txtBox').focus();
 	}); */
 	
-	/* //등록제외처리를 위한 테스트
+	 //등록제외처리를 위한 테스트
 	$(".regExceptCls").on("click", function(e){
 		var sortidx = $(this).attr('sort-idx');
 		var thisRegExcept = document.getElementById('regExcept'+sortidx);
-		if(thisRegExcept.prop("checked")){
-			document.getElementById('regExcept'+sortidx).value = 1;
+		if(document.getElementById('regExcPin'+sortidx).checked == true){
+			thisRegExcept.value = 1;
 		} else {
-			document.getElementById('regExcept'+sortidx).value = 0;
+			thisRegExcept.value = 0;
 		}
 		
-	}); */
+	});
 	
 	
 	
