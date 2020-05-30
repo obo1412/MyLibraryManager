@@ -132,6 +132,8 @@
 		FROM book
 		WHERE isbn13_book = #{isbn13Book}
 		OR (title_book = #{titleBook} AND writer_book = #{writerBook})
+		ORDER BY id_book ASC
+		LIMIT 1
 	</select>
 	
 	<insert id="insertBook" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id_book">

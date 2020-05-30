@@ -106,7 +106,7 @@
 										<div style="font-weight:bold;">${item.localIdBarcode}</div>
 										<div id="qrImg">
 											<img style="width:50px;" 
-												src="http://nuts.i234.me:7070/files/upload/finebook4/qrcode/libNo${loginInfo.idLibMng}/${item.localIdBarcode}.png" alt="profileImg""/>
+												src="http://nuts.i234.me:7070/files/upload/finebook4/qrcode/libNo${loginInfo.idLibMng}/${item.localIdBarcode}.png" alt="profileImg"/>
 										</div>
 									</div>
 								</div>

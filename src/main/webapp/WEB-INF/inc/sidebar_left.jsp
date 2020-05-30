@@ -62,7 +62,7 @@
 		</div></li>
 
 	<li class="nav-item dropdown">
-		<a class="nav-link notyet" href="#"
+		<a class="nav-link dropdown-toggle" href="#"
 			id="settingDropdown" role="button" data-toggle="dropdown"
 			aria-haspopup="true" aria-expanded="false">
 			<i class="fas fa-fw fa-cogs"></i> <span>환경 설정</span>
@@ -74,6 +74,10 @@
 			</a>
 			<a class="dropdown-item" id="btn_export_excel">
 				Export Excel
+			</a>
+			<a class="dropdown-item"
+				href="${pageContext.request.contextPath}/book/import_book_excel.do">
+				도서 정보 가져오기
 			</a>
 		</div>
 	</li>
