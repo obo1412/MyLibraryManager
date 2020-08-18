@@ -20,8 +20,8 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<div class="card mb-3">
-					<div class="card-header">
+				<div class="card mb-3" style="float:left; min-width:800px; max-width:1000px; height:750px;">
+					<div class="card-header" style="height:50px;">
 						<h4>도서 등록하기</h4>
 					</div>
 					<div class="card-body">
@@ -31,7 +31,14 @@
 								id="search-mbr-form" method="get"
 								action="${pageContext.request.contextPath}/book/search_book.do">
 								<div class="form-group form-inline">
-									<label for='search-book-info' class="col-md-3">도서 검색</label>
+									<div class="col-md-3">
+										<label for='search-book-info'>도서 검색</label>
+										<div class="form-group form-inline ml-5 classStraightReg">
+											<input type="checkbox" class="classStraightReg form-control"
+												id="chkBoxStraightReg" name="straightReg" value="reg" ${regCheckBox}/>
+											<label for="chkBoxStraightReg">바로등록</label>
+										</div>
+									</div>
 									<div class="input-group input-group-sm col-md-6">
 										<input type="text" name="search-book-info"
 											id="search-book-info" class="form-control input-clear"
@@ -68,7 +75,7 @@
 										<label for='bookTitle' class="col-md-2 control-label">도서명</label>
 										<div class="col-md-10">
 											<input type="text" name="bookTitle" id="bookTitle"
-												class="form-control form-control-sm input-clear" style="width: 97.5%;"
+												class="makeAtc form-control form-control-sm input-clear" style="width: 97.5%;"
 												placeholder="도서 제목" value="${viewTitle}" />
 										</div>
 									</div>
@@ -83,7 +90,7 @@
 										<label for='author' class="col-md-2 control-label">저자명</label>
 										<div class="col-md-4">
 											<input type="text" name="author" id="author"
-												class="form-control form-control-sm input-clear" value="${viewAuthor}" />
+												class="makeAtc form-control form-control-sm input-clear" value="${viewAuthor}" />
 										</div>
 
 										<label for='authorCode' class="col-md-2 control-label">저자기호</label>
@@ -100,12 +107,12 @@
 											분류기호</label>
 										<div class="col-md-4">
 											<c:set var="viewClassNo" value="${clsCode}" />
-											<c:if test="${not empty classCode}">
-												<c:set var="viewClassNo" value="${classCode}" />
-											</c:if>
-											<input type="text" name="classificationCode"
-												id="classificationCode" class="form-control form-control-sm input-clear"
-												value="${viewClassNo}" />
+												<c:if test="${not empty classCode}">
+													<c:set var="viewClassNo" value="${classCode}" />
+												</c:if>
+												<input type="text" name="classificationCode"
+													id="classificationCode" class="form-control form-control-sm input-clear"
+													value="${viewClassNo}" />
 										</div>
 
 										<label for='additionalCode' class="col-md-2 control-label">별치기호</label>
@@ -137,14 +144,14 @@
 										<label for='copyCode' class="col-md-2 control-label">
 											복본기호</label>
 										<div class="col-md-4">
-											<span style="">C</span>
+											<!-- <span style="">C</span> -->
 											<input type="text" name="copyCode" id="copyCode"
 												class="form-control form-control-sm input-clear" value="${copyCode}"
 												placeholder="숫자만 기입해주세요." />
-											<button class="btn btn-secondary btn-sm"
+											<%-- <button class="btn btn-secondary btn-sm"
 												formaction="${pageContext.request.contextPath}/book/book_held_check_copyCode.do">
 												체크
-											</button>
+											</button> --%>
 										</div>
 									</div>
 								</div>
@@ -224,8 +231,7 @@
 									<div class="form-group col-md-12">
 										<label for='bookOrNot' class="col-md-2 control-label">도서/비도서</label>
 										<div class="col-md-4">
-											<select name="bookOrNot" class="form-control form-control-sm"
-												style='width: 94.5%;'>
+											<select name="bookOrNot" class="form-control form-control-sm">
 												<option value="BOOK" selected>국내도서</option>
 												<option value="MUSIC">음반</option>
 												<option value="DVD">DVD</option>
@@ -236,8 +242,7 @@
 
 										<label for='purOrDon' class="col-md-2 control-label">수입구분</label>
 										<div class="col-md-4">
-											<select name="purOrDon" class="form-control form-control-sm"
-												style='width: 94.5%'>
+											<select name="purOrDon" class="form-control form-control-sm">
 												<option value="1" selected>구입</option>
 												<option value="0">기증</option>
 											</select>
@@ -273,10 +278,45 @@
 										</div>
 									</div>
 								</div>
+								
+								<div class="form-inline mb-1">
+									<div class="form-group col-md-12">
+										<div class="col-md-2">
+											<label for='rfId' class="control-label">RF ID</label>
+										</div>
+										<div class="col-md-4">
+											<input type="text" name="rfId" id="rfId"
+												class="form-control form-control-sm input-clear" placeholder="RF ID"
+												value="" />
+										</div>
+										<div class="col-md-2">
+											<label for='bookSize' class="control-label">도서크기</label>
+										</div>
+										<div class="col-md-4">
+											<input type="text" name="bookSize" id="bookSize"
+												class="form-control form-control-sm input-clear" placeholder="Book Size"
+												value="${bookSize}" />
+										</div>
+									</div>
+								</div>
 
 								<div class="form-inline mb-3">
 									<div class="form-group col-md-12">
-										<div class="col-md-6"></div>
+										<label for='idCountry' class="col-md-2 control-label">
+											도서 국가</label>
+										<div class="col-md-4">
+											<select name="idCountry" class="form-control form-control-sm">
+												<c:forEach var="country" items="${countryList}">
+													<c:set var="choice_country" value="" />
+													<c:if test="${country.nameCountry == '대한민국'}">
+														<c:set var="choice_country" value="selected" />
+													</c:if>
+													<option value="${country.idCountry}" ${choice_country}>
+														${country.nameCountry}
+													</option>
+												</c:forEach>
+											</select>
+										</div>
 										
 										<label for='newBarcode' class="col-md-2 control-label">
 											도서등록번호</label>
@@ -289,7 +329,7 @@
 								</div>
 
 								<div class='form-horizontal'>
-									<div class="form-group offset-md-1 col-md-11">
+									<div class="form-group col-md-11">
 										<label for='bookDesc' class="col-md-4">도서 설명</label>
 
 										<div class="form-inline">
@@ -308,9 +348,110 @@
 												<c:set var="viewBookDesc" value="${bookDesc}" />
 											</c:if>
 											<textarea
-												class="txt-box form-control form-control-sm custom-control col-md-8 input-clear"
+												class="txt-box form-control form-control-sm custom-control col-md-7 input-clear"
 												name='bookDesc' id="bookDesc"
 												style="resize: none; height: 130px; width: 60%;">${viewBookDesc}</textarea>
+												
+											<div class="ml-3 float-right">
+												<ul class="list-group">
+													<li class="py-0 list-group-item">
+														<div id="summaryClassHeadCode">
+															<c:choose>
+																<c:when test="${not empty classCodeHead}">
+																	<div>
+																		${classCodeHead}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		대분류
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+													<li class="py-0 list-group-item">
+														<div id="summaryAdditionalCode">
+															<c:choose>
+																<c:when test="${not empty additionalCode}">
+																	<div>
+																		${additionalCode}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		별치기호
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+													<li class="py-0 list-group-item">
+														<div id="summaryClassCode">
+															<c:choose>
+																<c:when test="${not empty clsCode}">
+																	<div>
+																		${clsCode}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		십진분류
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+													<li class="py-0 list-group-item">
+														<div id="summaryAuthorCode">
+															<c:choose>
+																<c:when test="${not empty atcOut}">
+																	<div>
+																		${atcOut}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		저자기호
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+													<li class="py-0 list-group-item">
+														<div id="summaryVolumeCode">
+															<c:choose>
+																<c:when test="${not empty jsonSeoji.docs[0].VOL}">
+																	<div>
+																		${jsonSeoji.docs[0].VOL}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		권차기호
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+													<li class="py-0 list-group-item">
+														<div id="summaryCopyCode">
+															<c:choose>
+																<c:when test="${not empty copyCode}">
+																	<div>
+																		C${copyCode}
+																	</div>
+																</c:when>
+																<c:otherwise>
+																	<div style="color:#D3D3D3;">
+																		복본기호
+																	</div>
+																</c:otherwise>
+															</c:choose>
+														</div>
+													</li>
+												</ul>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -334,6 +475,78 @@
 					<!-- card body 끝 -->
 				</div>
 				<!-- card 끝 -->
+				<!-- 등록된 도서 card -->
+				<div class="card-body" style="float:left; max-width:600px; max-height:700px; overflow-y:auto;">
+					<table class="table table-sm">
+							<thead>
+								<tr>
+									<th class="table-secondary text-center">번호</th>
+									<th class="table-secondary text-center">도서명</th>
+									<th class="table-secondary text-center">저자명</th>
+									<th class="table-secondary text-center">출판사</th>
+									<th class="table-secondary text-center">청구기호</th>
+									<th class="table-secondary text-center">등록번호</th>
+									<th class="table-secondary text-center">권차기호</th>
+									<th class="table-secondary text-center">복본기호</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:choose>
+									<c:when test="${fn:length(regTodayList) > 0}">
+										<c:forEach var="item" items="${regTodayList}" varStatus="status">
+											<tr>
+												<td class="text-center">${item.sortingIndex}</td>
+												<td class="text-center"><c:url var="viewUrl"
+														value="/book/book_held_view.do">
+														<c:param name="localIdBarcode"
+															value="${item.localIdBarcode}" />
+															<c:param name="bookHeldId"
+															value="${item.id}" />
+													</c:url> <a href="${viewUrl}"
+													onclick="window.open(this.href, '_blank','width=600,height=800,scrollbars=yes');return false;">${item.title}</a>
+												</td>
+												<td class="text-center">${item.writer}</td>
+												<td class="text-center">${item.publisher}</td>
+												<td class="text-center">
+													<c:if test="${not empty item.additionalCode}">${item.additionalCode} </c:if>
+													<c:if test="${not empty item.classificationCode}">${item.classificationCode} </c:if>
+													<c:if test="${not empty item.authorCode}">${item.authorCode} </c:if>
+													<c:if test="${item.volumeCode ne '0' and (not empty item.volumeCode)}">v${item.volumeCode} </c:if>
+													<c:if test="${item.copyCode ne '0'}">C${item.copyCode} </c:if>
+												</td>
+												<td class="text-center">${item.localIdBarcode}</td>
+												<td class="text-center">
+													<c:choose>
+														<c:when test="${not empty item.volumeCode}">
+															v${item.volumeCode}
+														</c:when>
+														<c:otherwise>
+															-
+														</c:otherwise>
+													</c:choose>
+												</td>
+												<c:choose>
+													<c:when test="${item.copyCode eq 0}">
+														<td class="text-center">-</td>
+													</c:when>
+													<c:otherwise>
+														<td class="text-center">C${item.copyCode}</td>
+													</c:otherwise>
+												</c:choose>
+											</tr>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<tr>
+											<td colspan="8" class="text-center"
+												style="line-height: 100px;">조회된 데이터가 없습니다.</td>
+										</tr>
+									</c:otherwise>
+								</c:choose>
+							</tbody>
+						</table>
+				</div>
+				<!-- 등록된 도서 card 끝-->
 			</div>
 			<!-- container fluid 끝 -->
 			<%@ include file="/WEB-INF/inc/footer.jsp"%>
@@ -345,11 +558,14 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
+	
 	$(function() {
-		$("#searchEx").click(function(e) {
-			e.preventDefault();
-			$("#search-book-info").val("9788984314818");
-		});
+		/* 페이지로딩시 바로 실행 구문 */
+	});
+	
+	$("#searchEx").click(function(e) {
+		e.preventDefault();
+		$("#search-book-info").val("9788984314818");
 	});
 	
 	function openNlPopup() {
@@ -361,6 +577,81 @@
 			url = '${pageContext.request.contextPath}/book/search_nl_book.do';
 		}
 		window.open(url, '_blank', 'width=800,height=600,scrollbars=yes');
+	};
+	
+	
+	$("#additionalCode").change(function() {
+		var thisCode = document.getElementById('additionalCode').value;
+		document.getElementById('summaryAdditionalCode').innerHTML = thisCode;
+	});
+	
+	$("#classificationCode").change(function() {
+		var thisCode = document.getElementById('classificationCode').value;
+		document.getElementById('summaryClassCode').innerHTML = thisCode;
+	});
+	
+	$("#authorCode").change(function() {
+		var thisCode = document.getElementById('authorCode').value;
+		document.getElementById('summaryAuthorCode').innerHTML = thisCode;
+	});
+	
+	$("#volumeCode").change(function() {
+		var thisCode = document.getElementById('volumeCode').value;
+		document.getElementById('summaryVolumeCode').innerHTML = thisCode;
+	});
+	
+	$("#copyCode").change(function() {
+		var thisCode = document.getElementById('copyCode').value;
+		document.getElementById('summaryCopyCode').innerHTML = thisCode;
+	});
+	
+	$("#classificationCode").change(function() {
+		var thisClsInput = document.getElementById('classificationCode');
+		if(!isNaN(thisClsInput.value)&&(thisClsInput.value!='')){
+			thisClsInput.classList.remove('is-invalid');
+		} else {
+			thisClsInput.classList.add('is-invalid');
+		}
+	});
+	
+	$(".makeAtc").on("propertychange change keyup paste input", function() {
+		var thisIsbn = document.getElementById('search-book-info').value;
+		var thisTitle = document.getElementById('bookTitle').value;
+		var thisAuthor = document.getElementById('author').value;
+		var atcout = null;
+		
+		$.ajax({
+			url: "${pageContext.request.contextPath}/book/author_code.do",
+			type: 'POST',
+			data: {
+				thisIsbn,
+				thisTitle,
+				thisAuthor
+			},
+			/* dataType: "json", */
+			success: function(data) {
+				document.getElementById('authorCode').value = data.result;
+				document.getElementById('copyCode').value = data.copyCode;
+			}
+			,error:function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+	});
+	
+	$(".classStraightReg").on("click", function(e) {
+		document.getElementById('search-book-info').focus();
+	});
+	
+	window.onload = function() {
+		var thisClsInput = document.getElementById('classificationCode');
+		if(!isNaN(thisClsInput.value)&&(thisClsInput.value!='')){
+			thisClsInput.classList.remove('is-invalid');
+		} else {
+			thisClsInput.classList.add('is-invalid');
+		}
+		
+		document.getElementById('search-book-info').focus();
 	};
 </script>
 </html>

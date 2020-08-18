@@ -60,10 +60,15 @@ label {
 																<c:set var="opt" value="selected" />
 															</c:if>
 															<select name="colH${seStat.index}">
+																<option value="">목록제외</option>
+																<option value="barcode">등록번호</option>
 																<option value="title">도서명</option>
 																<option value="author">저자명</option>
 																<option value="publisher">출판사</option>
-																<option value="classNo">목록제외</option>
+																<option value="regDate">등록일</option>
+																<option value="callNumber">청구기호</option>
+																<option value="price">가격</option>
+																<option value="rfId">RFID</option>
 															</select>
 														</th>
 													</c:forEach>

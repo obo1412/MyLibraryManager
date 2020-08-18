@@ -85,10 +85,10 @@
 													</c:url> <a href="${viewUrl}"
 													onclick="window.open(this.href, '_blank','width=600,height=800,scrollbars=yes');return false;">${item.titleBook}</a>
 												</td>
-												<td class="text-center">${item.writerBook}</td>
-												<td class="text-center">${item.publisherBook}</td>
-												<td class="text-center">${item.pubDateBook}</td>
-												<td class="text-center">${item.isbn13Book}</td>
+												<td class="text-center">${item.writer}</td>
+												<td class="text-center">${item.publisher}</td>
+												<td class="text-center">${item.pubDate}</td>
+												<td class="text-center">${item.isbn13}</td>
 												<td class="text-center"><c:if
 														test="${not empty item.additionalCode}">${item.additionalCode}</c:if>
 													<c:if test="${not empty item.classificationCode}">${item.classificationCode}</c:if>

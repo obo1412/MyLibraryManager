@@ -22,6 +22,9 @@
 		<result property="authorCode" column="author_code"/>
 		<result property="volumeCode" column="volume_code"/>
 		
+		<result property="idCountry" column="id_country"/>
+		<result property="nameCountry" column="name_country"/>
+		
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -53,7 +56,54 @@
 			description_book, book_or_not, page, image_link, classification_code,
 			author_code, volume_code
 		FROM book
-		WHERE id_lib_book = #{idLibBook} AND idBook = #{id_book}
+		WHERE id_lib_book = #{idLibBook} AND id_book = #{idBook}
+	</select>
+	
+	
+	
+	<insert id="insertCountry" parameterType="com.gaimit.mlm.model.Book" useGeneratedKeys="true" keyProperty="id_country">
+		INSERT INTO book_country (
+			name_country
+		) VALUES (
+			#{nameCountry}
+		)
+	</insert>
+	
+	<select id="selectCountryList" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
+		SELECT
+			id_country, name_country
+		FROM book_country
+		<if test="(nameCountry != null)">
+			WHERE name_country LIKE concat('%', #{nameCountry}, '%')
+		</if>
+		ORDER BY name_country ASC
+		LIMIT #{limitStart}, #{listCount}
+	</select>
+	
+	<select id="selectCountryListOnly" parameterType="com.gaimit.mlm.model.Book" resultMap="book">
+		SELECT
+			id_country, name_country
+		FROM book_country
+		<if test="(nameCountry != null)">
+			WHERE name_country LIKE concat('%', #{nameCountry}, '%')
+		</if>
+		ORDER BY name_country ASC
+	</select>
+	
+	<select id="selectCountryCount" parameterType="com.gaimit.mlm.model.Book" resultType="int">
+		SELECT
+			COUNT(id_country)
+		FROM book_country
+		<if test="(nameCountry != null)">
+			WHERE name_country LIKE concat('%', #{nameCountry}, '%')
+		</if>
+	</select>
+	
+	<select id="selectCountryNameCheck" parameterType="com.gaimit.mlm.model.Book" resultType="int">
+		SELECT
+			COUNT(id_country)
+		FROM book_country
+		WHERE name_country LIKE #{nameCountry}
 	</select>
 	
 </mapper>

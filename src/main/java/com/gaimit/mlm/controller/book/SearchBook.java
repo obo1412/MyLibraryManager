@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -28,12 +29,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.gaimit.helper.ApiHelper;
 import com.gaimit.helper.AuthorCode;
 import com.gaimit.helper.Util;
 import com.gaimit.helper.WebHelper;
+import com.gaimit.mlm.model.Book;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.service.BookHeldService;
+import com.gaimit.mlm.service.BookService;
 import com.gaimit.mlm.service.ManagerService;
 
 @Controller
@@ -56,6 +60,12 @@ public class SearchBook {
 	@Autowired
 	BookHeldService bookHeldService;
 	
+	@Autowired
+	BookService bookService;
+	
+	@Autowired
+	ApiHelper apiHelper;
+	
 	/** 도서 검색 페이지 */
 	@RequestMapping(value = "/book/search_book.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView doRun(Locale locale, Model model) {
@@ -75,8 +85,16 @@ public class SearchBook {
 		String bookTitle = web.getString("bookTitle", "");
 		String author = web.getString("author", "");
 		
+		String regChk = web.getString("straightReg");
+		String regCheckBox = "";
+		if(regChk!=null) {
+			regCheckBox = "checked";
+		}
+		
 		/* 바코드 호출 */
 		// 파라미터를 저장할 Beans
+		Book country = new Book();
+		
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 		bookHeld.setIsbn10Book(isbn);
@@ -93,7 +111,16 @@ public class SearchBook {
 		
 		int copyCode = 0;
 		
+		List<Book> countryList = null;
+		
+		String atcOut = null;
+		
+		int classCodeHead = 0;
+		
 		try {
+			//국가목록 조회
+			countryList = bookService.selectCountryListOnly(country);
+			
 			/*바코드 호출 바코드 헤드 검사*/
 			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
 			/*바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다*/
@@ -120,12 +147,12 @@ public class SearchBook {
 			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
 			/* 바코드 호출 끝 */
 			
-			/* copyCode 복본기호 호출 */
-			if(isbn==null || isbn.equals("")) {
-				if((bookTitle==null || bookTitle.equals("")) || (author==null || author.equals(""))) {
-					return web.redirect(null, "복본기호 체크를 위하여 도서 제목과 저자를 작성하여주세요");
+			//copyCode 복본기호 호출
+			/*if(isbn==null || "".equals(isbn)) {
+				if((bookTitle==null || "".equals(bookTitle)) || (author==null || "".equals(author))) {
+					return web.redirect(null, "도서명 또는 저자명이 비어있습니다.");
 				}
-			}
+			}*/
 			
 			//아래 selectBookId가 null일 경우 NPE발생, NPE삭제하지 않고 처리할 수가 없어서
 			//그냥 selectBookCount로 조건을 걸어둠.
@@ -170,156 +197,199 @@ public class SearchBook {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		//분류기호 3단계 절차 아래 순서대로
-		String kdcStr = null;	// 서지 KDC
-		String clsNo = null;	// 국중 class_no
-		String eac3 = null;		// 서지 EA_ADD_CODE
+		JSONObject jsonAladin = new JSONObject();
+		JSONObject jsonSeoji = new JSONObject();
+		ArrayList<String> xmlClassNoArray = new ArrayList<String>();
+		
 		String clsCode = null;	// view전달 변수
 		
-		//알라딘api에서 저자이름을 가지고 올 변수 선언
-		String authorToCode = null;
+		//저자코드 생성을 위한 제목, 저자명 변수 1순위:알라딘 2순위: 국중
 		String titleToCode = null;
+		String authorToCode = null;
 		
-		/** 3) url openapi 수신 */
-		String aladinTtbKey = "ttblib1207001";
-		// 알라딘 api 에서 json 수신
-		JSONObject jsonAladin = new JSONObject();
+		//서지정보에서 볼륨코드를 담을 변수
+		String volCode = null;
+		//jsonSeoji.docs[0].VOL 왼쪽 코드로 뷰페이지에 구현됨.
+		String bookSize = null;
+		//그러나 바로등록을 위해 변수 담기
+		
+		
 		try {
-			String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey="+aladinTtbKey+"&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
-			/*String apiKey = "?ttbkey=ttbanfyanfy991303001";*/
-			String apiUrlItem = apiUrl;
-			String apiUrlFull = null;
-			if(isbn.length() == 13) {
-				apiUrlFull = apiUrlItem + "&itemIdType=ISBN13"+"&ItemId="+ isbn;
-			} else if(isbn.length() == 10) {
-				apiUrlFull = apiUrlItem +"&itemIdType=ISBN"+"&ItemId="+ isbn;
-			}
+			
+			//분류기호 3단계 절차 아래 순서대로
+			String kdcStr = null;	// 서지 KDC
+			String clsNo = null;	// 국중 class_no
+			String eac3 = null;		// 서지 EA_ADD_CODE
+			
+			// 알라딘 api 에서 json 수신
+			
+			
+			//apiHelper로 OpenApi호출 중앙관리
+			String apiUrlFull = apiHelper.getAladinJsonIsbnResult(isbn);
+			//apiHelper로 OpenApi호출
 			URL url = new URL(apiUrlFull);
 			HttpURLConnection con = (HttpURLConnection)url.openConnection();
 			con.setRequestMethod("GET");
 			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
 			
 			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"UTF-8"));
-			
 			String result = br.readLine();
-			
 			br.close();
-
+	
 			JSONParser jsonParser = new JSONParser();
 			jsonAladin = (JSONObject) jsonParser.parse(result);
 			//json타입으로 값을 가져옴
+			// 알라딘 api 호출
 			
-			//json타입의 값인 jsonAladin에서 특정값을 가지고옴.
-			JSONArray itemArray = (JSONArray) jsonAladin.get("item");
-			JSONObject itemObj = (JSONObject) itemArray.get(0);
-			//item의 [0] <- 첫번째 값을 가져옴
-			Object authorObj = itemObj.get("author");
-			Object titleObj = itemObj.get("title");
+			/*이하 서지정보호출 제목 저자를 넣기 위해 순서 바꿈
+			 * */
+			// 서지정보 api 호출
 			
-			//authorToCode = (String)authorObj;
-			//위처럼도 casting만 바꾸는 방법도 있음.
-			authorToCode = String.valueOf(authorObj);
-			titleToCode = String.valueOf(titleObj);
 			
-		} catch(Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		//알라딘 api 정보를 토대로 저자기호 만들기
-		String atcOut = null;
-		if(authorToCode!=null&&!authorToCode.equals("")) {
-			atcOut = authorCode.authorCodeGen(authorToCode)
-					+ authorCode.titleFirstLetter(titleToCode);
-		}
-		
-		
-		String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
-		// 서지정보에서 api 수신
-		JSONObject jsonSeoji = new JSONObject();
-		try {
-			String apiUrl = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key="+NLKcertKey+"&result_style=json&page_no=1&page_size=1";
-			String apiUrlFull = null;
-			if(isbn.length() == 13) {
-				apiUrlFull = apiUrl + "&isbn="+ isbn;
-			} else if(isbn.length() == 10) {
-				apiUrlFull = apiUrl +"&isbn="+ isbn;
+			String apiUrlSeojiFull = apiHelper.getSeojiJsonIsbnResult(isbn);
+			
+			URL urlSeoji = new URL(apiUrlSeojiFull);
+			HttpURLConnection conSeoji = (HttpURLConnection)urlSeoji.openConnection();
+			conSeoji.setRequestMethod("GET");
+			conSeoji.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			
+			BufferedReader brSeoji = new BufferedReader(new InputStreamReader(conSeoji.getInputStream(),"UTF-8"));
+			
+			String resultSeoji = brSeoji.readLine();
+			
+			brSeoji.close();
+	
+			JSONParser jsonParserSeoji = new JSONParser();
+			jsonSeoji = (JSONObject) jsonParserSeoji.parse(resultSeoji);
+			
+			if(!jsonSeoji.get("TOTAL_COUNT").equals("0")) {
+				JSONArray itemSeojiArray = (JSONArray) jsonSeoji.get("docs");
+				JSONObject itemObj = (JSONObject) itemSeojiArray.get(0);
+				
+				Object kdc = itemObj.get("KDC");
+				Object eac = itemObj.get("EA_ADD_CODE");
+				kdcStr = String.valueOf(kdc);
+				
+				String eacStr = String.valueOf(eac);
+				//5자리중 뒤에 3자리만
+				eac3 = eacStr.substring(2);
+				
+				Object titleSeo = itemObj.get("TITLE");
+				Object authorSeo = itemObj.get("AUTHOR");
+				
+				authorToCode = String.valueOf(authorSeo);
+				titleToCode = String.valueOf(titleSeo);
+				
+				Object volCodeObj = itemObj.get("VOL");
+				volCode = String.valueOf(volCodeObj);
+				
+				Object bookSizeObj = itemObj.get("BOOK_SIZE");
+				bookSize = String.valueOf(bookSizeObj);
 			}
-			URL url = new URL(apiUrlFull);
-			HttpURLConnection con = (HttpURLConnection)url.openConnection();
-			con.setRequestMethod("GET");
-			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
 			
-			BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(),"UTF-8"));
+			//국립중앙도서관 아래 api검색
+			//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
+			// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
 			
-			String result = br.readLine();
-			
-			br.close();
-
-			JSONParser jsonParser = new JSONParser();
-			jsonSeoji = (JSONObject) jsonParser.parse(result);
-			JSONArray itemArray = (JSONArray) jsonSeoji.get("docs");
-			JSONObject itemObj = (JSONObject) itemArray.get(0);
-			
-			Object kdc = itemObj.get("KDC");
-			Object eac = itemObj.get("EA_ADD_CODE");
-			kdcStr = String.valueOf(kdc);
-			
-			String eacStr = String.valueOf(eac);
-			//5자리중 뒤에 3자리만
-			eac3 = eacStr.substring(2);
-			
-		} catch(Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		
-		//국립중앙도서관 아래 api검색
-		//http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key=6debf14330e5866f7c50d47a9c84ae8f&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=8984993727
-		// 국중은 openapi가 xml 형태밖에 없는 듯하여 xml 호출 구조
-		ArrayList<String> xmlClassNoArray = new ArrayList<String>();
-		try {
-			String apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
-			String apiUrlFull = null;
-			if(isbn.length() == 13) {
-				apiUrlFull = apiUrl + "&isbnCode="+ isbn;
-			} else if(isbn.length() == 10) {
-				apiUrlFull = apiUrl +"&isbnCode="+ isbn;
-			}
-			URL url = new URL(apiUrlFull);
-			HttpURLConnection con = (HttpURLConnection)url.openConnection();
-			con.setRequestMethod("GET");
-			con.getResponseCode(); // 응답코드 리턴 200번대 404 등등
+			ArrayList<String> titleAndAuthor = new ArrayList<String>();
+				
+			String apiUrlFullNl = apiHelper.getNlXmlIsbnResult(isbn);
+			URL urlNl = new URL(apiUrlFullNl);
+			HttpURLConnection conNl = (HttpURLConnection)urlNl.openConnection();
+			conNl.setRequestMethod("GET");
+			conNl.getResponseCode(); // 응답코드 리턴 200번대 404 등등
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc =builder.parse(con.getInputStream());
+			Document doc =builder.parse(conNl.getInputStream());
 			
 			NodeList nodeList = doc.getElementsByTagName("item");
-			for(int i =0; i<nodeList.getLength(); i++) {
-				for(Node node = nodeList.item(i).getFirstChild(); node!=null;
-					node=node.getNextSibling()) {
-					if(node.getNodeName().equals("class_no")) {
-						xmlClassNoArray.add(node.getTextContent());
+			if(nodeList.getLength()>0) {
+				for(int i =0; i<nodeList.getLength(); i++) {
+					for(Node node = nodeList.item(i).getFirstChild(); node!=null;
+						node=node.getNextSibling()) {
+						if(node.getNodeName().equals("title_info")) {
+							titleAndAuthor.add(node.getTextContent());
+						}
+						if(node.getNodeName().equals("author_info")) {
+							titleAndAuthor.add(node.getTextContent());
+						}
+						if(node.getNodeName().equals("class_no")) {
+							xmlClassNoArray.add(node.getTextContent());
+						}
 					}
 				}
+				if(xmlClassNoArray.get(0).length()!=0&&xmlClassNoArray.get(0)!=null) {
+					clsNo = xmlClassNoArray.get(0);
+				}
+				if(titleAndAuthor.get(0).length()!=0&&titleAndAuthor.get(0)!=null) {
+					titleToCode = titleAndAuthor.get(0);
+				}
+				if(titleAndAuthor.get(1).length()!=0&&titleAndAuthor.get(1)!=null) {
+					authorToCode = titleAndAuthor.get(1);
+				}
 			}
-			clsNo = xmlClassNoArray.get(0);
+			
+			if(jsonAladin.get("item") != null && !jsonAladin.get("item").equals("")) {
+			
+				//json타입의 값인 jsonAladin에서 특정값을 가지고옴.
+				JSONArray itemArray = (JSONArray) jsonAladin.get("item");
+				JSONObject itemObj = (JSONObject) itemArray.get(0);
+				//item의 [0] <- 첫번째 값을 가져옴
+				Object authorObj = itemObj.get("author");
+				Object titleObj = itemObj.get("title");
+				
+				//authorToCode = (String)authorObj;
+				//위처럼도 casting만 바꾸는 방법도 있음.
+				if(!"".equals(authorObj)&&!"".equals(titleObj)) {
+					authorToCode = String.valueOf(authorObj);
+					titleToCode = String.valueOf(titleObj);
+				}
+			}
+			
+			//우선순위에 따라서 최종에 남은 도서명과 저자명으로
+			//저자코드 생성
+			if(titleToCode!=null&&authorToCode!=null) {
+				atcOut = authorCode.authorCodeGen(authorToCode)
+						+ authorCode.titleFirstLetter(titleToCode);
+			}
+			
+			//ArrayList<String>은 get(index)과 set(index, 인자)로 컨트롤된다.
+			/*xmlClassNoArray.set(0, "asdfa");
+			System.out.println(xmlClassNoArray.get(0));*/
+			
+			//kdcStr!=null&&kdcStr.length()!=0 이 조건으로 했을 경우에 length() 부분에서
+			// NPE 에러가 발생한다.
+			if(kdcStr!=null&&(!"".equals(kdcStr))) {
+				clsCode = kdcStr;
+			} else if(clsNo!=null&&(!"".equals(clsNo))) {
+				clsCode = clsNo;
+			} else if(eac3!=null&&(!"".equals(eac3))) {
+				clsCode = eac3;
+			}
+			
+			if("".equals(clsCode)||"0".equals(clsCode)||clsCode==null) {
+				
+			} else {
+				int classHead1 = (int) Float.parseFloat(clsCode)/100;
+				classCodeHead = classHead1*100;
+			}
+		
 		} catch(Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
-		//ArrayList<String>은 get(index)과 set(index, 인자)로 컨트롤된다.
-		/*xmlClassNoArray.set(0, "asdfa");
-		System.out.println(xmlClassNoArray.get(0));*/
-		
-		if((!kdcStr.equals(""))&&kdcStr!=null) {
-			clsCode = kdcStr;
-		} else if((!clsNo.equals(""))&&clsNo!=null) {
-			clsCode = clsNo;
-		} else {
-			clsCode = eac3;
+		List<BookHeld> regTodayList = null;
+		try {
+			regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
 		}
+		
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
 		/*model.addAttribute("keyword", keyword);*/
+		model.addAttribute("countryList", countryList);
 		model.addAttribute("isbn", isbn);
 		model.addAttribute("atcOut", atcOut);
 		model.addAttribute("barcodeInit", barcodeInit);
@@ -329,6 +399,260 @@ public class SearchBook {
 		model.addAttribute("jsonSeoji", jsonSeoji);
 		model.addAttribute("xmlClassNoArray", xmlClassNoArray);
 		model.addAttribute("clsCode", clsCode);
+		model.addAttribute("classCodeHead", classCodeHead);
+		model.addAttribute("regCheckBox", regCheckBox);
+		model.addAttribute("regTodayList", regTodayList);
+		model.addAttribute("bookSize", bookSize);
+		
+		if(regChk != null && clsCode != null && !"".equals(isbn)) {
+			if((titleToCode==null || "".equals(titleToCode)) || (authorToCode==null || "".equals(authorToCode))) {
+				return web.redirect(null, "도서명 또는 저자명이 비어있습니다.");
+			}
+			
+			BookHeld callIdBook = null;
+			
+			//json타입의 값인 jsonAladin에서 특정값을 가지고옴.
+			JSONArray itemArray = (JSONArray) jsonAladin.get("item");
+			JSONObject itemObj = (JSONObject) itemArray.get(0);
+			//item의 [0] <- 첫번째 값을 가져옴
+			Object objCategory = itemObj.get("categoryName");
+			String category = String.valueOf(objCategory);
+			Object objPublisher = itemObj.get("publisher");
+			String publisher = String.valueOf(objPublisher);
+			Object objPubDate = itemObj.get("pubDate");
+			String pubDate = String.valueOf(objPubDate);
+			JSONObject objSubInfo = (JSONObject) itemObj.get("subInfo");
+			Object objPage = objSubInfo.get("itemPage");
+			String page = String.valueOf(objPage);
+			int intPage = 0;
+			if(!"".equals(page)&&!"0".equals(page)) {
+				intPage = Integer.parseInt(page);
+			}
+			Object objPrice = itemObj.get("priceStandard");
+			String price = String.valueOf(objPrice);
+			int intPrice = 0;
+			if(!"".equals(price)&&!"0".equals(price)) {
+				intPrice = Integer.parseInt(price);
+			}
+			Object objIsbn10 = itemObj.get("isbn");
+			String isbn10 = String.valueOf(objIsbn10);
+			Object objCover = itemObj.get("cover");
+			String cover = String.valueOf(objCover);
+			Object objDescription = itemObj.get("description");
+			String description = String.valueOf(objDescription);
+			
+			//book테이블에 도서가 없을경우 등록을 위하여.
+			bookHeld.setTitleBook(titleToCode);
+			bookHeld.setWriterBook(authorToCode);
+			bookHeld.setCategoryBook(category);
+			bookHeld.setPublisherBook(publisher);
+			bookHeld.setPubDateBook(pubDate);
+			bookHeld.setPriceBook(intPrice);
+			bookHeld.setIsbn10Book(isbn10);
+			//book테이블에 도서가 있는지 체크하기 위하여.
+			bookHeld.setIsbn13Book(isbn);
+			bookHeld.setDescriptionBook(description);
+			//book테이블에 없는 도서일 경우를 위하여 정보 주입
+			
+			//manager로부터 도서관번호 부여.
+			bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
+			bookHeld.setIsbn13(isbn);
+			bookHeld.setIsbn10(isbn10);
+			bookHeld.setTitle(titleToCode);
+			bookHeld.setWriter(authorToCode);
+			bookHeld.setAuthorCode(atcOut);
+			bookHeld.setPublisher(publisher);
+			bookHeld.setPubDate(pubDate);
+			bookHeld.setCategory(category);
+			bookHeld.setPage(intPage);
+			bookHeld.setBookSize(bookSize);
+			bookHeld.setPrice(intPrice);
+			bookHeld.setBookOrNot("BOOK");
+			bookHeld.setPurchasedOrDonated(1);
+			bookHeld.setClassificationCode(clsCode);
+			/*bookHeld.setAdditionalCode(additionalCode);*/
+			//바로 등록시 별치기호 없음 
+			bookHeld.setVolumeCode(volCode);
+			bookHeld.setImageLink(cover);
+			bookHeld.setDescription(description);
+			bookHeld.setAvailable(1);
+			
+			bookHeld.setIdCountry(1);
+			
+			
+			String viewBarcodeInit = util.strExtract(newBarcode);
+			int viewBarNum = util.numExtract(newBarcode);
+			
+			if(newBarcode.length() != 8) {
+				return web.redirect(null, "바코드를 8자리로 맞추어 주세요.");
+			} else if(viewBarcodeInit.length() > 3 ) {
+				return web.redirect(null, "바코드 머리 글자수는 3자리 이하여야 합니다.");
+			}
+			
+			//초기에 한번 선언되어 있음.
+			/*//바코드 번호 생성을 위한 변수 선언
+			int lastEmptyLocalBarcode = 0; //바코드 번호 빈자리 
+			BookHeld lastLocalBarcode = new BookHeld(); //바코드 헤드를 위한 마지막 바코드 참조
+			String barcodeInit = ""; 
+			int barcodeInitCount = 0;*/
+			
+			//barcode 호출
+			try {
+				/*바코드 헤드 검사*/
+				lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
+				/*바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다*/
+				if(lastLocalBarcode != null) {
+					barcodeInit = lastLocalBarcode.getLocalIdBarcode();
+					barcodeInit = util.strExtract(barcodeInit);
+					/*바코드말머리가 있다면 말머리의 길이를 구한다.
+					 *말머리의 길이로 mapper에서 바코드 select함*/
+					barcodeInitCount = barcodeInit.length();
+				}
+				/*바코드 말머리의 길이를 bookHeld에 주입*/
+				bookHeld.setBarcodeInitCount(barcodeInitCount);
+				//바코드 뒤 숫자 중복검사를 위하여 값 주입
+				bookHeld.setNewBarcodeForDupCheck(viewBarNum);
+				//위 viewBarNum를 중복검사 변수로 사용.
+				//중복되는 번호가 있다면 impl 단계에서 예외처리
+				bookHeldService.selectDupCheckLocalBarcode(bookHeld);
+				
+				/*바코드 번호가 1번인지 검사*/
+				int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
+				/*1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록*/
+				/*1이 아니면 1로 바코드 등록*/
+				if(firstBarcode == 1 ) {
+					lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
+				} else {
+					lastEmptyLocalBarcode = 1;
+				}
+				
+				//위 비어있는 바코드 번호를 솔팅index에 주입
+				bookHeld.setSortingIndex(lastEmptyLocalBarcode);
+				
+				/*뷰페이지에서 넘어온 바코드 숫자와 ok컨트롤러에서 조사한 바코드 뒤숫자가
+				 * 같지 않으면, 콜백 발생. */
+				if(viewBarNum != lastEmptyLocalBarcode) {
+					return web.redirect(null, "최신 바코드 번호가 일치하지 않습니다.");
+				}
+			} catch (Exception e) {
+				return web.redirect(null, e.getLocalizedMessage());
+			}
+			/* 바코드 호출 끝 */
+			
+			/*소문자 바코드를 대문자로 변환*/
+			newBarcode = newBarcode.toUpperCase();
+			bookHeld.setLocalIdBarcode(newBarcode);
+			
+			
+			try {
+				int checkBookTable= bookHeldService.selectBookCount(bookHeld);
+				if (checkBookTable > 0) {
+					//id_book을 받아오기 위한 객체
+					callIdBook = bookHeldService.selectBookId(bookHeld);
+					//callIdBook에 id_book을 담고 bookHeld에 전달.
+					bookHeld.setBookIdBook(callIdBook.getIdBook());
+					
+					//if 복본이 있는지 체크후 insertBookHeld;
+					int copyCheckBookHeld = bookHeldService.selectBookHeldCount(bookHeld);
+					if(copyCheckBookHeld == 0) {
+						/*bookheld 테이블에 없으면 바로 등록*/
+						bookHeldService.insertBookHeld(bookHeld);
+					} else if(copyCheckBookHeld > 1){
+						int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+						if(zeroCopyCode == 1) {
+							/*bookheld 테이블에 여러권 존재시 2번 시작기준 빠진 번호 검색*/
+							int firstCopyCode = bookHeldService.selectFirstCopyCode(bookHeld);
+							if(firstCopyCode != 2) {
+								bookHeld.setCopyCode(2);
+								bookHeldService.insertBookHeld(bookHeld);
+							} else {
+								int lastEmptyCopyCode = bookHeldService.selectLastEmptyCopyCode(bookHeld);
+								bookHeld.setCopyCode(lastEmptyCopyCode);
+								bookHeldService.insertBookHeld(bookHeld);
+							}
+						} else {
+							bookHeld.setCopyCode(0);
+							bookHeldService.insertBookHeld(bookHeld);
+						}
+						
+					} else if(copyCheckBookHeld == 1) {
+						/*위 경우 도서관에 책이 반드시 있는 경우다.
+						 * 아래의 최초복본기호 체크가 copy_code != 0이 아닌 조건으로
+						 * 검색했기 때문에, null이 나올 수 있다.
+						 * 따라서 firstcopycode가 null이면 도서의 복본기호는 0이라는 뜻.
+						 * 이 경우엔 복본기호를 2로 지정하고
+						 * 0이 아닌 모든 경우엔 새로등록할 도서의 복본기호를 0으로 설정*/
+						int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
+						if(zeroCopyCode == 1) {
+							bookHeld.setCopyCode(2);
+						} else {
+							bookHeld.setCopyCode(0);
+						}
+						bookHeldService.insertBookHeld(bookHeld);
+					}
+				} else if (checkBookTable == 0) {
+					//book에 아예 없을 때
+					bookHeldService.insertBook(bookHeld);
+					//id_book을 받아오기 위한 객체
+					callIdBook = bookHeldService.selectBookId(bookHeld);
+					//callIdBook에 id_book을 담고 bookHeld에 전달.
+					bookHeld.setBookIdBook(callIdBook.getIdBook());
+					
+					bookHeldService.insertBookHeld(bookHeld);
+				}
+			} catch (Exception e) {
+				return web.redirect(null, e.getLocalizedMessage());
+			}
+			
+			//직전에 등록한 도서를 불러오기 위한 리스트
+			try {
+				regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+			} catch (Exception e) {
+				return web.redirect(null, e.getLocalizedMessage());
+			}
+			
+
+			/** (6) 업로드 된 파일 정보 추출 */
+			/*List<FileInfo> fileList = upload.getFileList();
+			// 업로드 된 프로필 사진 경로가 저장될 변수
+			String profileImg = null;
+
+			// 업로드 된 파일이 존재할 경우만 변수값을 할당한다.
+			if (fileList.size() > 0) {
+				// 단일 업로드이므로 0번째 항목만 가져온다.
+				FileInfo info = fileList.get(0);
+				profileImg = info.getFileDir() + "/" + info.getFileName();
+			}
+
+			// 파일경로를 로그로 기록
+			logger.debug("profileImg=" + profileImg);*/
+			
+			// 조회 결과를 View에게 전달한다.
+			//model.addAttribute("brwList", list);
+			
+			/*model.addAttribute("countryList", countryList);
+			//등록되면 isbn검색칸을 비워야하기 때문에
+			model.addAttribute("isbn", "");
+			model.addAttribute("atcOut", atcOut);
+			model.addAttribute("barcodeInit", barcodeInit);
+			model.addAttribute("newBarcode", newBarcode);
+			model.addAttribute("copyCode", copyCode);
+			model.addAttribute("jsonAladin", jsonAladin);
+			model.addAttribute("jsonSeoji", jsonSeoji);
+			model.addAttribute("xmlClassNoArray", xmlClassNoArray);
+			model.addAttribute("clsCode", clsCode);
+			model.addAttribute("classCodeHead", classCodeHead);
+			model.addAttribute("regCheckBox", regCheckBox);
+			model.addAttribute("regTodayList", regTodayList);*/
+			
+			//redirect로 페이지 이동시 CUD 중복처리 방지를 위해 초기화
+			//위 VIEW페이지 전달 변수가 소용없어짐
+
+			/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
+			return web.redirect(web.getRootPath() + "/book/reg_book.do", null);
+			/*return new ModelAndView("book/reg_book");*/
+			
+		}
 		
 		return new ModelAndView("book/reg_book");
 	}
@@ -336,19 +660,21 @@ public class SearchBook {
 	
 	
 	/** 복본기호 체크 */
-	@RequestMapping(value = "/book/book_held_check_copyCode.do", method = {RequestMethod.GET, RequestMethod.POST})
+	/*@RequestMapping(value = "/book/book_held_check_copyCode.do", method = {RequestMethod.GET, RequestMethod.POST})
 	public ModelAndView callCopyCode(Locale locale, Model model) {
 		
-		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		*//** 1) WebHelper 초기화 및 파라미터 처리 *//*
 		web.init();
 		
-		/** 로그인 여부 검사 */
+		*//** 로그인 여부 검사 *//*
 		// 로그인중인 회원 정보 가져오기
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		}
+		
+		Book country = new Book();
 		
 		String newBarcode = web.getString("newBarcode");
 		
@@ -377,8 +703,11 @@ public class SearchBook {
 					+ authorCode.titleFirstLetter(bookTitle);
 		}
 		
+		//국가 목록 조회
+		List<Book> countryList = null;
+		
 		if(!bookTitle.equals("") && !author.equals("")) {
-			/* 바코드 호출 */
+			// 바코드 호출 
 			// 파라미터를 저장할 Beans
 			BookHeld bookHeld = new BookHeld();
 			bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
@@ -388,29 +717,31 @@ public class SearchBook {
 			bookHeld.setWriterBook(author);
 			
 			try {
+				//국가 목록 조회
+				countryList = bookService.selectCountryListOnly(country);
 				//아래 selectBookId가 null일 경우 NPE발생, NPE삭제하지 않고 처리할 수가 없어서
 				//그냥 selectBookCount로 조건을 걸어둠.
 				int checkBookTable= bookHeldService.selectBookCount(bookHeld);
 				if(checkBookTable > 0) {
-					/* copyCode 복본기호 호출 */
+					 copyCode 복본기호 호출 
 					BookHeld callIdBook = bookHeldService.selectBookId(bookHeld);
 					
 					//null 체크를 위하여 Integer로 형변환
 					if(((Integer) callIdBook.getIdBook() != 0) && ((Integer) callIdBook.getIdBook() != null)) {
 						bookHeld.setBookIdBook(callIdBook.getIdBook());
 						int copyCheckBookHeld = bookHeldService.selectBookHeldCount(bookHeld);
-						/*복본이 존재하는지 체크*/
+						//복본이 존재하는지 체크
 						if(copyCheckBookHeld > 1) {
-							/* 결과값이 0이면 복본기호는 0이 아니라는 말이고, 결과값이 1이면 0이라는 말 */
+							// 결과값이 0이면 복본기호는 0이 아니라는 말이고, 결과값이 1이면 0이라는 말 
 							int zeroCopyCode = bookHeldService.selectZeroCopyCodeCount(bookHeld);
 							if(zeroCopyCode == 1) {
-								/*0번복본이 있는 상태, 최초 복본기호가 2가 아니면 2로 지정
-								 * 중간에 2번 복본이 빠졌다는 것.*/
+								//0번복본이 있는 상태, 최초 복본기호가 2가 아니면 2로 지정
+								 //* 중간에 2번 복본이 빠졌다는 것.
 								int firstCopyCode = bookHeldService.selectFirstCopyCode(bookHeld);
 								if(firstCopyCode != 2) {
 									copyCode = 2;
 								} else {
-									/*최초 복본기호가 2가 있다면, 그 이상의 빈번호임.*/
+									//최초 복본기호가 2가 있다면, 그 이상의 빈번호임.
 									copyCode = bookHeldService.selectLastEmptyCopyCode(bookHeld);
 								}
 							} else {
@@ -425,7 +756,7 @@ public class SearchBook {
 							}//암시롱 안하면 그냥 원래 선언한대로 0
 						}
 					}
-					/* 복본기호 호출 끝 */
+					 //복본기호 호출 끝 
 				}
 			} catch (Exception e) {
 				return web.redirect(null, e.getLocalizedMessage());
@@ -434,6 +765,7 @@ public class SearchBook {
 			return web.redirect(null, "복본기호 체크를 위하여 도서 제목과 저자를 작성하여주세요");
 		}
 		
+		model.addAttribute("countryList", countryList);
 		model.addAttribute("copyCode", copyCode);
 		model.addAttribute("bookTitle", bookTitle);
 		model.addAttribute("author", author);
@@ -453,7 +785,7 @@ public class SearchBook {
 		model.addAttribute("newBarcode", newBarcode);
 		
 		return new ModelAndView("book/reg_book");
-	}
+	}*/
 	
 	
 	
@@ -482,6 +814,8 @@ public class SearchBook {
 			String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
 			String apiUrl = null;
 			
+			//현재 이 기능은 브라우저에선 결과값을 주지만,
+			//코드 상태로는 서버 응답값이 502 에러가 발생한다. 나중에 처리하자
 			switch (searchOpt) {
 			case 1:
 				apiUrl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn&isbnCode=";

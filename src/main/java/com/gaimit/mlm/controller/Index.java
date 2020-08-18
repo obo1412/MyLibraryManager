@@ -19,8 +19,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BbsDocument;
+import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.service.BbsDocumentService;
+import com.gaimit.mlm.service.BrwService;
 
 @Controller
 public class Index {
@@ -35,6 +37,9 @@ public class Index {
 	
 	@Autowired
 	BbsDocumentService bbsDocumentService;
+	
+	@Autowired
+	BrwService brwService; 
 	
 	@RequestMapping(value= {"/", "/index.do"})
 	public ModelAndView doRun(Locale locale, Model model,
@@ -82,6 +87,30 @@ public class Index {
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", null);
+		}
+		
+		Borrow borrow = new Borrow();
+		borrow.setIdLibBrw(loginInfo.getIdLibMng());
+		
+		int maxCountIdBrw = 5;
+		
+		List<Borrow> brwStatistics = null;
+		List<Borrow> brwBookStatistics = null;
+		
+		try {
+			brwStatistics = brwService.selectBorrowMemberCountThisMonth(borrow);
+			brwBookStatistics = brwService.selectBorrowBookCountThisMonth(borrow);
+			if(brwBookStatistics.size() >0) {
+				maxCountIdBrw = brwBookStatistics.get(0).getCountIdBrw();
+			}
+		}catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		if(brwStatistics.size() > 0 && brwBookStatistics.size() > 0) {
+			model.addAttribute("brwStatistics", brwStatistics);
+			model.addAttribute("brwBookStatistics", brwBookStatistics);
+			model.addAttribute("maxCountIdBrw", maxCountIdBrw);
 		}
 		
 		// "/WEB-INF/views/index.jsp"파일을 View로 사용한다.

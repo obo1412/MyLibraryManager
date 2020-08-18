@@ -6,8 +6,8 @@
 <!doctype html>
 <html>
 <head>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/fonts.css" />
-	<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" as="font" crossorigin >
+<%-- <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/fonts/fonts.css" />
+	<link rel="preload" href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" as="font" crossorigin > --%>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 <script type="text/javascript"
 	src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -16,16 +16,7 @@
 
 <style type="text/css">
 
-/* @font-face {
-	font-family: 'Free 3 of 9';
-	src:  url(${pageContext.request.contextPath}/assets/fonts/free3of9.ttf) format('truetype');
-} */
 
-/* @font-face {
-	font-family: NanumSquareWeb;
-	src: url(NanumSquareR.woff) format('woff');
-	
-} */
 
 @media print {
 	@page {
@@ -53,21 +44,19 @@
 </style>
 </head>
 <body>
-	<%-- <%@ include file="/WEB-INF/inc/topbar.jsp"%> --%>
+	
 	<div id='wrapper'>
-		<%-- <%@ include file="/WEB-INF/inc/sidebar_left.jsp"%> --%>
+	
 		<div id="content-wrapper">
 
 			<div class="container-fluid" style="margin-left:0mm; margin-top:1.85mm;">
 				
 				<div class="prtNone">
-					<button class="btn btn-danger prtNone" id="btn-print">인쇄</button>
+					<span class="prtNone" style="font-size:30pt;">태그 - 기본</span>
+					<span class="prtNone">
+						<button class="btn btn-danger prtNone" id="btn-print">인쇄</button>
+					</span>
 				</div>
-
-				<!-- <div>
-					<input type="button" value="출력"
-						onclick="window.open('','window팝업','width=300, height=300, menubar=no, status=no, tollbar=no');">
-				</div> -->
 
 				<c:forEach var="item" items="${bookHeldList}" varStatus="status">
 					<c:choose>
@@ -127,7 +116,7 @@
 								<c:when test="${classCode lt 0}">
 									<c:set var="classCode" value="" />
 									<div id="rightBox"
-										style="display: table; background-color:black; float: right; width: 18.75mm; height: 100%; text-align: center;">
+										style="display: table; background-color:#424242; float: right; width: 18.75mm; height: 100%; text-align: center;">
 									<div
 										style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
@@ -135,71 +124,63 @@
 								<c:when test="${classCode eq 0}">
 									<c:set var="classCode" value="000" />
 									<div id="rightBox"
-										style="display: table; background-color:brown; float: right; width: 18.75mm; height: 100%; text-align: center;">
+										style="display: table; background-color:#848484; float: right; width: 18.75mm; height: 100%; text-align: center;">
 									<div
 										style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 										</div>
 								</c:when>
 								<c:when test="${classCode eq 100}">
 									<div id="rightBox"
-										style="display: table; background-color:red; float: right; width: 18.75mm; height: 100%; text-align: center;">
+										style="display: table; background-color:#FA8258; float: right; width: 18.75mm; height: 100%; text-align: center;">
 									<div
 										style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 										</div>
 								</c:when>
 								<c:when test="${classCode eq 200}">
-									<c:set var="classSectionColor" value="orange" />
 									<div id="rightBox"
-											style="display: table; background-color:orange; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#F7D358; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 300}">
-									<c:set var="classSectionColor" value="yellow" />
 									<div id="rightBox"
-											style="display: table; background-color:yellow; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#F5DA81; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 400}">
-									<c:set var="classSectionColor" value="green" />
 									<div id="rightBox"
-											style="display: table; background-color:green; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#D358F7; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 500}">
-									<c:set var="classSectionColor" value="pink" />
 									<div id="rightBox"
-											style="display: table; background-color:pink; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#F78181; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 600}">
-									<c:set var="classSectionColor" value="blue" />
 									<div id="rightBox"
-											style="display: table; background-color:blue; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#7401DF; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 700}">
-									<c:set var="classSectionColor" value="purple" />
 									<div id="rightBox"
-											style="display: table; background-color:purple; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#04B404; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 800}">
-									<c:set var="classSectionColor" value="navy" />
 									<div id="rightBox"
-											style="display: table; background-color:navy; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#08088A; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>
 								<c:when test="${classCode eq 900}">
-									<c:set var="classSectionColor" value="green" />
 									<div id="rightBox"
-											style="display: table; background-color:green; float: right; width: 18.75mm; height: 100%; text-align: center;">
+											style="display: table; background-color:#DBA901; float: right; width: 18.75mm; height: 100%; text-align: center;">
 										<div style="width:100%; display: table-cell; font-size: 30pt; color: white; transform-origin: 50%; transform: rotate(90deg); vertical-align: middle;">${classCode}</div>
 									</div>
 								</c:when>

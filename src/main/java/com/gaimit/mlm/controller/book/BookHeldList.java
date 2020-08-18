@@ -66,13 +66,13 @@ public class BookHeldList {
 		if(keyword!=null||keyword!=""){
 			switch (searchOpt) {
 			case 1:
-				bookHeld.setTitleBook(keyword);
+				bookHeld.setTitle(keyword);
 				break;
 			case 2:
-				bookHeld.setWriterBook(keyword);
+				bookHeld.setWriter(keyword);
 				break;
 			case 3:
-				bookHeld.setPublisherBook(keyword);
+				bookHeld.setPublisher(keyword);
 				break;
 			}
 		}

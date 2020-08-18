@@ -3,6 +3,7 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!doctype html>
 <html>
 <head>
@@ -34,6 +35,15 @@
 				<table class="table table-sm table-bordered mt-2">
 					<tbody>
 						<tr>
+							<th class="table-info text-center" width="130">
+								<button id="btn_edit_tag" class="btn btn-sm btn-info">태그/수정</button>
+							</th>
+							<td>
+								<input type="hidden" id="book_held_id" value="${bookHeldItem.id}" />
+								<input type="text" class="form-control form-control-sm" name="tag" id="tag" value="${bookHeldItem.tag}" />
+							</td>
+						</tr>
+						<tr>
 							<th class="table-info text-center">도서상태</th>
 							<c:choose>
 								<c:when test="${bookHeldItem.available < 2 }">
@@ -50,7 +60,7 @@
 						</tr>
 						<tr>
 							<th class="table-info text-center">카테고리</th>
-							<td>${bookHeldItem.categoryBook}</td>
+							<td>${bookHeldItem.category}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">서가</th>
@@ -58,19 +68,21 @@
 						</tr>
 						<tr>
 							<th class="table-info text-center">도서제목</th>
-							<td>${bookHeldItem.titleBook}</td>
+							<td>${bookHeldItem.title}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">저자</th>
-							<td>${bookHeldItem.writerBook}</td>
+							<td>${bookHeldItem.writer}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">출판사</th>
-							<td>${bookHeldItem.publisherBook}</td>
+							<td>${bookHeldItem.publisher}</td>
 						</tr>
 						<tr>
+							<fmt:parseDate var="parsePubDate" value="${bookHeldItem.pubDate}" pattern="yyyy-MM-dd"/>
+							<fmt:formatDate var="pubDate" value="${parsePubDate}" pattern="yyyy-MM-dd" />
 							<th class="table-info text-center">출판일</th>
-							<td>${bookHeldItem.pubDateBook}</td>
+							<td>${pubDate}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">별치기호</th>
@@ -90,19 +102,29 @@
 						</tr>
 						<tr>
 							<th class="table-info text-center">복본기호</th>
-							<td>C${bookHeldItem.copyCode}</td>
+							<c:choose>
+								<c:when test="${bookHeldItem.copyCode eq 0}">
+									<td>원본</td>
+								</c:when>
+								<c:otherwise>
+									<td>C${bookHeldItem.copyCode}</td>
+								</c:otherwise>
+							</c:choose>
 						</tr>
 						<tr>
 							<th class="table-info text-center">가격</th>
-							<td>${bookHeldItem.priceBook}</td>
+							<fmt:formatNumber var="won" value="${bookHeldItem.price}" maxFractionDigits="3" />
+							<td>
+								${won}
+							</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">ISBN 10</th>
-							<td>${bookHeldItem.isbn10Book}</td>
+							<td>${bookHeldItem.isbn10}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">ISBN 13</th>
-							<td>${bookHeldItem.isbn13Book}</td>
+							<td>${bookHeldItem.isbn13}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">페이지</th>
@@ -121,12 +143,37 @@
 							<td>${bookHeldItem.localIdBarcode}</td>
 						</tr>
 						<tr>
+							<th class="table-info text-center">RF ID</th>
+							<td>${bookHeldItem.rfId}</td>
+						</tr>
+						<tr>
+							<th class="table-info text-center">상품 종류</th>
+							<td>${bookHeldItem.bookOrNot}</td>
+						</tr>
+						<tr>
 							<th class="table-info text-center">구매/기증</th>
-							<td>${bookHeldItem.purchasedOrDonated}</td>
+							<td>
+								<c:choose>
+									<c:when test="${bookHeldItem.purchasedOrDonated eq 1}">
+										구매
+									</c:when>
+									<c:otherwise>
+										기증
+									</c:otherwise>
+								</c:choose>
+							</td>
+						</tr>
+						<tr>
+							<th class="table-info text-center">도서 국가</th>
+							<td>${bookHeldItem.nameCountry}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">표지</th>
 							<td><img name="bookCover" src="${bookHeldItem.imageLink}" /></td>
+						</tr>
+						<tr>
+							<th class="table-info text-center">도서 크기</th>
+							<td>${bookHeldItem.bookSize}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">도서 설명</th>
@@ -152,20 +199,20 @@
 								</button>
 							</div>
 							<form name="book_held_delete" method="post">
-							<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
-							<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
-							<div class="modal-body">
-								<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
-								<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-secondary" type="button"
-									data-dismiss="modal">취소</button>
-								<c:if test="${bookHeldItem.available < 2 }">
-								<input type="submit" class="btn btn-warning closeRefresh" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
-								</c:if>
-								<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
-							</div>
+								<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
+								<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
+								<div class="modal-body">
+									<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
+									<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-secondary" type="button"
+										data-dismiss="modal">취소</button>
+									<c:if test="${bookHeldItem.available < 2 }">
+										<input type="submit" class="btn btn-warning" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
+									</c:if>
+									<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
+								</div>
 							</form>
 						</div>
 					</div>
@@ -178,6 +225,23 @@
 				window.close();
 			});
 		});
+		
+		const btnEditTag = document.getElementById('btn_edit_tag');
+		btnEditTag.addEventListener('click', function() {
+			var editData = {
+				"book_held_id" : document.getElementById('book_held_id').value,
+				"tag" : document.getElementById('tag').value
+			};
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/edit_book_held_tag_ok.do",
+				type: 'POST',
+				data: editData,
+				success: function(data) {
+					location.href=document.URL;
+				}
+			});
+		});
+		
 	</script>
 </body>
 </html>

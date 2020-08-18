@@ -3,6 +3,7 @@
 <%@ page trimDirectiveWhitespaces="true"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!doctype html>
 <html>
 <head>
@@ -67,7 +68,10 @@
 									<th class="info text-center">청구기호</th>
 									<th class="info text-center">등록일</th>
 									<th class="info text-center">등록번호</th>
+									<th class="info text-center">RF ID</th>
 									<th class="info text-center">복본기호</th>
+									<th class="info text-center">국가</th>
+									<th class="info text-center">태그</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -83,21 +87,24 @@
 															<c:param name="bookHeldId"
 															value="${item.id}" />
 													</c:url> <a href="${viewUrl}"
-													onclick="window.open(this.href, '_blank','width=600,height=800,scrollbars=yes');return false;">${item.titleBook}</a>
+													onclick="window.open(this.href, '_blank','width=550,height=800,scrollbars=yes');return false;">${item.title}</a>
 												</td>
-												<td class="text-center">${item.writerBook}</td>
-												<td class="text-center">${item.publisherBook}</td>
-												<td class="text-center">${item.pubDateBook}</td>
-												<td class="text-center">${item.isbn13Book}</td>
-												<td class="text-center"><c:if
-														test="${not empty item.additionalCode}">${item.additionalCode}</c:if>
-													<c:if test="${not empty item.classificationCode}">${item.classificationCode}</c:if>
-													<c:if test="${not empty item.authorCode}">${item.authorCode}</c:if>
-													<c:if test="${item.volumeCode ne '0' and (not empty item.volumeCode)}">v${item.volumeCode}</c:if>
-													<c:if test="${item.copyCode ne '0'}">C${item.copyCode}</c:if>
+												<td class="text-center">${item.writer}</td>
+												<td class="text-center">${item.publisher}</td>
+												<fmt:parseDate var="parsePubDate" value="${item.pubDate}" pattern="yyyy-MM-dd"/>
+												<fmt:formatDate var="pubDate" value="${parsePubDate}" pattern="yyyy-MM-dd" />
+												<td class="text-center">${pubDate}</td>
+												<td class="text-center">${item.isbn13}</td>
+												<td class="text-center">
+													<c:if test="${not empty item.additionalCode}">${item.additionalCode} </c:if>
+													<c:if test="${not empty item.classificationCode}">${item.classificationCode} </c:if>
+													<c:if test="${not empty item.authorCode}">${item.authorCode} </c:if>
+													<c:if test="${item.volumeCode ne '0' and (not empty item.volumeCode)}">v${item.volumeCode} </c:if>
+													<c:if test="${item.copyCode ne '0'}">C${item.copyCode} </c:if>
 												</td>
 												<td class="text-center">${item.regDate}</td>
 												<td class="text-center">${item.localIdBarcode}</td>
+												<td class="text-center">${item.rfId}</td>
 												<c:choose>
 													<c:when test="${item.copyCode eq 0}">
 														<td class="text-center">-</td>
@@ -106,6 +113,8 @@
 														<td class="text-center">C${item.copyCode}</td>
 													</c:otherwise>
 												</c:choose>
+												<td class="text-center">${item.nameCountry}</td>
+												<td class="text-center">${item.tag}</td>
 											</tr>
 										</c:forEach>
 									</c:when>

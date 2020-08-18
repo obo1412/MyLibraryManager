@@ -250,4 +250,23 @@ public class ManagerServiceImpl implements ManagerService {
 		return result;
 	}
 
+	@Override
+	public void updateManagerLanguage(Manager manager) throws Exception {
+		try {
+			int result = sqlSession.update("ManagerMapper.updateManagerLanguage", manager);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			// sqlSession.rollback();
+			throw new Exception("변경된 회원별 언어 정보가 없습니다.");
+		} catch (Exception e) {
+			// sqlSession.rollback();
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("회원정보 수정(언어설정)에 실패했습니다.");
+		} finally {
+			// sqlSession.commit();
+		}
+	}
+
 }

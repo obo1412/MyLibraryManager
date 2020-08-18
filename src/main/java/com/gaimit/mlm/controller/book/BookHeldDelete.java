@@ -60,7 +60,7 @@ public class BookHeldDelete {
 	BrwService brwService;
 
 	@RequestMapping(value = "/book/book_held_discard_ok.do", method = RequestMethod.POST)
-	public void discardBook(Locale locale, Model model, HttpServletRequest request,
+	public ModelAndView discardBook(Locale locale, Model model, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		/** (2) 사용하고자 하는 Helper+Service 객체 생성 */
@@ -94,6 +94,7 @@ public class BookHeldDelete {
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
 		/*return web.redirect(web.getRootPath() + "/book/book_held_list.do", "폐기되었습니다.");*/
+		return web.redirect(null, "폐기되었습니다.");
 	}
 	
 	@RequestMapping(value = "/book/book_held_delete_ok.do", method = RequestMethod.POST)

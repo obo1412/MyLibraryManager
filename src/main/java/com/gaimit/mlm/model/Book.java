@@ -18,6 +18,10 @@ public class Book extends Member{
 	private String authorCode;
 	private String volumeCode;
 	private int classCodeHead;
+	private String classCodeColor;
+	
+	private int idCountry;
+	private String nameCountry;
 	
 	public int getIdBook() {
 		return idBook;
@@ -121,6 +125,24 @@ public class Book extends Member{
 	public void setClassCodeHead(int classCodeHead) {
 		this.classCodeHead = classCodeHead;
 	}
+	public String getClassCodeColor() {
+		return classCodeColor;
+	}
+	public void setClassCodeColor(String classCodeColor) {
+		this.classCodeColor = classCodeColor;
+	}
+	public int getIdCountry() {
+		return idCountry;
+	}
+	public void setIdCountry(int idCountry) {
+		this.idCountry = idCountry;
+	}
+	public String getNameCountry() {
+		return nameCountry;
+	}
+	public void setNameCountry(String nameCountry) {
+		this.nameCountry = nameCountry;
+	}
 	@Override
 	public String toString() {
 		return "Book [idBook=" + idBook + ", titleBook=" + titleBook + ", writerBook=" + writerBook + ", categoryBook="
@@ -128,7 +150,8 @@ public class Book extends Member{
 				+ priceBook + ", isbn10Book=" + isbn10Book + ", isbn13Book=" + isbn13Book + ", descriptionBook="
 				+ descriptionBook + ", bookOrNot=" + bookOrNot + ", page=" + page + ", imageLink=" + imageLink
 				+ ", classificationCode=" + classificationCode + ", authorCode=" + authorCode + ", volumeCode="
-				+ volumeCode + ", classCodeHead=" + classCodeHead + "]";
+				+ volumeCode + ", classCodeHead=" + classCodeHead + ", idCountry=" + idCountry + ", nameCountry="
+				+ nameCountry + "]";
 	}
 	
 }

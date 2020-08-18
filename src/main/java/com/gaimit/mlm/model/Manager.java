@@ -7,6 +7,7 @@ public class Manager extends Library {
 	private String userPwMng;
 	private String nameMng;
 	private String emailMng;
+	private int langMng;
 
 	public String getUserPwMng() {
 		return userPwMng;
@@ -56,10 +57,18 @@ public class Manager extends Library {
 		this.emailMng = emailMng;
 	}
 
+	public int getLangMng() {
+		return langMng;
+	}
+
+	public void setLangMng(int langMng) {
+		this.langMng = langMng;
+	}
+
 	@Override
 	public String toString() {
 		return "Manager [idMng=" + idMng + ", idLibMng=" + idLibMng + ", userIdMng=" + userIdMng + ", userPwMng="
-				+ userPwMng + ", nameMng=" + nameMng + ", emailMng=" + emailMng + "]";
+				+ userPwMng + ", nameMng=" + nameMng + ", emailMng=" + emailMng + ", langMng=" + langMng + "]";
 	}
 
 }

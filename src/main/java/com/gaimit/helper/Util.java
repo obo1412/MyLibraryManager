@@ -119,4 +119,32 @@ public class Util {
 		}
 		return result;
 	}
+	
+	public String getColorKDC(int code) {
+		String result = null;
+		if(code == 0) {
+			result = "#0B6121";
+		} else if(code == 100) {
+			result = "#B40404";
+		} else if(code == 200) {
+			result = "#6E6E6E";
+		} else if(code == 300) {
+			result = "#FF8000";
+		} else if(code == 400) {
+			result = "#3B170B";
+		} else if(code == 500) {
+			result = "#2E9AFE";
+		} else if(code == 600) {
+			result = "#F7D358";
+		} else if(code == 700) {
+			result = "#5FB404";
+		} else if(code == 800) {
+			result = "#0404B4";
+		} else if(code == 900) {
+			result = "#6A0888";
+		} else {
+			result = "#BDBDBD";
+		}
+		return result;
+	}
 }

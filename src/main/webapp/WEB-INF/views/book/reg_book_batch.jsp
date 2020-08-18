@@ -24,7 +24,7 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<div class="card mb-3 mr-2" style="width:200px;">
+				<%-- <div class="card mb-3 mr-2" style="width:200px;">
 					<div class="card-header">
 						<h4>ISBN text</h4>
 					</div>
@@ -44,7 +44,7 @@
 							</div>
 						</form>
 					</div><!-- card body text box 끝 -->
-				</div><!-- card text box 끝 -->
+				</div><!-- card text box 끝 --> --%>
 				<div class="card mb-3 mr-2" style="width:400px;">
 					<div class="card-header">
 						<h4>도서 일괄 등록하기</h4>

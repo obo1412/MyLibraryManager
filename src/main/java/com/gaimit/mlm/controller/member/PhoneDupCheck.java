@@ -108,16 +108,16 @@ public class PhoneDupCheck {
 			return web.redirect(null, "전화번호를 입력하세요.");
 		}
 		
-		if (!regex.isCellPhone(phone) && !regex.isTel(phone)) {
+		/*if (!regex.isCellPhone(phone) && !regex.isTel(phone)) {
 			return web.redirect(null, "연락처의 형식이 잘못되었습니다.");
-		}
+		}*/
 
 		Member member = new Member();
 		member.setIdLib(idLib);
 		member.setPhone(phone);
 		
 		try {
-			memberService.selectPhoneCount(member);
+			/*memberService.selectPhoneCount(member);*/
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}

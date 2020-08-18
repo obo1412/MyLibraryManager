@@ -288,4 +288,26 @@ public class BrwServiceImpl implements BrwService {
 		return result;
 	}
 
+	@Override
+	public List<Borrow> selectBorrowMemberCountThisMonth(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectBorrowMemberCountThisMonth", borrow);
+		} catch (Exception e) {
+			throw new Exception("이번 달 회원당 도서대출수 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public List<Borrow> selectBorrowBookCountThisMonth(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectBorrowBookCountThisMonth", borrow);
+		} catch (Exception e) {
+			throw new Exception("이번 달 도서 대출 통계 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
 }

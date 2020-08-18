@@ -92,6 +92,8 @@ public class RegBookOk {
 		int price = web.getInt("price");
 		String bookOrNot = web.getString("bookOrNot");
 		int purOrDon = web.getInt("purOrDon");
+		String rfId = web.getString("rfId");
+		String bookSize = web.getString("bookSize");
 		String classificationCode = web.getString("classificationCode");
 		String additionalCode = web.getString("additionalCode");
 		
@@ -107,6 +109,8 @@ public class RegBookOk {
 		String bookCover = web.getString("bookCover");
 		String bookDesc = web.getString("bookDesc");
 		
+		int idCountry = web.getInt("idCountry", 0);
+		
 		
 		// 전달받은 파라미터는 값의 정상여부 확인을 위해서 로그로 확인
 		logger.debug("isbn13=" + isbn13);
@@ -121,6 +125,8 @@ public class RegBookOk {
 		logger.debug("price=" + price);
 		logger.debug("bookOrNot=" + bookOrNot);
 		logger.debug("purOrDon=" + purOrDon);
+		logger.debug("rfId=" + rfId);
+		logger.debug("bookSize=" + bookSize);
 		logger.debug("classificationCode=" + classificationCode);
 		logger.debug("additionalCode=" + additionalCode);
 		logger.debug("volumeCode=" + volumeCode);
@@ -129,31 +135,54 @@ public class RegBookOk {
 		logger.debug("bookDesc=" + bookDesc);
 		logger.debug("newBarcode=" + newBarcode);
 		
+		logger.debug("idCountry=" + idCountry);
+		
+		//누락되면 안되는 분류기호 정규표현식으로 검사
+		if(!regex.isValue(classificationCode)) {
+			return web.redirect(null, "십진분류 기호가 누락되었습니다.");
+		}
 		
 		//book, bookHeld insert 위한 정보 수집
 		BookHeld bookHeld = new BookHeld();
 		BookHeld callIdBook = null;
 		
-		//manager로부터 도서관번호 부여.
-		bookHeld.setLibraryIdLib(idLib);
-		bookHeld.setIsbn13Book(isbn13);
-		bookHeld.setIsbn10Book(isbn10);
+		//book테이블에 도서가 없을경우 등록을 위하여.
 		bookHeld.setTitleBook(bookTitle);
 		bookHeld.setWriterBook(author);
-		bookHeld.setAuthorCode(authorCode);
+		bookHeld.setCategoryBook(bookCateg);
 		bookHeld.setPublisherBook(publisher);
 		bookHeld.setPubDateBook(pubDate);
-		bookHeld.setCategoryBook(bookCateg);
-		bookHeld.setPage(page);
 		bookHeld.setPriceBook(price);
+		bookHeld.setIsbn10Book(isbn10);
+		//book테이블에 도서가 있는지 체크하기 위하여.
+		bookHeld.setIsbn13Book(isbn13);
+		bookHeld.setDescriptionBook(bookDesc);
+		//book테이블에 없는 도서일 경우를 위하여 정보 주입
+		
+		//manager로부터 도서관번호 부여.
+		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setIsbn13(isbn13);
+		bookHeld.setIsbn10(isbn10);
+		bookHeld.setTitle(bookTitle);
+		bookHeld.setWriter(author);
+		bookHeld.setAuthorCode(authorCode);
+		bookHeld.setPublisher(publisher);
+		bookHeld.setPubDate(pubDate);
+		bookHeld.setCategory(bookCateg);
+		bookHeld.setPage(page);
+		bookHeld.setPrice(price);
 		bookHeld.setBookOrNot(bookOrNot);
 		bookHeld.setPurchasedOrDonated(purOrDon);
+		bookHeld.setRfId(rfId);
+		bookHeld.setBookSize(bookSize);
 		bookHeld.setClassificationCode(classificationCode);
 		bookHeld.setAdditionalCode(additionalCode);
 		bookHeld.setVolumeCode(volumeCode);
 		bookHeld.setImageLink(bookCover);
-		bookHeld.setDescriptionBook(bookDesc);
+		bookHeld.setDescription(bookDesc);
 		bookHeld.setAvailable(1);
+		
+		bookHeld.setIdCountry(idCountry);
 		
 		
 		String viewBarcodeInit = util.strExtract(newBarcode);

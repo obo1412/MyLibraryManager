@@ -23,4 +23,17 @@ public interface BookService {
 	public Book getBookitem(Book book) throws Exception;
 	
 	
+	//이하 국가 관련
+	public void insertCountry(Book book) throws Exception;
+	
+	
+	public List<Book> selectCountryList(Book book) throws Exception;
+	
+	public List<Book> selectCountryListOnly(Book book) throws Exception;
+	
+	
+	public int selectCountryCount(Book book) throws Exception;
+	
+	
+	public int selectCountryNameCheck(Book book) throws Exception;
 }

@@ -23,28 +23,114 @@
 	<div id="content-wrapper">
 		<div class="container-fluid">
 		
-		<p class="red">게시판 댓글 입력 가능, 수정, 삭제부분 작업중</p>
-		<p>member, manager DB테이블 수정 중</p>
-		<p>도서 등록하기/ 도서테이블 별도, 도서관 별 도서테이블 참조 형식</p>
-		<p>댓글 기능 수정 필요</p>
+		<div class="row my-2 ml-1">
+			<div class="card">
+				<div class="card-body">
+					<canvas id="brwChart"></canvas>
+				</div>
+				<div class="card card-body text-center bg-primary">
+					<h4>이번달 회원 대출 현황</h4>
+				</div>
+			</div>
+		</div>
 		
-		
-		
-		<p>로그인시 미납 책 목록</p>
-		<p>현재 상태 표기 각종 정보 수집</p>
-		<p>파일 업로드 경로 테스트 완료</p>
-		<p>고객등록, 등급정보 업데이트.</p>
-		
-		<p class="red">도서 삭제 기능 구현 완료, 수정부분 작업중</p>
-		<p class="red">대여중인 도서 목록 구현 중</p>
-		
-		
+		<div class="row my-2 ml-1">
+			<div class="card">
+				<div class="card-body">
+					<canvas id="brwBookChart"></canvas>
+				</div>
+				<div class="card card-body text-center bg-primary">
+					<h4>이번달 도서 대출 현황</h4>
+				</div>
+			</div>
+		</div>
 		
 		</div> <!-- container-fluid 종료 -->
 		<%@ include file="/WEB-INF/inc/footer.jsp" %>
 	</div><!-- content wrapper 끝 -->
 </div>
-
 <%@ include file="/WEB-INF/inc/script-common.jsp" %>
+<script>
+	//Set new default font family and font color to mimic Bootstrap's default styling
+	Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+	Chart.defaults.global.defaultFontColor = '#292b2c';
+	
+	<c:if test="${fn:length(brwStatistics)>0}">
+		// Pie Chart Example
+		brwData = [];
+		brwLabel = [];
+	
+		<c:forEach var="item" items="${brwStatistics}" varStatus="status">
+			brwData.push(${item.countIdBrw});
+			brwLabel.push("${item.name}");
+		</c:forEach>
+		
+		var ctx = document.getElementById("brwChart");
+		var myPieChart = new Chart(ctx, {
+		  type: 'doughnut',
+		  data: {
+		    labels: brwLabel,
+		    datasets: [{
+		      data: brwData,
+		      backgroundColor: ['#007bff', '#dc3545', '#ffc107', '#28a745'],
+		    }],
+		  },
+		});
+	</c:if>;
+	
+	// Bar Chart Example
+	<c:if test="${fn:length(brwBookStatistics)>0}">
+		brwBookData = [];
+		brwBookLabel = [];
+	
+		<c:forEach var="item" items="${brwBookStatistics}" varStatus="status">
+			brwBookData.push(${item.countIdBrw});
+			brwBookLabel.push("${item.titleBook}");
+		</c:forEach>
+		
+		var ctxBar = document.getElementById("brwBookChart");
+		var myLineChart = new Chart(ctxBar, {
+		  type: 'bar',
+		  data: {
+		    labels: brwBookLabel,
+		    datasets: [{
+		      label: "대출횟수",
+		      backgroundColor: "rgba(2,117,216,1)",
+		      borderColor: "rgba(2,117,216,1)",
+		      data: brwBookData,
+		    }],
+		  },
+		  options: {
+		    scales: {
+		      xAxes: [{
+		    	  display: false,
+		        time: {
+		          unit: 'month'
+		        },
+		        gridLines: {
+		          display: false
+		        },
+		        ticks: {
+		          maxTicksLimit: 10
+		        }
+		      }],
+		      yAxes: [{
+		        ticks: {
+		          min: 0,
+		          max: ${maxCountIdBrw},
+		          maxTicksLimit: 5
+		        },
+		        gridLines: {
+		          display: true
+		        }
+		      }],
+		    },
+		    legend: {
+		      display: false
+		    }
+		  }
+		});
+	</c:if>
+</script>
 </body>
 </html>

@@ -139,4 +139,20 @@ public interface BrwService {
 	 */
 	public int selectBorrowCountDeleteBookHeldId(Borrow borrow) throws Exception;
 	
+	/**
+	 * 이번 달 회원당 도서 대출수.
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectBorrowMemberCountThisMonth(Borrow borrow) throws Exception;
+	
+	/**
+	 * 이번 달 도서당 대출 통계
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectBorrowBookCountThisMonth(Borrow borrow) throws Exception;
+	
 }

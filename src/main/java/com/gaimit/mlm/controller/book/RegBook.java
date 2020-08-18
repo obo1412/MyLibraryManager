@@ -40,6 +40,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gaimit.helper.ApiHelper;
 import com.gaimit.helper.AuthorCode;
 import com.gaimit.helper.FileInfo;
 /*import com.gaimit.helper.FileInfo;*/
@@ -47,10 +48,12 @@ import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.Util;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BbsFile;
+import com.gaimit.mlm.model.Book;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.service.BbsFileService;
 import com.gaimit.mlm.service.BookHeldService;
+import com.gaimit.mlm.service.BookService;
 import com.gaimit.mlm.service.ManagerService;
 
 @Controller
@@ -75,10 +78,16 @@ public class RegBook {
 	UploadHelper upload;
 	
 	@Autowired
+	ApiHelper apiHelper;
+	
+	@Autowired
 	ManagerService managerService;
 	
 	@Autowired
 	BookHeldService bookHeldService;
+	
+	@Autowired
+	BookService bookService;
 	
 	@Autowired
 	BbsFileService bbsFileService;
@@ -98,6 +107,14 @@ public class RegBook {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		}
 		
+		String regChk = web.getString("straightReg");
+		String regCheckBox = "";
+		if(regChk!=null) {
+			regCheckBox = "checked";
+		}
+		
+		Book country = new Book();
+		
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 		
@@ -106,9 +123,15 @@ public class RegBook {
 		String barcodeInit = "";
 		String newBarcode = "";
 		int barcodeInitCount = 0;
-	
+		
+		//국가 목록 조회
+		List<Book> countryList = null;
+		
 		//barcode 호출
 		try {
+			//국가 목록 조회
+			countryList = bookService.selectCountryListOnly(country);
+			
 			//바코드 헤드 검사
 			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
 			//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
@@ -137,8 +160,21 @@ public class RegBook {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
+		//직전에 등록된 도서를 확인하기 위한 목록
+		List<BookHeld> regTodayList = null;
+		try {
+			regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		
+		model.addAttribute("countryList", countryList);
 		model.addAttribute("newBarcode", newBarcode);
 		model.addAttribute("barcodeInit", barcodeInit);
+		model.addAttribute("regTodayList", regTodayList);
+		
+		model.addAttribute("regCheckBox", "checked");
 
 		return new ModelAndView("book/reg_book");
 	}
@@ -288,9 +324,6 @@ public class RegBook {
 				BufferedReader brFile = new BufferedReader(isr);
 				String line = null;
 				
-				String aladinTtbKey = "ttblib1207001";
-				String NLKcertKey = "6debf14330e5866f7c50d47a9c84ae8f";
-				
 				while((line = brFile.readLine()) != null) {
 					//저자코드 생성을 위한 제목, 저자명 변수 1순위:알라딘 2순위: 국중
 					String titleToCode = null;
@@ -308,13 +341,10 @@ public class RegBook {
 					
 					//알라딘 api 호출 시작
 					JSONObject jsonAladin = new JSONObject();
-					String apiUrl = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx?ttbkey="+aladinTtbKey+"&output=js&Version=20131101&OptResult=ebookList,usedList,reviewList";
-					String apiUrlFull = null;
-					if(line.length() == 13) {
-						apiUrlFull = apiUrl + "&itemIdType=ISBN13"+"&ItemId="+ line;
-					} else if(line.length() == 10) {
-						apiUrlFull = apiUrl +"&itemIdType=ISBN"+"&ItemId="+ line;
-					}
+					
+					//apiHelper 참고
+					String apiUrlFull = apiHelper.getAladinJsonIsbnResult(line);
+					
 					URL url = new URL(apiUrlFull);
 					HttpURLConnection con = (HttpURLConnection)url.openConnection();
 					con.setRequestMethod("GET");
@@ -333,13 +363,10 @@ public class RegBook {
 					 * */
 					// 서지정보 api 호출
 					JSONObject jsonSeoji = new JSONObject();
-					String apiUrlSeoji = "http://seoji.nl.go.kr/landingPage/SearchApi.do?cert_key="+NLKcertKey+"&result_style=json&page_no=1&page_size=1";
-					String apiUrlSeojiFull = null;
-					if(line.length() == 13) {
-						apiUrlSeojiFull = apiUrlSeoji + "&isbn="+ line;
-					} else if(line.length() == 10) {
-						apiUrlSeojiFull = apiUrlSeoji +"&isbn="+ line;
-					}
+					
+					// apiHelper 참고
+					String apiUrlSeojiFull = apiHelper.getSeojiJsonIsbnResult(line);
+					
 					URL urlSeoji = new URL(apiUrlSeojiFull);
 					HttpURLConnection conSeoji = (HttpURLConnection)urlSeoji.openConnection();
 					conSeoji.setRequestMethod("GET");
@@ -355,7 +382,7 @@ public class RegBook {
 					
 					String resultSeoji = brSeoji.readLine();
 					
-					br.close();
+					brSeoji.close();
 
 					JSONParser jsonParserSeoji = new JSONParser();
 					jsonSeoji = (JSONObject) jsonParserSeoji.parse(resultSeoji);
@@ -398,13 +425,10 @@ public class RegBook {
 					 * 알라딘에서 제목과 저자를 불러오지 못하면 국중 값을 사용하기 위함*/
 					ArrayList<String> xmlClassNoArray = new ArrayList<String>();
 					ArrayList<String> titleAndAuthor = new ArrayList<String>();
-					String apiUrlNl = "http://www.nl.go.kr/app/nl/search/openApi/search.jsp?key="+NLKcertKey+"&category=dan&detailSearch=true&isbnOp=isbn";
-					String apiUrlFullNl = null;
-					if(line.length() == 13) {
-						apiUrlFullNl = apiUrlNl + "&isbnCode="+ line;
-					} else if(line.length() == 10) {
-						apiUrlFullNl = apiUrlNl +"&isbnCode="+ line;
-					}
+					
+					// apiHelper 참고
+					String apiUrlFullNl = apiHelper.getNlXmlIsbnResult(line);
+					
 					URL urlNl = new URL(apiUrlFullNl);
 					HttpURLConnection conNl = (HttpURLConnection)urlNl.openConnection();
 					conNl.setRequestMethod("GET");
@@ -464,7 +488,7 @@ public class RegBook {
 						
 						//authorToCode = (String)authorObj;
 						//위처럼도 casting만 바꾸는 방법도 있음.
-						if(!authorObj.equals("")&&!titleObj.equals("")) {
+						if(!"".equals(authorObj)&&!"".equals(titleObj)) {
 							authorToCode = String.valueOf(authorObj);
 							titleToCode = String.valueOf(titleObj);
 						}
@@ -535,8 +559,6 @@ public class RegBook {
 						clsCode = clsNo;
 					} else if(eac3!=null&&eac3.length()!=0){
 						clsCode = eac3;
-					} else {
-						clsCode = "Empty result";
 					}
 					//3단계 절차 거친 분류기호 clsCode를 배열에 삽입
 					clsCodeArray.add(clsCode);

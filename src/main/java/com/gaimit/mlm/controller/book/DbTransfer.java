@@ -395,6 +395,7 @@ public class DbTransfer {
 		int colLast = web.getInt("colLast");
 		
 		//colH 머리값을 가져옴 컬럼의 주제
+		//여기서 colH는 map colH 큰뭉치
 		Map<String, String> colH = new HashMap<String, String>();
 		for(int i=0; i<=colLast; i++) {
 			colH.put("colH"+i, web.getString("colH"+i));
@@ -406,6 +407,7 @@ public class DbTransfer {
 		System.out.println("publisher의 키값"+getKey(colH, "publisher"));
 		System.out.println("classNo의 키값"+getKey(colH, "classNo"));*/
 		
+		//이하 colH의 키값은 colH+숫자 밸류는 title 등, getKey 함수로 colH+숫자값 빼오기
 		String titleCol = getKey(colH, "title");
 		String titleIdxStr = titleCol.substring(titleCol.length()-1, titleCol.length());
 		int titleIdx = Integer.parseInt(titleIdxStr);
@@ -415,8 +417,46 @@ public class DbTransfer {
 		int authorIdx = Integer.parseInt(authorIdxStr);
 		
 		String publisherCol = getKey(colH, "publisher");
-		String publisherIdxStr = publisherCol.substring(publisherCol.length()-1, publisherCol.length());
-		int publisherIdx = Integer.parseInt(publisherIdxStr);
+		int publisherIdx = -1;
+		if(publisherCol != null) {
+			String publisherIdxStr = publisherCol.substring(publisherCol.length()-1, publisherCol.length());
+			publisherIdx = Integer.parseInt(publisherIdxStr);
+		}
+		
+		String rfIdCol = getKey(colH, "rfId");
+		int rfIdIdx = -1; //데이터 이관 선택되지 않았을 경우 음수
+		if(rfIdCol != null) {
+			String rfIdIdxStr = rfIdCol.substring(rfIdCol.length()-1, rfIdCol.length());
+			rfIdIdx = Integer.parseInt(rfIdIdxStr);
+		}
+		
+		String regDateCol = getKey(colH, "regDate");
+		int regDateIdx = -1; //임의의 값을 주고 사용하지 않을 경우를 상정
+		if(regDateCol != null) {
+			String regDateIdxStr = regDateCol.substring(regDateCol.length()-1, regDateCol.length());
+			regDateIdx = Integer.parseInt(regDateIdxStr);
+		}
+		
+		String priceCol = getKey(colH, "price");
+		int priceIdx = -1;
+		if(priceCol != null) {
+			String priceIdxStr = priceCol.substring(priceCol.length()-1, priceCol.length());
+			priceIdx = Integer.parseInt(priceIdxStr);
+		}
+		
+		String callNumberCol = getKey(colH, "callNumber");
+		int callNumberIdx = -1;
+		if(callNumberCol != null) {
+			String callNumberIdxStr = callNumberCol.substring(callNumberCol.length()-1, callNumberCol.length());
+			callNumberIdx = Integer.parseInt(callNumberIdxStr);
+		}
+		
+		String barcodeCol = getKey(colH, "barcode");
+		int barcodeIdx = -1;
+		if(barcodeCol != null) {
+			String barcodeIdxStr = barcodeCol.substring(barcodeCol.length()-1, barcodeCol.length());
+			barcodeIdx = Integer.parseInt(barcodeIdxStr);
+		}
 		
 		/*String classNoCol = getKey(colH, "classNo");
 		String classNoIdxStr = classNoCol.substring(classNoCol.length()-1, classNoCol.length());
@@ -451,38 +491,102 @@ public class DbTransfer {
 				
 				bookHeld.setTitleBook(col.get("col"+titleIdx)[i]);
 				bookHeld.setWriterBook(col.get("col"+authorIdx)[i]);
-				bookHeld.setPublisherBook(col.get("col"+publisherIdx)[i]);
-				
-				//등록번호 처리를 위한 코드
-				BookHeld lastLocalBarcode = new BookHeld(); //바코드 헤드를 위한 마지막 바코드 참조
-				String barcodeInit = "";
-				int lastEmptyLocalBarcode = 0;	//빈자리 바코드 번호가 들어갈 변수
-				String newBarcode = "";			//생성될 전체 바코드번호.
-				//바코드 헤드 검사
-				lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
-				//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
-				if(lastLocalBarcode != null) {
-					barcodeInit = lastLocalBarcode.getLocalIdBarcode();
-					barcodeInit = util.strExtract(barcodeInit);
+				//check페이지에서 select선택이 안되었을 경우, 선택지는 음수 값을 가진다.
+				if(publisherIdx >= 0) {
+					bookHeld.setPublisherBook(col.get("col"+publisherIdx)[i]);
 				}
-				//바코드 번호가 1번인지 검사
-				int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
-				//1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록
-				//1이 아니면 1로 바코드 등록
-				if(firstBarcode == 1 ) {
-					lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
+				if(rfIdIdx >= 0) {
+					bookHeld.setRfId(col.get("col"+rfIdIdx)[i]);
+				}
+				if(regDateIdx >= 0) {
+					bookHeld.setRegDate(col.get("col"+regDateIdx)[i]);
+				}
+				int price = 0;
+				if(priceIdx >= 0) {
+					if(!(col.get("col"+priceIdx)[i]).equals("")) {
+						price = Integer.parseInt(col.get("col"+priceIdx)[i]);
+					}
+				}
+				bookHeld.setPriceBook(price);
+				
+				//청구기호 처리 시작
+				if(callNumberIdx >= 0) {
+					String callNumberOri = col.get("col"+callNumberIdx)[i];
+					String[] callNumArray = callNumberOri.split("\\s+");
+					for(int j=0; j<callNumArray.length; j++) {
+						if(j==0) {
+							bookHeld.setClassificationCode(callNumArray[j]);
+						} else if(j==1) {
+							bookHeld.setAuthorCode(callNumArray[j]);
+						} else if(j>1) {
+							String firstLetter = callNumArray[j].substring(0,1);
+							int strDot = callNumArray[j].indexOf(".");
+							if(firstLetter.equals("C")||firstLetter.equals("c")) {
+								if(strDot > 0) {
+									if(Integer.parseInt(callNumArray[j].substring(strDot+1))==1) {
+										bookHeld.setCopyCode(0);
+									} else {
+										bookHeld.setCopyCode(Integer.parseInt(callNumArray[j].substring(strDot+1)));
+									}
+								} else {
+									if(Integer.parseInt(callNumArray[j].substring(1))==1) {
+										bookHeld.setCopyCode(0);
+									} else {
+										bookHeld.setCopyCode(Integer.parseInt(callNumArray[j].substring(1)));
+									}
+								}
+							} else if(firstLetter.equals("V")||firstLetter.equals("v")||regex.isNum(firstLetter)) {
+								if(regex.isNum(firstLetter)) {
+									bookHeld.setVolumeCode(callNumArray[j]);
+								} else if(strDot > 0) {
+									bookHeld.setVolumeCode(callNumArray[j].substring(strDot+1));
+								} else {
+									bookHeld.setVolumeCode(callNumArray[j].substring(1));
+								}
+							}
+						}
+					}
+				}
+				//청구기호 처리 끝
+				
+				//등록번호 처리 시작
+				if(barcodeIdx >= 0) {
+					String excelBarcode = col.get("col"+barcodeIdx)[i];
+					bookHeld.setLocalIdBarcode(excelBarcode);
+					int existingBarcode = util.numExtract(excelBarcode);
+					bookHeld.setSortingIndex(existingBarcode);
 				} else {
-					lastEmptyLocalBarcode = 1;
+					//등록번호 처리를 위한 코드
+					BookHeld lastLocalBarcode = new BookHeld(); //바코드 헤드를 위한 마지막 바코드 참조
+					String barcodeInit = "";
+					int lastEmptyLocalBarcode = 0;	//빈자리 바코드 번호가 들어갈 변수
+					String newBarcode = "";			//생성될 전체 바코드번호.
+					//바코드 헤드 검사
+					lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
+					//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
+					if(lastLocalBarcode != null) {
+						barcodeInit = lastLocalBarcode.getLocalIdBarcode();
+						barcodeInit = util.strExtract(barcodeInit);
+					}
+					//바코드 번호가 1번인지 검사
+					int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
+					//1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록
+					//1이 아니면 1로 바코드 등록
+					if(firstBarcode == 1 ) {
+						lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
+					} else {
+						lastEmptyLocalBarcode = 1;
+					}
+					
+					newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
+					//소문자 바코드를 대문자로 변환, 바코드 생성 및 bookHeld에 주입
+					newBarcode = newBarcode.toUpperCase();
+					bookHeld.setLocalIdBarcode(newBarcode);
+					
+					//위 비어있는 바코드 번호를 솔팅index에 주입
+					bookHeld.setSortingIndex(lastEmptyLocalBarcode);
+					//등록번호 처리를 위한 코드 끝
 				}
-				
-				newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
-				//소문자 바코드를 대문자로 변환, 바코드 생성 및 bookHeld에 주입
-				newBarcode = newBarcode.toUpperCase();
-				bookHeld.setLocalIdBarcode(newBarcode);
-				
-				//위 비어있는 바코드 번호를 솔팅index에 주입
-				bookHeld.setSortingIndex(lastEmptyLocalBarcode);
-				//등록번호 처리를 위한 코드 끝
 				
 				//Book 테이블에 자료 존재하는지 여부 검사
 				//자료있으면 book참조, 없으면 새로 등록

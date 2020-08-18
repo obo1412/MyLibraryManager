@@ -81,6 +81,9 @@
 	<!-- QR Code Helper -->
 	<bean id="qrCode" class="com.gaimit.helper.QRCodeHelper" scope="singleton" />
 	
+	<!-- ApiHelper -->
+	<bean id="apiHelper" class="com.gaimit.helper.ApiHelper" scope="singleton" />
+	
 	<!-- 싱글톤 객체의 생성 -->
 	<bean id="bbsCommon" class="com.gaimit.mlm.controller.bbs.BBSCommon" 
 		scope="singleton" />

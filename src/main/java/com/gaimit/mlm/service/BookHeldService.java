@@ -16,6 +16,14 @@ public interface BookHeldService {
 	
 	/**
 	 * 
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookHeld> getRegTodayBookHeldList(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 
 	 * @param book id_book
 	 * @return book 테이블의 컬럼 전체
 	 * @throws Exception
@@ -171,4 +179,11 @@ public interface BookHeldService {
 	 * @throws Exception
 	 */
 	public void updateSortingIndex(BookHeld bookHeld) throws Exception;
+	
+	/**
+	 * 도서에 붙는 태그 수정
+	 * @param bookHeld
+	 * @throws Exception
+	 */
+	public void updateBookHeldTag(BookHeld bookHeld) throws Exception;
 }

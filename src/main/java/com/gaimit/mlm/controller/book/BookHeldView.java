@@ -1,6 +1,14 @@
 package com.gaimit.mlm.controller.book;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -9,8 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
@@ -147,22 +157,54 @@ public class BookHeldView {
 		}
 		
 		int idBookHeld = web.getInt("id");
+		String title = web.getString("title");
+		String author = web.getString("author");
+		String publisher = web.getString("publisher");
+		String pubDate = web.getString("pubDate");
+		int price = web.getInt("price");
+		String isbn13 = web.getString("isbn13");
+		String isbn10 = web.getString("isbn10");
+		String category = web.getString("category");
 		String bookShelf = web.getString("bookShelf");
-		String barcodeBook = web.getString("localIdBarcode");
+		/*String barcodeBook = web.getString("localIdBarcode");*/
 		int purchasedOrDonated = web.getInt("purchasedOrDonated");
 		String additionalCode = web.getString("additionalCode");
-		int copyCode = web.getInt("copyCode");
+		String classificationCode = web.getString("classificationCode");
+		String authorCode = web.getString("authorCode");
+		String volumeCode = web.getString("volumeCode");
+		String tag = web.getString("tag");
+		String rfId = web.getString("rfId");
+		int page = web.getInt("page");
+		String bookOrNot = web.getString("bookOrNot");
+		String imageLink = web.getString("imageLink");
+		/*int copyCode = web.getInt("copyCode");*/
 		
 		
 		// 파라미터를 저장할 Beans
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		bookHeld.setId(idBookHeld);
+		bookHeld.setTitle(title);
+		bookHeld.setWriter(author);
+		bookHeld.setPublisher(publisher);
+		bookHeld.setPubDate(pubDate);
+		bookHeld.setPrice(price);
+		bookHeld.setIsbn10(isbn10);
+		bookHeld.setIsbn13(isbn13);
+		bookHeld.setCategory(category);
 		bookHeld.setBookShelf(bookShelf);
-		bookHeld.setLocalIdBarcode(barcodeBook);
+		/*bookHeld.setLocalIdBarcode(barcodeBook);*/
 		bookHeld.setPurchasedOrDonated(purchasedOrDonated);
 		bookHeld.setAdditionalCode(additionalCode);
-		bookHeld.setCopyCode(copyCode);
+		bookHeld.setClassificationCode(classificationCode);
+		bookHeld.setAuthorCode(authorCode);
+		bookHeld.setVolumeCode(volumeCode);
+		bookHeld.setTag(tag);
+		bookHeld.setRfId(rfId);
+		bookHeld.setPage(page);
+		bookHeld.setBookOrNot(bookOrNot);
+		bookHeld.setImageLink(imageLink);
+		/*bookHeld.setCopyCode(copyCode);*/
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
@@ -180,5 +222,55 @@ public class BookHeldView {
 		model.addAttribute("bookHeldItem", bookHeldItem);
 		
 		return new ModelAndView("book/book_held_view");
+	}
+	
+	@ResponseBody
+	@RequestMapping(value= "book/edit_book_held_tag_ok.do", method = RequestMethod.POST)
+	public void editBookHeldTag(Locale locale, Model model,
+			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		try {
+			request.setCharacterEncoding("utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("application/json");
+		
+		web.init();
+		
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			web.printJsonRt("로그인 후에 이용 가능합니다.");
+		}
+		
+		int id = web.getInt("book_held_id");
+		String tag = web.getString("tag");
+		
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
+		bookHeld.setId(id);
+		bookHeld.setTag(tag);
+		
+		
+		try {
+			bookHeldService.updateBookHeldTag(bookHeld);
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());
+		}
+
+		// --> import java.util.HashMap;
+		// --> import java.util.Map;
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("rt", "TAG EDIT OK");
+		
+		// --> import com.fasterxml.jackson.databind.ObjectMapper;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(response.getWriter(), data);
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());
+		}
 	}
 }

@@ -42,8 +42,22 @@ public class BookHeldServiceImpl implements BookHeldService {
 		}
 		return result;
 	}
-
-
+	
+	@Override
+	public List<BookHeld> getRegTodayBookHeldList(BookHeld bookHeld) throws Exception {
+		List<BookHeld> result = null;
+		try {
+			result = sqlSession.selectList("BookHeldMapper.selectRegTodayBookHeldList", bookHeld);
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("조회된 도서가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
 
 
 	@Override
@@ -399,6 +413,30 @@ public class BookHeldServiceImpl implements BookHeldService {
 			throw new Exception("sortingIndex 데이터 주입 실패했습니다.");
 		}
 	}
+
+
+
+
+	@Override
+	public void updateBookHeldTag(BookHeld bookHeld) throws Exception {
+		try {
+			int result = sqlSession.update("BookHeldMapper.updateBookHeldTag", bookHeld);
+			if (result == 0) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("변경된 도서 태그 데이터가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("태그 데이터 수정에 실패했습니다.");
+		}
+	}
+
+
+
+
+
+
+
 
 
 }

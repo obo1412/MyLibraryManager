@@ -46,6 +46,10 @@
 				<h1 class="prtNone">인쇄 설정 페이지</h1>
 					<a class="btn btn-secondary"
 						href="${pageContext.request.contextPath}/assets/fonts/free3of9.ttf" download>폰트다운로드</a>
+					<a class="btn btn-warning"
+						href="${pageContext.request.contextPath}/book/print_position_setting.do"
+						onclick="window.open(this.href, '_black', 'width=600,height=800,scrollbars=yes'); return false;" >태그치수
+					</a>
 
 				<form class="form-horizontal search-box prtNone"
 					name="search-mbr-form" id="search-mbr-form" method="get"
@@ -53,15 +57,20 @@
 				
 				<div class="col-md-12">
 					<label>
-						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagA.jpg"
-							style="display:block;"/>
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagDefault.PNG"
+							style="display:block; width:300px;"/>
 						<input style="margin:auto;" type="radio" name="tagType"
 							id="tag_default" value="0" checked />기본형
 					</label>
 					<label>
-						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagB.jpg"
-							style="display:block;"/>
-						<input type="radio" name="tagType" id="tag_opt1" value="1"/>바코드(우)
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagOpt1.PNG"
+							style="display:block; width:300px;"/>
+						<input type="radio" name="tagType" id="tag_opt1" value="1"/>OPTION1
+					</label>
+					<label>
+						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagRollDefault.PNG"
+							style="display:block; width:300px;"/>
+						<input type="radio" name="tagType" id="tag_roll_default" value="10"/>Roll_Printer
 					</label>
 					<%-- <label>
 						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagC.jpg"
@@ -76,7 +85,7 @@
 						<input type="date" class="form-control" max="9999-12-31"
 							name="dateSorting" id="dateSorting" value="" placeholder="날짜별 출력"/>
 							<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
+								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 							</span>
@@ -89,7 +98,7 @@
 						<input type="text" class="form-control"
 							name="titleSorting" id="titleSorting" value="" placeholder="도서명으로 출력"/>
 						<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
+								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 						</span>
@@ -102,7 +111,7 @@
 						<input type="text" class="form-control"
 							name="targetSorting" id="targetSorting" value="" placeholder="도서등록번호로 출력"/>
 						<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
+								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 						</span>
@@ -132,7 +141,7 @@
 								</c:forEach>
 							</select>
 							<span class="input-group-append">
-								<input type="submit" class="btn btn-secondary" value="출력" id="sbmBtn"
+								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 							</span>
@@ -158,14 +167,9 @@
 		//시작시 실행
 	});
 	
-	var tagT = 0;
-	
-	$('#sbmBtn').click(function (){
-		tagT = $('input:radio[name=tagType]:checked').val();
-		alert(tagT);
-	});
-	
 	function openPopup() {
+		var tagT = 0;
+		tagT = $('input:radio[name=tagType]:checked').val();
 		
 		var titleBook = $("#titleSorting").val();
 		var targetBarcode = $("#targetSorting").val();

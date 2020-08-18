@@ -207,9 +207,9 @@ public class JoinOk {
 			return web.redirect(null, "연락처를 입력하세요.");
 		}
 
-		if (!regex.isCellPhone(phone) && !regex.isTel(phone)) {
+		/*if (!regex.isCellPhone(phone) && !regex.isTel(phone)) {
 			return web.redirect(null, "연락처의 형식이 잘못되었습니다.");
-		}
+		}*/
 
 		// 생년월일 검사
 		/*if (!regex.isValue(birthdate)) {

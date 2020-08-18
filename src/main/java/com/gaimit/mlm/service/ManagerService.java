@@ -92,4 +92,11 @@ public interface ManagerService {
 	 * @throws Exception
 	 */
 	public Manager selectManager(Manager manager) throws Exception;
+	
+	/**
+	 * 언어 정보 수정 
+	 * @param manager
+	 * @throws Exception
+	 */
+	public void updateManagerLanguage(Manager manager) throws Exception;
 }

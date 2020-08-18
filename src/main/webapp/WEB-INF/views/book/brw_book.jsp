@@ -19,7 +19,7 @@
 		float: left;
 		width: 49%;
 		margin-right: 0.2em;
-		min-height: 405px;
+		min-height: 480px;
 	}
 	.bottomCard {
 		float: left;
@@ -188,7 +188,7 @@
 							<div class="form-inline mb-3">
 								<div class="form-group col-md-4">
 									<label for='brwLimit' class="col-md-12">대출한도</label>
-									<div class="col-md-12">
+									<div class="col-md-12 text-center">
 										<input type="text" name="brwLimit" id="brwLimit"
 											class="form-control form-control-sm" value="${brwLimit}"
 											style="width:50%" readonly/>
@@ -197,7 +197,7 @@
 
 								<div class="form-group col-md-4">
 									<label for='brwNow' class="col-md-12">대출중</label>
-									<div class="col-md-12">
+									<div class="col-md-12 text-center">
 										<input type="text" name="brwNow" id="brwNow"
 											class="form-control form-control-sm" value="${brwNow}"
 											style="width:50%" readonly />
@@ -206,7 +206,7 @@
 
 								<div class="form-group col-md-4">
 									<label for='brwPsb' class="col-md-12">대출가능</label>
-									<div class="col-md-12">
+									<div class="col-md-12 text-center">
 										<c:set var="brwWarning" value="" />
 									<c:if test="${brwLimit != 0 and (brwPsb < 1)}">
 										<c:set var="brwWarning" value="bg-danger text-white" />
@@ -228,8 +228,11 @@
 									<fmt:formatDate var="viewRstDate" value="${rstDate}" pattern="yyyy-MM-dd" />
 									<p class="bg-danger text-white">${viewRstDate}까지 도서 대출이 제한됩니다.</p>
 								</c:when>
+								<c:when test="${(name eq null)||(name eq '')}">
+									<p> </p>
+								</c:when>
 								<c:otherwise>
-									<p>대출 가능 회원입니다.</p>
+									<p class="bg-success text-white">대출 가능 회원입니다.</p>
 								</c:otherwise>
 								</c:choose>
 							</div>
@@ -392,6 +395,7 @@
 							<table class="table table-sm">
 								<thead>
 									<tr>
+										<th class="info text-center">번호</th>
 										<th class="info text-center">상태</th>
 										<th class="info text-center">이름</th>
 										<th class="info text-center">연락처</th>
@@ -406,8 +410,9 @@
 								<tbody>
 									<c:choose>
 										<c:when test="${fn:length(brwListToday) > 0}">
-											<c:forEach var="item" items="${brwListToday}">
+											<c:forEach var="item" items="${brwListToday}" varStatus="status">
 												<tr>
+													<td class="text-center">${status.count}</td>
 													<c:choose>
 														<c:when
 															test="${item.endDateBrw eq null || item.endDateBrw eq ''}">

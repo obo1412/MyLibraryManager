@@ -38,6 +38,7 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
+									<th class="table-info text-center">번호</th>
 									<th class="table-info text-center">상태</th>
 									<th class="table-info text-center">대여번호</th>
 									<th class="table-info text-center">대출회원</th>
@@ -52,8 +53,9 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(brwListRtnToday) > 0}">
-										<c:forEach var="item" items="${brwListRtnToday}">
+										<c:forEach var="item" items="${brwListRtnToday}" varStatus="status">
 											<tr>
+												<td class="text-center">${status.count}</td>
 												<c:choose>
 													<c:when test="${item.dueDateBrw < currentDate}">
 														<c:set var="state" value="연체" />
@@ -135,6 +137,7 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
+									<th class="table-info text-center">번호</th>
 									<th class="table-info text-center">대여번호</th>
 									<th class="table-info text-center">대출회원</th>
 									<th class="table-info text-center">회원연락처</th>
@@ -147,8 +150,9 @@
 							<tbody>
 								<c:choose>
 									<c:when test="${fn:length(brwList) > 0}">
-										<c:forEach var="item" items="${brwList}">
+										<c:forEach var="item" items="${brwList}" varStatus="status">
 											<tr>
+												<td class="text-center">${status.count}</td>
 												<td class="text-center">${item.idBrw}</td>
 												<td class="text-center">${item.name}</td>
 												<td class="text-center">${item.phone}</td>

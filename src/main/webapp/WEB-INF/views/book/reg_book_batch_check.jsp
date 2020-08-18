@@ -31,7 +31,7 @@ label {
 				
 				<div class="card mb-3 mr-2" style="width:1000px;">
 					<div class="card-header">
-						<h4>도서 일괄 등록 증 단계</h4>
+						<h4>도서 일괄 등록 검증 단계</h4>
 					</div>
 					<div class="card-body">
 						<div class="table-responsive row">
@@ -44,36 +44,60 @@ label {
 									<c:forEach var="jsonArray" items="${bookInfoArray}" varStatus="status">
 										<div class="card card-body p-2 m-2">
 											<div id="div${status.index}" style="clear:both;">
-												<div class="col-12 form-group form-inline mb-1">
-													<input name="isbn" id="isbn${status.index}" value="${callIsbn[status.index]}"
-														class="form-control form-control-sm col-3 mr-2" />
-													<input name="title" id="title${status.index}" value="${titleArr[status.index]}"
-														class="makeAtc form-control form-control-sm col-3 mr-2" sort-idx="${status.index}" />
-													<input name="author" id="author${status.index}" value="${authorArr[status.index]}"
-														class="makeAtc form-control form-control-sm col-3 mr-2" sort-idx="${status.index}" />
-													<div class="col-2 form-inline">
-														<input type="hidden" name="regException" id="regExcept${status.index}" value="0" />
-														<input type="checkbox" class="regExceptCls" id="regExcPin${status.index}" sort-idx="${status.index}" />
-														<!-- value없는 checkbox에 name을 똑같이 넣어주면 value 값이 on으로
-															컨트롤러로 넘어감. -->
-														<label for="regExcPin${status.index}" style="font-size:11px;">등록제외</label>
+												
+												<div class="form-inline">
+												
+												<div class="form-group col-2">
+													<label for="bookCover" class="col-12 control-label">도서표지</label>
+													<input type="hidden" name="bookCover" value="${jsonArray.item[0].cover}" />
+													<img id="bookCover" src="${jsonArray.item[0].cover}" />
+												</div>
+												
+												<div class="col-10">
+													<div class="col-12 form-group form-inline mb-1">
+														<input name="isbn" id="isbn${status.index}" value="${callIsbn[status.index]}"
+															class="form-control form-control-sm col-3 mr-2" />
+														<input name="title" id="title${status.index}" value="${titleArr[status.index]}"
+															class="makeAtc form-control form-control-sm col-3 mr-2" sort-idx="${status.index}" />
+														<input name="author" id="author${status.index}" value="${authorArr[status.index]}"
+															class="makeAtc form-control form-control-sm col-3 mr-2" sort-idx="${status.index}" />
+														<div class="col-2 form-inline">
+															<input type="hidden" name="regException" id="regExcept${status.index}" value="0" />
+															<input type="checkbox" class="regExceptCls" id="regExcPin${status.index}" sort-idx="${status.index}" />
+															<!-- value없는 checkbox에 name을 똑같이 넣어주면 value 값이 on으로
+																컨트롤러로 넘어감. -->
+															<label for="regExcPin${status.index}" style="font-size:11px;">등록제외</label>
+														</div>
+													</div>
+													
+													<div class="col-12 form-group form-inline mb-0">
+														<input name="copyCode" id="cp${status.index}" value="${copyCodeArray[status.index]}"
+															class="form-control form-control-sm col-3 mr-2" />
+														<a class="pick-clscode col-3 p-0 mr-2"
+															this-isbn="${callIsbn[status.index]}"
+															this-clscode-idx="cls${status.index}"
+															sort-idx="${status.index}" >
+															<c:choose>
+																<c:when test="${not empty clsCodeArray[status.index]}">
+																	<input name="classCode" id="cls${status.index}" value="${clsCodeArray[status.index]}"
+																	class="form-control form-control-sm col-12" />
+																</c:when>
+																<c:otherwise>
+																	<input name="classCode" id="cls${status.index}" value="${clsCodeArray[status.index]}"
+																	class="form-control form-control-sm col-12 is-invalid cls-class" sort-idx="${status.index}"/>
+																</c:otherwise>
+															</c:choose>
+															
+														</a>
+														<input name="authorCode" id="atc${status.index}" value="${atcOutArray[status.index]}"
+															class="form-control form-control-sm col-3 mr-2" />
+														<button class="btn btn-success" type="button"
+															data-toggle="collapse" data-target="#collapseDetail${status.index}">상세보기</button>
 													</div>
 												</div>
-												<div class="col-12 form-group form-inline mb-0">
-													<input name="copyCode" id="cp${status.index}" value="${copyCodeArray[status.index]}"
-														class="form-control form-control-sm col-3 mr-2" />
-													<a class="pick-clscode col-3 p-0 mr-2"
-														this-isbn="${callIsbn[status.index]}"
-														this-clscode-idx="cls${status.index}"
-														sort-idx="${status.index}" >
-														<input name="classCode" id="cls${status.index}" value="${clsCodeArray[status.index]}"
-															class="form-control form-control-sm col-12" />
-													</a>
-													<input name="authorCode" id="atc${status.index}" value="${atcOutArray[status.index]}"
-														class="form-control form-control-sm col-3 mr-2" />
-													<button class="btn btn-success" type="button"
-														data-toggle="collapse" data-target="#collapseDetail${status.index}">상세보기</button>
+												
 												</div>
+												
 												<div class="collapse mt-1" id="collapseDetail${status.index}">
 													<div class="card card-body" style="width:100%;">
 														<div class="form-group form-inline">
@@ -127,7 +151,7 @@ label {
 																		<option value="MUSIC">음반</option>
 																		<option value="DVD">DVD</option>
 																		<option value="FOREIGN">외국도서</option>
-																		<option value="EBOOK">전자책</option>
+																	<option value="EBOOK">전자책</option>
 																	</select>
 																</div>
 															</div>
@@ -148,11 +172,7 @@ label {
 																class="form-control form-control-sm" value="${jsonArray.item[0].isbn}" placeholder="ISBN 10"/>
 														</div>
 														<div class="form-group form-inline">
-															<div class="form-group col-3">
-																<label for="bookCover" class="col-12 control-label">도서표지</label>
-																<input type="hidden" name="bookCover" value="${jsonArray.item[0].cover}" />
-																<img id="bookCover" src="${jsonArray.item[0].cover}" />
-															</div>
+															
 															<div class="form-group col-9">
 																<label for="bookDesc" class="col-12 control-label float-left">도서설명</label>
 																<textarea
@@ -169,11 +189,8 @@ label {
 									</c:forEach>
 								</div>
 
-								<div class="form-group">
-									<div class="col-12">
-										<button type="submit" class="btn btn-primary btn-sm" formaction="${pageContext.request.contextPath}/book/reg_book_batch_ok.do">일괄 등록하기</button>
-										<input type="button" class="btn btn-danger btn-sm" onclick="clearInput()" value="다시작성" />
-									</div>
+								<div class="form-group" style="position:fixed; top:85px; left:1100px;">
+									<button type="submit" class="btn btn-primary btn-sm" formaction="${pageContext.request.contextPath}/book/reg_book_batch_ok.do">일괄 등록하기</button>
 								</div>
 								
 							</form>
@@ -251,6 +268,17 @@ label {
 				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}
 		});
+	});
+	
+	$(".cls-class").change(function() {
+		var sortidx = $(this).attr('sort-idx');
+		var thisClsCode = document.getElementById('cls'+sortidx);
+		
+		if(!isNaN(thisClsCode.value)&&(thisClsCode.value!='')){
+			thisClsCode.classList.remove('is-invalid');
+		} else {
+			thisClsCode.classList.add('is-invalid');
+		}
 	});
 
 </script>
