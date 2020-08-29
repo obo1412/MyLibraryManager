@@ -13,4 +13,13 @@ public interface TagSettingService {
 	
 	
 	public void updateTagPosition(TagSetting tag) throws Exception;
+	
+	
+	public void updatePrintingEaAndSheetCount(TagSetting tag) throws Exception;
+	
+	
+	public void updatePrintingSheetCountUp(TagSetting tag) throws Exception;
+	
+	
+	public int selectCurrentSheetCount(TagSetting tag) throws Exception;
 }

@@ -7,6 +7,8 @@
 	<resultMap id="member" type="com.gaimit.mlm.model.Member">
 		<result property="id" column="id"/>
 		<result property="idLib" column="id_lib"/>
+		<result property="userId" column="user_id"/>
+		<result property="userPw" column="user_pw"/>
 		<result property="name" column="name"/>
 		<result property="phone" column="phone"/>
 		<result property="birthdate" column="birthdate"/>
@@ -28,6 +30,8 @@
 		<result property="brwLimit" column="brw_limit"/>
 		<result property="dateLimit" column="date_limit"/>
 		<result property="standard" column="standard"/>
+		
+		<result property="nameLib" column="name_lib"/>
 	</resultMap>
 	
 	<!-- 아이디 중복검사를 수행한다 -->
@@ -84,6 +88,23 @@
 		ORDER BY id ASC
 	</select>
 	
+	<!-- 도서 대출을 위한 회원 검색 -->
+	<select id="selectMemberListForBorrow" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
+		SELECT
+			id, m.id_lib, m.name, phone, g.grade_id, barcode_mbr, grade_name,
+			brw_limit, date_limit
+		FROM member m
+		INNER JOIN member_grade g ON m.grade_id = g.grade_id
+		WHERE m.id_lib=#{idLib}
+			AND status = 1
+			AND (
+				(name LIKE concat('%', #{name}, '%'))
+				OR (barcode_mbr LIKE concat('%', #{name}, '%'))
+				OR (phone LIKE concat('%', #{name}, '%'))
+			)
+		ORDER BY id ASC
+	</select>
+	
 	<!-- 일련번호에 의한 회원정보 조회 -->
 	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
@@ -131,16 +152,18 @@
 	</insert>
 	
 	<!-- 아이디와 비밀번호가 일치하는 회원정보를 조회한다. -->
-	<!-- <select id="selectLoginInfo" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
+	<select id="selectLoginInfoMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT
-			id, name, user_id, user_pw, email, gender,
+			id, m.id_lib, name_lib, user_id, user_pw, name, phone,
 			DATE_FORMAT(birthdate, '%Y-%m-%d') AS birthdate,
-			tel, postcode, addr1, addr2, profile_img, reg_date, edit_date
-		FROM member
+			email, postcode, addr1, addr2, remarks, reg_date, edit_date,
+			barcode_mbr, profile_img, rf_uid, grade_id, status
+		FROM member m
+		INNER JOIN library l ON m.id_lib = l.id_lib
 		WHERE user_id=#{userId} AND user_pw=password(#{userPw})
 		ORDER BY id DESC
 		LIMIT 0, 1
-	</select> -->
+	</select>
 	
 	<!-- 비밀번호 재발급 : 이메일주소가 일치하는 비밀번호를 변경한다. -->
 	<update id="updateMemberPasswordByEmail" parameterType="com.gaimit.mlm.model.Member">

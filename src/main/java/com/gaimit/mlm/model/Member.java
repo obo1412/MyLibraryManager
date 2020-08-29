@@ -3,6 +3,8 @@ package com.gaimit.mlm.model;
 public class Member extends MemberGrade{
 	private int id;
 	private int idLib;
+	private String userId;
+	private String userPw;
 	private String name;
 	private String phone;
 	private String birthdate;
@@ -32,6 +34,18 @@ public class Member extends MemberGrade{
 	}
 	public void setIdLib(int idLib) {
 		this.idLib = idLib;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+	public String getUserPw() {
+		return userPw;
+	}
+	public void setUserPw(String userPw) {
+		this.userPw = userPw;
 	}
 	public String getName() {
 		return name;

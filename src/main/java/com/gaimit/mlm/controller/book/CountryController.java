@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.gaimit.helper.PageHelper;
+import com.gaimit.helper.RegexHelper;
 import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Manager;
@@ -32,6 +33,9 @@ public class CountryController {
 	
 	@Autowired
 	PageHelper page;
+	
+	@Autowired
+	RegexHelper regexHelper;
 	
 	@Autowired
 	ManagerService managerService;
@@ -124,6 +128,9 @@ public class CountryController {
 		
 		// 검색어 파라미터 받기 + Beans 설정
 		String nameCountry = web.getString("newCountry", "");
+		if(!regexHelper.isValue(nameCountry)) {
+			return web.redirect(null, "국가명을 입력해주세요.");
+		}
 		insertCountry.setNameCountry(nameCountry);
 		
 		// 현재 페이지 번호에 대한 파라미터 받기
@@ -146,10 +153,10 @@ public class CountryController {
 		
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
-		List<Book> countryList = null;
+		/*List<Book> countryList = null;*/
 		try {
 			bookService.insertCountry(insertCountry);
-			countryList = bookService.selectCountryList(country);
+			/*countryList = bookService.selectCountryList(country);*/
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -157,11 +164,12 @@ public class CountryController {
 		
 		/** 4) View 처리하기 */
 		// 조회 결과를 View에게 전달한다.
-		model.addAttribute("countryList", countryList);
+		/*model.addAttribute("countryList", countryList);
 		model.addAttribute("keyword", keyword);
 		model.addAttribute("page", page);
-		model.addAttribute("pageDefUrl", "/book/country_list.do");
+		model.addAttribute("pageDefUrl", "/book/country_list.do");*/
 		
-		return new ModelAndView("book/country_list");
+		/*return new ModelAndView("book/country_list");*/
+		return web.redirect(web.getRootPath() + "/book/country_list.do", "국가 등록이 완료되었습니다.");
 	}
 }

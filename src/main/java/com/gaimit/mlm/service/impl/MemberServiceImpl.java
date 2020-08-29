@@ -152,6 +152,17 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return result;
 	}
+	
+	@Override
+	public List<Member> selectMemberListForBorrow(Member member) throws Exception {
+		List<Member> result = null;
+		try {
+			result = sqlSession.selectList("MemberMapper.selectMemberListForBorrow", member);
+		} catch (Exception e) {
+			throw new Exception("데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
 
 	@Override
 	public int getMemberCount(Member member) throws Exception {
@@ -175,20 +186,28 @@ public class MemberServiceImpl implements MemberService {
 		return result;
 	}
 
-	/*
-	 * @Override public Member selectLoginInfo(Member member) throws Exception {
-	 * Member result = null;
-	 * 
-	 * try { result = sqlSession.selectOne("MemberMapper.selectLoginInfo", member);
-	 * 
-	 * // 조회된 데이터가 없다는 것은 WHERE절 조건에 맞는 데이터가 없다는 것. // --> WHERE절은 아이디와 비밀번호가 일치하는
-	 * 항목을 지정하므로, // 조회된 데이터가 없다는 것은 아이디나 비밀번호가 잘못되었음을 의미한다. if (result == null) {
-	 * throw new NullPointerException(); } } catch (NullPointerException e) { throw
-	 * new Exception("아이디나 비밀번호가 잘못되었습니다."); } catch (Exception e) {
-	 * logger.error(e.getLocalizedMessage()); throw new Exception("로그인에 실패했습니다."); }
-	 * 
-	 * return result; }
-	 */
+	
+	@Override
+	public Member selectLoginInfoMember(Member member) throws Exception {
+		Member result = null;
+		try {
+			result = sqlSession.selectOne("MemberMapper.selectLoginInfoMember", member);
+			// 조회된 데이터가 없다는 것은 WHERE절 조건에 맞는 데이터가 없다는 것.
+			// --> WHERE절은 아이디와 비밀번호가 일치하는 항목을 지정하므로,
+			// 조회된 데이터가 없다는 것은 아이디나 비밀번호가 잘못되었음을 의미한다.
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("회원 아이디나 비밀번호가 잘못되었습니다.");
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("회원 로그인에 실패했습니다.");
+		}
+		return result;
+	}
+
+	
 
 	@Override
 	public void updateMemberPasswordByEmail(Member member) throws Exception {
@@ -458,4 +477,5 @@ public class MemberServiceImpl implements MemberService {
 		}
 	}
 
+	
 }

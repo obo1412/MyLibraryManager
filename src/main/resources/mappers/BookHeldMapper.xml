@@ -113,6 +113,26 @@
 		LIMIT #{limitStart}, #{listCount}
 	</select>
 	
+	<!-- 년도 별로 쿼리 나누는 것 필요하다. -->
+	<select id="selectBookHeldListToExcel" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
+		SELECT
+			id, title, writer, publisher, pub_date, price,
+			isbn10, isbn13, category, book_shelf, description,
+			reg_date, edit_date,
+			local_id_barcode, purchased_or_donated, available,
+			additional_code, classification_code, author_code,
+			volume_code, copy_code,
+			tag, rf_id, book_or_not, page, book_size, image_link,
+			library_id_lib, c.id_country, c.name_country
+		FROM book_held h
+		LEFT OUTER JOIN book_country c ON h.id_country= c.id_country
+		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
+		<if test="regDate != null">
+			AND DATE_FORMAT(reg_date, '%Y') = #{regDate}
+		</if>
+		ORDER BY id ASC
+	</select>
+	
 	<select id="selectRegTodayBookHeldList" parameterType="com.gaimit.mlm.model.BookHeld" resultMap="bookHeld">
 		SELECT
 			id, title, writer, publisher, pub_date, price,
@@ -130,6 +150,42 @@
 			AND reg_date &gt; CURDATE()
 			AND reg_date &lt; CURDATE()+1
 		ORDER BY id DESC
+		LIMIT #{limitStart}, #{listCount}
+	</select>
+	
+	<!-- pagination을 위한 전체 도서수 체크 -->
+	<select id="selectRegTodayBookCountForPage" parameterType="com.gaimit.mlm.model.BookHeld" resultType="int">
+		SELECT
+			COUNT(id)
+		FROM book_held h
+		<!-- INNER JOIN book b ON h.book_id_book = b.id_book -->
+		LEFT OUTER JOIN book_country c ON h.id_country= c.id_country
+		<where>
+			library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
+				AND reg_date &gt; CURDATE()
+				AND reg_date &lt; CURDATE()+1
+			<if test="(title != null) || (writer != null)
+						|| (publisher != null) || (nameCountry != null)">
+				AND (
+					<if test="title != null">
+						(REPLACE(title,' ','')) LIKE concat('%', #{title}, '%')
+							OR (title LIKE concat('%', #{title}, '%'))
+					</if>
+					<if test="writer != null">
+						(REPLACE(writer,' ','')) LIKE concat('%', #{writer}, '%')
+							OR (writer LIKE concat('%', #{writer}, '%'))
+					</if>
+					<if test="publisher != null">
+						(REPLACE(publisher,' ','')) LIKE concat('%', #{publisher}, '%')
+							OR (publisher LIKE concat('%', #{publisher}, '%'))
+					</if>
+					<if test="nameCountry != null">
+						(REPLACE(name_country,' ','')) LIKE concat('%', #{nameCountry}, '%')
+							OR (name_country LIKE concat('%', #{nameCountry}, '%'))
+					</if>
+				)
+			</if>
+		</where>
 	</select>
 	
 	<!-- getBookHelditem
@@ -476,7 +532,7 @@
 					</if>
 				)
 			</if>
-		ORDER BY sorting_index ASC
+		ORDER BY sorting_index DESC
 		<if test="listCount != 0">
 			LIMIT #{limitStart}, #{listCount}
 		</if>

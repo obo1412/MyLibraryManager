@@ -1,4 +1,4 @@
-package com.gaimit.mlm.controller.manager;
+package com.gaimit.mlm.controller.member;
 
 import java.util.Locale;
 
@@ -17,11 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.controller.Download;
-import com.gaimit.mlm.model.Manager;
-import com.gaimit.mlm.service.ManagerService;
+import com.gaimit.mlm.model.Member;
+import com.gaimit.mlm.service.MemberService;
 
 @Controller
-public class LoginOk {
+public class LoginOkMember {
 	/** (1) 사용하고자 하는 Helper + Service 객체 선언 */
 	// --> import org.apache.logging.log4j.Logger;
 	private static Logger logger = LoggerFactory.getLogger(Download.class);
@@ -32,9 +32,9 @@ public class LoginOk {
 	@Autowired
 	UploadHelper upload;
 	@Autowired
-	ManagerService managerService;
+	MemberService memberService;
 
-	@RequestMapping(value = "/manager/login_ok.do")
+	@RequestMapping(value = "/member/login_ok.do")
 	public ModelAndView doRun(Locale locale, Model model, HttpServletRequest request, HttpServletResponse response) {
 
 		/** (2) 사용하고자 하는 Helper+Service 객체 생성 */
@@ -60,18 +60,18 @@ public class LoginOk {
 		}
 
 		/** (5) 전달받은 파라미터를 Beans에 설정한다. */
-		Manager manager = new Manager();
-		manager.setUserIdMng(userId);
-		manager.setUserPwMng(userPw);
+		Member member = new Member();
+		member.setUserId(userId);
+		member.setUserPw(userPw);
 
 		/** (6) Service를 통한 회원 인증 */
-		Manager loginInfo = null;
+		Member loginInfo = null;
 		
 		//도서관 명을 확인하기 위한 변수 선언 
 		
 		try {
 			// 아이디와 비밀번호가 일치하는 회원 정보를 조회하여 리턴한다.
-			loginInfo = managerService.selectLoginInfo(manager);
+			loginInfo = memberService.selectLoginInfoMember(member);
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -101,7 +101,7 @@ public class LoginOk {
 			movePage = web.getRootPath() + "/index.do";
 		}*/
 
-		return web.redirect(web.getRootPath() + "/index_login.do", null);
+		return web.redirect(web.getRootPath() + "/index_login_member.do", null);
 	}
 
 }

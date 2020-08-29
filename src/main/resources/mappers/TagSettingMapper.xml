@@ -8,8 +8,12 @@
 		<result property="id" column="id"/>
 		<result property="idLib" column="id_lib"/>
 		<result property="marginLeft" column="margin_left"/>
+		<result property="tagGap" column="tag_gap"/>
 		<result property="tagWidth" column="tag_width"/>
 		<result property="tagHeight" column="tag_height"/>
+		<result property="titleTagGap" column="title_tag_gap"/>
+		<result property="printingEa" column="printing_ea"/>
+		<result property="printingSheetCount" column="printing_sheet_count"/>
 		
 		<result property="colorBlankKdc" column="colorBlank_kdc"/>
 		<result property="color0Kdc" column="color0_kdc"/>
@@ -35,11 +39,30 @@
 	
 	<update id="updateTagPosition" parameterType="com.gaimit.mlm.model.TagSetting">
 		UPDATE tag_setting SET
-		margin_left=#{marginLeft}, tag_width=#{tagWidth}, tag_height=#{tagHeight}
+		margin_left=#{marginLeft}, tag_gap=#{tagGap},
+		 tag_width=#{tagWidth}, tag_height=#{tagHeight},
+		 title_tag_gap=#{titleTagGap}
 		WHERE id_lib=#{idLib}
 	</update>
 	
-	<!-- 컬러조회 -->
+	<!-- 자동묶음출력 부분 처리를 위한 update -->
+	<update id="updatePrintingEaAndSheetCount" parameterType="com.gaimit.mlm.model.TagSetting">
+		UPDATE tag_setting SET
+			printing_ea=#{printingEa}, printing_sheet_count=#{printingSheetCount}
+		WHERE id_lib=#{idLib}
+	</update>
 	
+	<update id="updatePrintingSheetCountUp" parameterType="com.gaimit.mlm.model.TagSetting">
+		UPDATE tag_setting SET
+			printing_sheet_count=#{printingSheetCount}+1
+		WHERE id_lib=#{idLib}
+	</update>
+	
+	<select id="selectCurrentSheetCount" parameterType="com.gaimit.mlm.model.TagSetting" resultType="int">
+		SELECT
+			printing_sheet_count
+		FROM tag_setting
+		WHERE id_lib=#{idLib}
+	</select>
 	
 </mapper>

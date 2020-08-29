@@ -12,35 +12,48 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
-<style type="text/css">
-@media ( min-width : 768px) {
-	.upsideCard {
-		max-width: 500px;
-		float: left;
-		width: 49%;
-		margin-right: 0.2em;
-		min-height: 480px;
-	}
-	.bottomCard {
-		float: left;
-		width: 100%;
-		/* 페이지가 모니터 최대치일 경우, 아래칸이 위로 올라옴 */
-		clear: left;
-		min-height: 300px;
-	}
-	.table-sm {
-		font-size: 12px;
-	}
-	label {
-		margin-bottom: 0;
-		font-size: 14px;
-	}
-	.btn-sm {
-		font-size: 10px;
-	}
-	
-}
-</style>
+	<style type="text/css">
+		@media ( min-width : 768px) {
+			.upsideCard {
+				max-width: 500px;
+				float: left;
+				width: 49%;
+				margin-right: 0.2em;
+				min-height: 480px;
+			}
+			.bottomCard {
+				float: left;
+				width: 100%;
+				/* 페이지가 모니터 최대치일 경우, 아래칸이 위로 올라옴 */
+				clear: left;
+				min-height: 300px;
+			}
+			.table-sm {
+				font-size: 12px;
+			}
+			label {
+				margin-bottom: 0;
+				font-size: 14px;
+			}
+			.btn-sm {
+				font-size: 10px;
+			}
+		}
+		
+		table {
+			table-layout: auto;
+		}
+		
+		.table-fixed { 
+			table-layout: fixed;
+		}
+		
+		tr > td {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	</style>
 </head>
 <body>
 	<%@ include file="/WEB-INF/inc/topbar.jsp"%>
@@ -58,102 +71,37 @@
 					</div>
 
 					<div class="card-body">
-						<form class="form-horizontal" name="search-mbr-form"
-							id="search-mbr-form" method="post"
-							action="${pageContext.request.contextPath}/book/brw_book.do">
+
 							<div class="form-group form-inline">
 								<label for='search-name' class="col-md-3 float-right">회원
 									검색</label>
 								<div class="input-group input-group-sm col-md-9">
-									<input type="text" name="search-name" id="search-name"
-										class="form-control korean-first" placeholder="이름을 입력해주세요" value="${name}" />
+									<input type="text" name="search-name" id="search-keyword"
+										class="form-control korean-first" placeholder="회원정보(이름, 전화번호, 회원번호)를 입력해주세요" value="${name}" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-warning" id="btn-search-mbr"
-											type="submit">
+											onclick="clickedSearchMember()">
 											<i class="fas fa-search"></i>
 										</button>
 									</span>
 								</div>
 							</div>
-						</form>
 
-						<div class="table-responsive">
-							<table class="table table-sm">
-								<tbody>
-									<c:choose>
-										<c:when test="${fn:length(list) > 0}">
-											<thead>
-												<tr>
-													<th class="table-info text-center">이름</th>
-													<!-- <th class="info text-center">회원코드</th> -->
-													<th class="table-info text-center">연락처</th>
-													<th class="table-info text-center">회원등급</th>
-													<th class="table-info text-center">대출권수</th>
-													<th class="table-info text-center">대출기한</th>
-													<th class="table-info text-center">선택</th>
-												</tr>
-											</thead>
-											<c:forEach var="item" items="${list}" varStatus="status">
-												<tr>
-													<td style="display: none; position: absolute;">${item.id}</td>
-													<td class="text-center"><c:url var="readUrl"
-															value="/temp/temp.do">
-															<c:param name="id" value="${item.id}" />
-														</c:url> <a href="${readUrl}">${item.name}</a></td>
-													<%-- <td class="text-center">${barcodeMbr}</td> --%>
-													<td class="text-center">${item.phone}</td>
-													<td class="text-center">${item.gradeName}</td>
-													<td class="text-center">${item.brwLimit}</td>
-													<td class="text-center">${item.dateLimit}</td>
-													<td class="text-center"><c:url var="mbrIdUrl"
-															value="/book/brw_book.do">
-															<c:param name="memberId" value="${item.id}" />
-															<c:param name="name" value="${item.name}" />
-															<c:param name="phone" value="${item.phone}" />
-															<c:param name="brwLimit" value="${item.brwLimit}" />
-														</c:url>
-														<button class="pick-user btn btn-secondary btn-sm"
-															id="${status.index}"
-															onclick="location.href='${mbrIdUrl}'">선택</button></td>
-												</tr>
-											</c:forEach>
-										</c:when>
-										<%-- <c:when test="${name ne null}"> --%>
-										<c:when test="${fn:length(list)==1}">
-											<thead>
-												<tr>
-													<th class="table-info text-center">이름</th>
-													<!-- <th class="info text-center">회원코드</th> -->
-													<th class="table-info text-center">연락처</th>
-													<th class="table-info text-center">회원등급</th>
-													<th class="table-info text-center">대출권수</th>
-													<th class="table-info text-center">대출기한</th>
-													<th class="table-info text-center">선택</th>
-												</tr>
-											</thead>
-											<tr>
-												<td class="text-center"><c:url var="readUrl"
-														value="/temp/temp.do">
-														<c:param name="id" value="${memberId}" />
-													</c:url> <a href="${readUrl}">${name}</a></td>
-												<%-- <td class="text-center">${barcodeMbr}</td> --%>
-												<td class="text-center">${phone}</td>
-												<td class="text-center">${grade}</td>
-												<td class="text-center">${brwLimit}</td>
-												<td class="text-center">${dateLimit}</td>
-												<td class="text-center">
-													<button class="pick-user btn btn-secondary btn-sm"
-														id="${status.index}">-</button>
-												</td>
-											</tr>
-										</c:when>
-										<c:otherwise>
-											<tr>
-												<td colspan="8" class="text-center"
-													style="line-height: 30px;">조회된 회원정보가 없습니다.</td>
-											</tr>
-										</c:otherwise>
-									</c:choose>
+
+						<div class="table-responsive" style="height:90px; max-height:90px;">
+							<table class="table table-sm mb-0 table-fixed">
+								<thead>
+									<tr>
+										<th class="table-info text-center">이름</th>
+										<!-- <th class="info text-center">회원코드</th> -->
+										<th class="table-info text-center">연락처</th>
+										<th class="table-info text-center">회원등급</th>
+										<th class="table-info text-center">대출권수</th>
+										<th class="table-info text-center">대출기한</th>
+									</tr>
+								</thead>
+								<tbody class="searchMemberListClass">
+									
 								</tbody>
 							</table>
 						</div>
@@ -165,58 +113,47 @@
 							<input type="hidden" name="memberId" id="memberId"
 								value="${memberId}" />
 
-							<div class="form-inline mb-2">
-								<div class="form-group col-md-12">
-									<label for='name' class="col-md-4">회원이름</label>
-									<div class="input-group input-group-sm col-md-7">
-										<input type="text" name="name" id="name" class="form-control"
-											value="${name}" readonly />
-									</div>
-								</div>
-							</div>
-
-							<div class="form-inline mb-2">
-								<div class="form-group col-md-12">
-									<label for='phone' class="col-md-4">연락처</label>
-									<div class="input-group input-group-sm col-md-7">
-										<input type="tel" name="phone" id="phone" class="form-control"
-											value="${phone}" readonly />
-									</div>
-								</div>
-							</div>
-							
-							<div class="form-inline mb-3">
-								<div class="form-group col-md-4">
-									<label for='brwLimit' class="col-md-12">대출한도</label>
-									<div class="col-md-12 text-center">
-										<input type="text" name="brwLimit" id="brwLimit"
-											class="form-control form-control-sm" value="${brwLimit}"
-											style="width:50%" readonly/>
-									</div>
-								</div>
-
-								<div class="form-group col-md-4">
-									<label for='brwNow' class="col-md-12">대출중</label>
-									<div class="col-md-12 text-center">
-										<input type="text" name="brwNow" id="brwNow"
-											class="form-control form-control-sm" value="${brwNow}"
-											style="width:50%" readonly />
-									</div>
-								</div>
-
-								<div class="form-group col-md-4">
-									<label for='brwPsb' class="col-md-12">대출가능</label>
-									<div class="col-md-12 text-center">
-										<c:set var="brwWarning" value="" />
-									<c:if test="${brwLimit != 0 and (brwPsb < 1)}">
-										<c:set var="brwWarning" value="bg-danger text-white" />
-									</c:if>
-										<input type="text" name="brwPsb" id="brwPsb"
-											class="form-control form-control-sm ${brwWarning}"
-											value="${brwPsb}" style="width:50%" readonly />
-									</div>
-								</div>
-							</div>
+						<div class="card mt-2 mb-2" style="width: 100%;">
+              <div class="row no-gutters" style="width:100%; height:100%;">
+                <div class="col-4 w-25 rounded" style="background-color: grey; display:flex;">
+                  <div class="rounded" style="width:90%; height:90%; margin:auto; background-color: white;">
+                  	<img src="" class="card-img" style="margin:auto;">
+                  </div>
+                </div>
+                <div class="col-8" style="height: 100%; font-size: 14px;">
+                  <div class="card-body">
+                    <table class="table table-sm table-bordered mb-1">
+                      <tr>
+                        <th scope="row" class="text-center table-secondary">이름</th>
+                        <td colspan="2" id="brwMemberName">-</td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="text-center table-secondary">연락처</th>
+                        <td colspan="2" id="brwMemberPhone">-</td>
+                      </tr>
+                      <tr>
+                        <th scope="row" class="text-center table-secondary">회원번호</th>
+                        <td colspan="2" id="brwMemberCode">-</td>
+                      </tr>
+                     </table>
+                     <table class="table table-sm table-striped table-bordered mb-0">
+                      <tbody class="text-center">
+                        <tr>
+                          <th>대출한도</th>
+                          <th>대출중</th>
+                          <th>대출가능</th>
+                        </tr>
+                        <tr>
+                          <td id="brwMemberBrwLimit">0</td>
+                          <td id="brwMemberBrwing">0</td>
+                          <td id="brwMemberBrwPsb">0</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div><!-- 회원정보 전체 -->
 							
 							<div class="col-md-12 mb-3" style="font-size:14px;">
 								<c:choose>
@@ -392,19 +329,19 @@
 					<div class="card-body">
 						<!-- 조회결과를 출력하기 위한 표 -->
 						<div class="table-responsive">
-							<table class="table table-sm">
+							<table class="table table-sm table-fixed">
 								<thead>
 									<tr>
-										<th class="info text-center">번호</th>
-										<th class="info text-center">상태</th>
-										<th class="info text-center">이름</th>
-										<th class="info text-center">연락처</th>
-										<th class="info text-center">회원등급</th>
-										<th class="info text-center">도서명</th>
-										<th class="info text-center">도서등록번호</th>
-										<th class="info text-center">반납예정일</th>
-										<th class="info text-center">대출일</th>
-										<th class="info text-center">반납일</th>
+										<th class="info text-center" style="width:20px;">번호</th>
+										<th class="info text-center" style="width:20px;">상태</th>
+										<th class="info text-center" style="width:40px;">이름</th>
+										<th class="info text-center" style="width:40px;">연락처</th>
+										<th class="info text-center" style="width:30px;">회원등급</th>
+										<th class="info text-center" style="width:50px;">도서명</th>
+										<th class="info text-center" style="width:40px;">도서등록번호</th>
+										<th class="info text-center" style="width:40px;">반납예정일</th>
+										<th class="info text-center" style="width:60px;">대출일</th>
+										<th class="info text-center" style="width:60px;">반납일</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -480,7 +417,7 @@
 	<script type="text/javascript">
 		$(function() {
 			/* 페이지 호출시 회원검색에 포커싱 */
-			document.getElementById('search-name').focus();
+			document.getElementById('search-keyword').focus();
 
 			/* 멤버id와 이름, 전화번호가 채워졌을시, 도서바코드로 focusing 함수*/
 			var chkMemberId = document.getElementById('name').value;
@@ -489,6 +426,58 @@
 			}
 
 		});
+		
+		function clickedSearchMember() {
+			const searchKeyword = document.getElementById('search-keyword').value;
+			
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/brw_search_member.do",
+				type:'POST',
+				data: {
+					searchKeyword
+				},
+				success: function(data) {
+					var memberList = data.memberList;
+					var tbody = document.querySelector('.searchMemberListClass');
+					if(memberList.length>0) {
+						tbody.innerHTML = "";
+						console.log(memberList);
+						for(var i=0; i<memberList.length; i++){
+							tbody.innerHTML +=
+								"<tr class='srchedMember'>"
+									+ "<td class='text-center'><button class='pick-member btn btn-sm btn-secondary'>" + memberList[i].name
+									+ "<td class='text-center'>" + memberList[i].phone
+									+ "<td class='text-center'>" + memberList[i].gradeName
+									+ "<td class='text-center'>" + memberList[i].brwLimit
+									+ "<td class='text-center'>" + memberList[i].dateLimit
+								+"</tr>";
+						}
+						if(memberList.length==1){
+							document.getElementById('memberId').value = memberList[0].id;
+							document.getElementById('brwMemberName').innerText = memberList[0].name;
+							document.getElementById('brwMemberPhone').innerText = memberList[0].phone;
+							document.getElementById('brwMemberCode').innerText = memberList[0].barcodeMbr;
+							document.getElementById('brwMemberBrwLimit').innerText = memberList[0].brwLimit;
+						}
+					}
+				},
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+			});
+		};
+		
+		const pickMember = document.querySelector('.searchMemberListClass');
+		
+		pickMember.addEventListener('click', (e) => {
+			if(e.target.classList.contains('pick-member')){
+				console.log(e.target.parentNode.parentNode);
+			}
+		});
+		
+		
+		
+		
 	</script>
 </body>
 </html>

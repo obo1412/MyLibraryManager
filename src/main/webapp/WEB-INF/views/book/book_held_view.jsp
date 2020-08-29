@@ -98,7 +98,14 @@
 						</tr>
 						<tr>
 							<th class="table-info text-center">권차기호</th>
-							<td>${bookHeldItem.volumeCode}</td>
+							<c:choose>
+								<c:when test="${not empty bookHeldItem.volumeCode}">
+									<td>V${bookHeldItem.volumeCode}</td>
+								</c:when>
+								<c:otherwise>
+									<td>-</td>
+								</c:otherwise>
+							</c:choose>
 						</tr>
 						<tr>
 							<th class="table-info text-center">복본기호</th>
@@ -188,35 +195,35 @@
 	</div>
 	<!-- wrapper 끝 -->
 	<div class="modal fade" id="delete_book_modal" tabindex="-1" role="dialog"
-					aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">도서 정보를 삭제 또는 폐기하시겠습니까?</h5>
-								<button class="close" type="button" data-dismiss="modal"
-									aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-							<form name="book_held_delete" method="post">
-								<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
-								<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
-								<div class="modal-body">
-									<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
-									<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
-								</div>
-								<div class="modal-footer">
-									<button class="btn btn-secondary" type="button"
-										data-dismiss="modal">취소</button>
-									<c:if test="${bookHeldItem.available < 2 }">
-										<input type="submit" class="btn btn-warning" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
-									</c:if>
-									<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
-								</div>
-							</form>
-						</div>
-					</div>
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">도서 정보를 삭제 또는 폐기하시겠습니까?</h5>
+					<button class="close" type="button" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
 				</div>
+				<form name="book_held_delete" method="post">
+					<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
+					<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
+					<div class="modal-body">
+						<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
+						<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button"
+							data-dismiss="modal">취소</button>
+						<c:if test="${bookHeldItem.available < 2 }">
+							<input type="submit" class="btn btn-warning" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
+						</c:if>
+						<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 <%@ include file="/WEB-INF/inc/script-common.jsp"%>
 <script type="text/javascript">
 		$(function() {

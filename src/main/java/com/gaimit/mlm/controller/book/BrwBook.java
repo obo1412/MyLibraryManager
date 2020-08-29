@@ -1,8 +1,14 @@
 package com.gaimit.mlm.controller.book;
 
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
@@ -11,8 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
@@ -187,5 +195,60 @@ public class BrwBook {
 		model.addAttribute("restrictDate", restrictDate);
 		
 		return new ModelAndView("book/brw_book");
+	}
+	
+	/** 도서 등록 페이지 */
+	@ResponseBody
+	@RequestMapping(value = "/book/brw_search_member.do", method = RequestMethod.POST)
+	public void makeAuthorCode(Locale locale, Model model,
+			HttpServletRequest request, HttpServletResponse response) {
+		
+		try {
+			request.setCharacterEncoding("utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("application/json");
+		
+		web.init();
+		/** 로그인 여부 검사 */
+		// 로그인중인 회원 정보 가져오기
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			web.printJsonRt("로그인 후 이용 가능합니다.");
+			/*return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");*/
+		}
+		
+		String searchKeyword = web.getString("searchKeyword", "");
+		System.out.println(searchKeyword);
+		
+		Member member = new Member();
+		// 이름에다가 그냥 검색 키워드 다 넣고, 이름으로 전화번호, 회원번호 검색
+		member.setIdLib(loginInfo.getIdLibMng());
+		member.setName(searchKeyword);
+		
+		List<Member> memberList = null;
+		
+		try {
+			memberList = memberService.selectMemberListForBorrow(member);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		// --> import java.util.HashMap;
+		// --> import java.util.Map;
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("rt", "OK");
+		data.put("memberList", memberList);
+		
+		// --> import com.fasterxml.jackson.databind.ObjectMapper;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(response.getWriter(), data);
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());	
+		}
 	}
 }

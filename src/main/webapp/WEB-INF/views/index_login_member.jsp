@@ -16,11 +16,11 @@
 
 </head>
 <body>
-<%@ include file="/WEB-INF/inc/topbar.jsp" %>
+<%@ include file="/WEB-INF/inc/topbar_member.jsp" %>
 
 <!-- 최신 게시물 목록 영역 -->
 <div id="wrapper">
-<%@ include file="/WEB-INF/inc/sidebar_left.jsp" %>
+<%@ include file="/WEB-INF/inc/sidebar_left_member.jsp" %>
 	<div id="content-wrapper">
 		<div class="container-fluid">
 		

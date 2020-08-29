@@ -55,8 +55,7 @@ nav a:hover {
 					<div style="margin: auto; text-align: center;">
 						<form
 							class="col-md-3 offset-md-1 col-sm-4 offset-sm-1 col-xm-12 navbar-form navbar-right"
-							method="post"
-							action="${pageContext.request.contextPath}/manager/login_ok.do">
+							method="post">
 							<div class="form-group">
 								<input type="text" name="user_id" placeholder="User Id"
 									class="form-control" autofocus>
@@ -65,9 +64,16 @@ nav a:hover {
 								<input type="password" name="user_pw" placeholder="Password"
 									class="form-control">
 							</div>
-							<div class="dropdown-divider"></div>
-							<button type="submit" class="btn btn-success btn-block mr-2">
-								Login</button>
+							<div class="dropdown-divider">
+							</div>
+							<div>
+								<button type="submit" class="btn btn-success btn-block mr-2"
+									formaction="${pageContext.request.contextPath}/manager/login_ok.do">
+									관리자 로그인</button>
+								<button type="submit" class="btn btn-secondary btn-block mr-2"
+									formaction="${pageContext.request.contextPath}/member/login_ok.do">
+									일반회원 로그인</button>
+							</div>
 						</form>
 					</div>
 				</div>

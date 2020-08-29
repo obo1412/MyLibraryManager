@@ -52,7 +52,7 @@
 							</div>
 							
 							<div class="form-group">
-								<label for='brwLimit' class="col-md-2">대여가능권수</label>
+								<label for='brwLimit' class="col-md-2">대출가능권수</label>
 								<div class="col-md-6">
 									<input type="text" name="brwLimit" id="brwLimit"
 										class="form-control" value="${item.brwLimit}" />
@@ -60,7 +60,7 @@
 							</div>
 							
 							<div class="form-group">
-								<label for='dateLimit' class="col-md-2">대여기한</label>
+								<label for='dateLimit' class="col-md-2">대출기한</label>
 								<div class="col-md-6">
 									<input type="text" name="dateLimit" id="dateLimit"
 										class="form-control" value="${item.dateLimit}" />

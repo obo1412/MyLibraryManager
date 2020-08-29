@@ -124,26 +124,65 @@ public class Util {
 		String result = null;
 		if(code == 0) {
 			result = "#0B6121";
-		} else if(code == 100) {
+		} else if(code >= 100 && code < 200) {
 			result = "#B40404";
-		} else if(code == 200) {
+		} else if(code >= 200 && code < 300) {
 			result = "#6E6E6E";
-		} else if(code == 300) {
+		} else if(code >= 300 && code < 400) {
 			result = "#FF8000";
-		} else if(code == 400) {
+		} else if(code >= 400 && code < 500) {
 			result = "#3B170B";
-		} else if(code == 500) {
-			result = "#2E9AFE";
-		} else if(code == 600) {
+		} else if(code >= 500 && code < 600) {
+			result = "#58ACFA";
+		} else if(code >= 600 && code < 700) {
 			result = "#F7D358";
-		} else if(code == 700) {
+		} else if(code >= 700 && code < 800) {
 			result = "#5FB404";
-		} else if(code == 800) {
+		} else if(code >= 800 && code < 900) {
 			result = "#0404B4";
-		} else if(code == 900) {
+		} else if(code >= 900 && code < 1000) {
 			result = "#6A0888";
 		} else {
 			result = "#BDBDBD";
+		}
+		return result;
+	}
+	
+	public String getNumVolumeCode(String vol) {
+		String result = vol;
+		vol = "";
+		if(result != null && !"".equals(result)) {
+			result = result.trim();
+			if(result.indexOf(".")>=0) {
+				result = result.substring(result.indexOf(".")+1);
+			}
+			
+			for(int i=0; i<result.length(); i++) {
+				int charNumCode = result.charAt(i);
+				if((charNumCode>=48 && charNumCode<=57)||charNumCode==45) {
+					vol += result.substring(i,i+1);
+				}
+			}
+			
+			while(!"".equals(vol)&&vol.substring(0,1).equals("0")) {
+				vol = vol.substring(1);
+			}
+			result = vol;
+		}
+		return result;
+	}
+	
+	public String getFloatClsCode(String str) {
+		String result = str;
+		str = "";
+		if(result!=null&&!"".equals(result)) {
+			for(int i=0; i<result.length(); i++) {
+				int charNumCode = result.charAt(i);
+				if((charNumCode>=48&&charNumCode<=57)||charNumCode==46) {
+					str += result.substring(i,i+1);
+				}
+			}
+			result = str;
 		}
 		return result;
 	}

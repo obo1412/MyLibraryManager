@@ -13,6 +13,17 @@
 <title>회원 등급 목록</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
+	<style>
+		table { 
+			table-layout: fixed;
+		}
+		
+		tr > td {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+	</style>
 </head>
 
 <body>
@@ -22,7 +33,7 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<div class="card mb-3">
+				<div class="card mb-3 col-12">
 					<div class="card-header">
 						<h4 class='pull-left'>회원 등급 목록</h4>
 					</div>
@@ -51,11 +62,11 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
-									<th class="info text-center">번호</th>
-									<th class="info text-center">기준여부</th>
-									<th class="info text-center">등급이름</th>
-									<th class="info text-center">대여가능권수</th>
-									<th class="info text-center">대여기한</th>
+									<th class="info text-center" style="width:30px;">번호</th>
+									<th class="info text-center" style="width:50px;">기준여부</th>
+									<th class="info text-center" style="width:60px;">등급이름</th>
+									<th class="info text-center" style="width:60px;">대출가능권수</th>
+									<th class="info text-center" style="width:50px;">대출기한</th>
 								</tr>
 							</thead>
 							<tbody>

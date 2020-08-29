@@ -21,6 +21,7 @@ import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BbsDocument;
 import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
+import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.BbsDocumentService;
 import com.gaimit.mlm.service.BrwService;
 
@@ -84,6 +85,7 @@ public class Index {
 		web.init();
 		
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
 			return web.redirect(web.getRootPath() + "/index.do", null);
@@ -115,6 +117,29 @@ public class Index {
 		
 		// "/WEB-INF/views/index.jsp"파일을 View로 사용한다.
 		return new ModelAndView("index_login");
+	}
+	
+	@RequestMapping(value= "/index_login_member.do")
+	public ModelAndView logInMemberIndex(Locale locale, Model model,
+			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		web.init();
+		
+		Member loginInfo = (Member) web.getSession("loginInfo");
+		
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			return web.redirect(web.getRootPath() + "/index.do", null);
+		}
+		
+		try {
+			
+		}catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		// "/WEB-INF/views/index.jsp"파일을 View로 사용한다.
+		return new ModelAndView("index_login_member");
 	}
 	
 	

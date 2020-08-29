@@ -22,6 +22,10 @@
 	font-size: 40pt;
 }
 
+.divPrintType {
+	font-weight:bold;
+}
+
 @media print {
 	.sidebar {
 		display: none;
@@ -56,22 +60,36 @@
 					<%-- action="${pageContext.request.contextPath}/book/print_tag_page.do" --%>>
 				
 				<div class="col-md-12">
-					<label>
-						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagDefault.PNG"
-							style="display:block; width:300px;"/>
-						<input style="margin:auto;" type="radio" name="tagType"
-							id="tag_default" value="0" checked />기본형
-					</label>
-					<label>
-						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagOpt1.PNG"
-							style="display:block; width:300px;"/>
-						<input type="radio" name="tagType" id="tag_opt1" value="1"/>OPTION1
-					</label>
-					<label>
-						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagRollDefault.PNG"
-							style="display:block; width:300px;"/>
-						<input type="radio" name="tagType" id="tag_roll_default" value="10"/>Roll_Printer
-					</label>
+					<div>
+						<div class="divPrintType">A4용지 타입</div>
+						<label>
+							<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagDefault.PNG"
+								style="display:block; width:300px;"/>
+								<span style="padding-left:100px;">
+									<input type="radio" name="tagType"
+										id="tag_default" value="0" />기본형
+								</span>
+						</label>
+						<label>
+							<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagOpt1.PNG"
+								style="display:block; width:300px;"/>
+							<span style="padding-left:100px;">
+								<input type="radio" name="tagType"
+									id="tag_opt1" value="1"/>OPTION1
+							</span>
+						</label>
+					</div>
+					<div class="mt-1">
+						<div class="divPrintType">Roll용지 타입</div>
+						<label>
+							<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagRollDefault.PNG"
+								style="display:block; width:300px;"/>
+							<span style="padding-left:100px;">
+								<input type="radio" name="tagType"
+									id="tag_roll_default" value="10" checked />Roll_Printer
+							</span>
+						</label>
+					</div>
 					<%-- <label>
 						<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagC.jpg"
 							style="display:block;"/>
@@ -79,9 +97,52 @@
 					</label> --%>
 				</div>
 				
+				<div class="form-group mb-3">
+					<label for="rangeSorting">범위 출력(등록번호)</label>
+					<div class="col-sm-12">
+						<div class="">
+							<select name="rangeStart" id="rangeStart" class="form-control">
+								<c:forEach var="start" items="${bookHeldList}" varStatus="startStatus">
+									<option value="${startStatus.count}">
+										${start.localIdBarcode} / (${start.title})
+									</option>
+								</c:forEach>
+							</select>
+						</div>
+						
+						<label for="rangeSorting"></label>
+						<div class="input-group col-sm-12">
+							<select name="rangeEnd" id="rangeEnd" class="form-control">
+								<c:forEach var="end" items="${bookHeldList}" varStatus="endStatus">
+									<option value="${endStatus.count}">
+										${end.localIdBarcode} / (${end.title})
+									</option>
+								</c:forEach>
+							</select>
+							<span class="input-group-append">
+								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
+									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
+									onclick="openPopup()" />
+							</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<label for="sheetSorting">자동 묶음 출력</label>
+					<div class="form-inline">
+						<input type="text" class="form-control col-1"
+							name="printingEa" id="printingEa" value="${tag.printingEa}" />권씩
+						<input type="text" class="form-control col-1"
+							name="printingSheetCount" id="printingSheetCount" value="${tag.printingSheetCount}" />번째
+						<input type="button" class="btn btn-secondary" value="출력" id="btnPrintSheetSorting"
+							onclick="autoSheetSortingPopup()" />
+					</div>
+				</div>
+				
 				<div class="form-group">
 					<label for="dateSorting">날짜별 출력</label>
-					<div class="col-sm-12 col-md-6 mb-3 input-group">
+					<div class="col-sm-12 col-md-4 mb-3 input-group">
 						<input type="date" class="form-control" max="9999-12-31"
 							name="dateSorting" id="dateSorting" value="" placeholder="날짜별 출력"/>
 							<span class="input-group-append">
@@ -94,7 +155,7 @@
 				
 				<div class="form-group">
 					<label for="titleSorting">단일 출력(도서명)</label>
-					<div class="col-sm-12 col-md-6 mb-3 input-group">
+					<div class="col-sm-12 col-md-4 mb-3 input-group">
 						<input type="text" class="form-control"
 							name="titleSorting" id="titleSorting" value="" placeholder="도서명으로 출력"/>
 						<span class="input-group-append">
@@ -107,7 +168,7 @@
 				
 				<div class="form-group">
 					<label for="targetSorting">단일 출력(등록번호)</label>
-					<div class="col-sm-12 col-md-6 mb-3 input-group">
+					<div class="col-sm-12 col-md-4 mb-3 input-group">
 						<input type="text" class="form-control"
 							name="targetSorting" id="targetSorting" value="" placeholder="도서등록번호로 출력"/>
 						<span class="input-group-append">
@@ -115,37 +176,6 @@
 									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
 									onclick="openPopup()" />
 						</span>
-					</div>
-				</div>
-				
-				<div class="form-group col-sm-12 col-md-6 mb-3">
-					<label for="rangeSorting">범위 출력(등록번호)</label>
-					<div class="col-sm-12 col-md-9">
-						<div class="">
-							<select name="rangeStart" id="rangeStart" class="form-control">
-								<c:forEach var="start" items="${bookHeldList}" varStatus="startStatus">
-								<option value="${startStatus.index}">
-									${start.localIdBarcode} / (${start.titleBook})
-								</option>
-								</c:forEach>
-							</select>
-						</div>
-						
-						<label for="rangeSorting"></label>
-						<div class="input-group">
-							<select name="rangeEnd" id="rangeEnd" class="form-control">
-								<c:forEach var="end" items="${bookHeldList}" varStatus="endStatus">
-								<option value="${endStatus.index}">
-									${end.localIdBarcode} / (${end.titleBook})
-								</option>
-								</c:forEach>
-							</select>
-							<span class="input-group-append">
-								<input type="button" class="btn btn-secondary" value="출력" id="sbmBtn"
-									<%-- formaction="${pageContext.request.contextPath}/book/print_tag_page.do" --%>
-									onclick="openPopup()" />
-							</span>
-						</div>
 					</div>
 				</div>
 				
@@ -167,7 +197,38 @@
 		//시작시 실행
 	});
 	
-	function openPopup() {
+	function autoSheetSortingPopup() {
+		var tagT = 0;
+		tagT = $('input:radio[name=tagType]:checked').val();
+		
+		var printingEa = document.getElementById('printingEa').value;
+		var printingSheetCount = document.getElementById('printingSheetCount').value;
+		
+		var rangeS = ((printingSheetCount - 1) * printingEa) + 1;
+		var rangeE = printingEa * printingSheetCount ;
+		
+		var url = '${pageContext.request.contextPath}/book/print_tag_page.do?tagType='+tagT;
+		url = url + '&rangeStart='+rangeS +'&rangeEnd='+rangeE;
+		window.open(url, '_blank', 'width=1080,height=800,scrollbars=yes');
+		
+		$.ajax({
+			url: "${pageContext.request.contextPath}/book/autoSheetCountUp.do",
+			type: 'POST',
+			data: {
+				printingEa,
+				printingSheetCount
+			},
+			/* dataType: "json", */
+			success: function(data) {
+				document.getElementById('printingSheetCount').value = data.result;
+			}
+			,error:function(request,status,error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+			}
+		});
+	};
+	
+	function openPopup() {		
 		var tagT = 0;
 		tagT = $('input:radio[name=tagType]:checked').val();
 		

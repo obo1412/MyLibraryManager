@@ -24,6 +24,16 @@
 			<input name="tag-width" value="${tag.tagWidth}" />
 			
 			<input name="tag-height" value="${tag.tagHeight}" />
+			
+			<div>
+				<label>태그사이 간격</label>
+				<input name="tag-gap" value="${tag.tagGap}" />
+			</div>
+			
+			<div>
+				<label>제목&태그 사이 간격</label>
+				<input name="title-tag-gap" value="${tag.titleTagGap}" />
+			</div>
 		</div>
 		
 		<div class="form-group">

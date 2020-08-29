@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.ui.Model;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -181,6 +180,22 @@ public class WebHelper {
 
 		return result;
 	}
+	
+	public float getFloat(String fieldName, float defaultValue) {
+		float result = defaultValue;
+		
+		String param = this.getString(fieldName, null);
+		
+		try {
+			result = Float.parseFloat(param);
+		} catch (NumberFormatException e) {
+			// 형변환에 실패할 경우 catch블록으로 제어가 이동하고,result값은 미리 설정해 둔
+			// defaultValue인 상태를 유지한다.
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 
 	/**
 	 * 배열 형태의 파라미터를 리턴한다. 체크박스 전용 기능
@@ -213,6 +228,10 @@ public class WebHelper {
 
 	public int getInt(String fieldName) {
 		return this.getInt(fieldName, 0);
+	}
+	
+	public float getFloat(String fieldName) {
+		return this.getFloat(fieldName, 0.0f);
 	}
 
 	public String[] getStringArray(String fieldName) {

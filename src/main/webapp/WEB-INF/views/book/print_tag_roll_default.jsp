@@ -52,44 +52,44 @@
 	</div>
 
 	<c:forEach var="item" items="${bookHeldList}" varStatus="status">
-		<div style="width:98mm; height:35mm;">
-			<div style="margin-left:1.5mm; margin-top:1.5mm; width:${tag.tagWidth}mm; height:${tag.tagHeight}mm;">
-				<div class="bookTitleSection" style="margin-left:2.5mm; margin-top:3mm; width:100%; height:4mm; font-size:3.5mm; overflow:hidden;">
+		<div style="width:98mm; height:38mm;">
+			<div style="padding-left:1mm; padding-top:1mm; width:100%; height:100%;">
+				<div class="bookTitleSection" style="padding-left:2.5mm; padding-top:2.5mm; width:90%; height:4mm; font-size:3.5mm; overflow:hidden;">
 					${item.title}
 				</div>
-				<div class="tagSection" style="margin-top:1.5mm; width:100%; height:28.5mm;">
+				<div class="tagSection" style="padding-top:${tag.titleTagGap}mm; width:100%; height:30mm;">
 					<div class="tagLeftSection" style="width:50%; height:100%; float:left; text-align:center;">
-						<div style="width:100%; height:35%; font-weight:900; font-size:5mm; line-height:10mm;">
+						<div style="width:100%; height:35%; font-weight:900; font-size:3.5mm; line-height:12mm; white-space:nowrap;">
 							${item.nameLib}
 						</div>
 						<div style="height:35%; font-family:'Free 3 of 9'; font-size:10mm; line-height:10mm; transform:scale(1,1.5);">
 							*${item.localIdBarcode}*
 						</div>
-						<div style="margin-top:1mm; font-weight:bold; font-size:4mm;">
+						<div style="padding-top:1mm; font-weight:bold; font-size:4mm;">
 							${item.localIdBarcode}
 						</div>
 					</div>
 					<div class="tagRightSection" style="width:50%; height:100%; float:right;">
 						<div class="qrBox" style="float:left; width:13mm; height:100%;">
 							<div id="qrImg" style="float:left; width:10mm;">
-								<img style="width:10mm; margin-top:5mm;" src="http://nuts.i234.me:7070/files/upload/finebook4/qrcode/libNo${loginInfo.idLibMng}/${item.localIdBarcode}.png" />
+								<img style="width:8mm; margin-top:5mm;" src="http://nuts.i234.me:7070/files/upload/finebook4/qrcode/libNo${loginInfo.idLibMng}/${item.localIdBarcode}.png" />
 							</div>
 							<div style="float:left; width:3mm; font-weight:bold; font-size:2mm; transform:rotate(90deg);">
-								<div style="transform:translate(3mm, -1mm);">
+								<div style="transform:translate(7mm, -1mm);">
 									${item.localIdBarcode}
 								</div>
 							</div>
 						</div>
 						<div class="callNoBox" style="float:right; width:33mm; height:100%;">
 							<div class="callText" style="float:left; width:19mm; height:100%; font-size:3mm; line-height:3mm; transform:rotate(90deg);">
-								<div style="transform:translate(1mm,6mm);">
+								<div style="transform:translate(1mm,7mm);">
 									<c:if test="${not empty item.additionalCode}">
 										<div>${item.additionalCode}</div>
 									</c:if>
 									<div>${item.classificationCode}</div>
 									<div>${item.authorCode}</div>
-									<c:if test="${(item.volumeCode ne 0) and (not empty item.volumeCode)}">
-										<div>${item.volumeCode}</div>
+									<c:if test="${not empty item.volumeCode}">
+										<div>V${item.volumeCode}</div>
 									</c:if>
 									<c:if test="${(item.copyCode gt 0) and (not empty item.copyCode)}">
 										<div>C${item.copyCode}</div>
@@ -97,7 +97,7 @@
 								</div>
 							</div>
 							<div class="callNo" style="background-color:${item.classCodeColor}; float:right; width:14mm; height:100%;">
-								<div style="height:100%; font-size:8mm; color:white; transform:translate(0.5mm,9mm);">
+								<div style="height:100%; font-size:8mm; font-weight:bold; color:white; transform:translate(-1mm,9mm);">
 									<div style="transform:rotate(90deg);">
 										<c:set var="classCode" value="${item.classCodeHead}" />
 										<c:choose>
@@ -121,7 +121,7 @@
 				</div>
 			</div>
 		</div>
-		<div style="height:0.38mm;">
+		<div style="height:${tag.tagGap}mm;">
 		</div>
 	</c:forEach>
 </body>

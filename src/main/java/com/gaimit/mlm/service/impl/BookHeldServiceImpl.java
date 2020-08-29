@@ -44,6 +44,22 @@ public class BookHeldServiceImpl implements BookHeldService {
 	}
 	
 	@Override
+	public List<BookHeld> selectBookHeldListToExcel(BookHeld bookHeld) throws Exception {
+		List<BookHeld> result = null;
+		try {
+			result = sqlSession.selectList("BookHeldMapper.selectBookHeldListToExcel", bookHeld);
+			if (result == null) {
+				throw new NullPointerException();
+			}
+		} catch (NullPointerException e) {
+			throw new Exception("조회된 도서(엑셀 추출)가 없습니다.");
+		} catch (Exception e) {
+			throw new Exception("엑셀 추출 도서 목록 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
 	public List<BookHeld> getRegTodayBookHeldList(BookHeld bookHeld) throws Exception {
 		List<BookHeld> result = null;
 		try {
@@ -55,6 +71,17 @@ public class BookHeldServiceImpl implements BookHeldService {
 			throw new Exception("조회된 도서가 없습니다.");
 		} catch (Exception e) {
 			throw new Exception("데이터 조회에 실패했습니다.");
+		}
+		return result;
+	}
+	
+	@Override
+	public int selectRegTodayBookCountForPage(BookHeld bookHeld) throws Exception {
+		int result = 0;
+		try {
+			result = sqlSession.selectOne("BookHeldMapper.selectRegTodayBookCountForPage", bookHeld);
+		} catch (Exception e) {
+			throw new Exception("regToday 페이지를 위한 도서수 조회에 실패했습니다.");
 		}
 		return result;
 	}

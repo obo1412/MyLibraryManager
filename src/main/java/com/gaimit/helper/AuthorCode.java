@@ -61,7 +61,7 @@ public class AuthorCode {
 			if(arrAuth[0].equals("글")||arrAuth[0].equals("저자")
 				||arrAuth[0].equals("글쓴이")||arrAuth[0].equals("지은이")
 				||arrAuth[0].equals("엮은이")||arrAuth[0].equals("원작")
-				||arrAuth[0].equals("기획")
+				||arrAuth[0].equals("기획")||arrAuth[0].equals("각본")
 				||(arrAuth[0].indexOf("그림")>1)||(arrAuth[0].indexOf("사진")>1)
 				||(arrAuth[0].indexOf("·")>1)) {
 				arrAuth[1] = arrAuth[1].replaceAll("\\[", "");

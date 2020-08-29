@@ -4,8 +4,13 @@ public class TagSetting {
 	private int id;
 	private int idLib;
 	private float marginLeft;
+	private float tagGap;
 	private float tagWidth;
 	private float tagHeight;
+	private float titleTagGap;
+	private int printingEa;
+	private int printingSheetCount;
+	
 	
 	private String colorBlankKdc;
 	private String color0Kdc;
@@ -38,6 +43,12 @@ public class TagSetting {
 	public void setMarginLeft(float marginLeft) {
 		this.marginLeft = marginLeft;
 	}
+	public float getTagGap() {
+		return tagGap;
+	}
+	public void setTagGap(float tagGap) {
+		this.tagGap = tagGap;
+	}
 	public float getTagWidth() {
 		return tagWidth;
 	}
@@ -50,6 +61,26 @@ public class TagSetting {
 	public void setTagHeight(float tagHeight) {
 		this.tagHeight = tagHeight;
 	}
+	public float getTitleTagGap() {
+		return titleTagGap;
+	}
+	public void setTitleTagGap(float titleTagGap) {
+		this.titleTagGap = titleTagGap;
+	}
+	public int getPrintingEa() {
+		return printingEa;
+	}
+	public void setPrintingEa(int printingEa) {
+		this.printingEa = printingEa;
+	}
+	public int getPrintingSheetCount() {
+		return printingSheetCount;
+	}
+	public void setPrintingSheetCount(int printingSheetCount) {
+		this.printingSheetCount = printingSheetCount;
+	}
+	
+	
 	public String getColorBlankKdc() {
 		return colorBlankKdc;
 	}

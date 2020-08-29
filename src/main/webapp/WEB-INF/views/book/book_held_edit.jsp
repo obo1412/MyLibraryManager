@@ -29,8 +29,20 @@
 		<div id="content-wrapper">
 			<div class="container-fluid">
 				<h4 class='page-header'>도서 정보 수정</h4>
-				
+
 				<form class="horizontal" name="edit_book_held" method="post" action="${pageContext.request.contextPath}/book/book_held_edit_ok.do">
+					
+					<div class="form-group mt-2">
+						<div class="col-md-offset-2 col-md-6">
+							<button type="submit" class="btn btn-primary btn-sm Refresh">저장하기</button>
+							
+							<button type="reset" class="btn btn-secondary btn-sm">다시작성</button>
+							<div class="float-right">
+								<a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#delete_book_modal">삭제</a>
+								<input type="button" class="btn btn-warning btn-sm closeRefresh" value="닫기" onclick="self.close()" />
+							</div> 
+						</div>
+					</div>
 					
 					<input type="hidden" name="id" id="id" value="${bookHeldItem.id}"/>
 					
@@ -215,12 +227,6 @@
 						</div>
 					</div>
 					
-					<div class="form-group mt-2">
-						<div class="col-md-offset-2 col-md-6">
-							<button type="submit" class="btn btn-primary btn-sm Refresh">수정하기</button>
-							<button type="reset" class="btn btn-danger btn-sm">다시작성</button>
-						</div>
-					</div>
 				</form>
 				
 				<!-- 조회결과를 출력하기 위한 표 -->
@@ -334,34 +340,35 @@
 	</div>
 	<!-- wrapper 끝 -->
 	<div class="modal fade" id="delete_book_modal" tabindex="-1" role="dialog"
-					aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">도서 정보를 삭제 또는 폐기하시겠습니까?</h5>
-								<button class="close" type="button" data-dismiss="modal"
-									aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-							<form name="book_held_delete" method="post">
-							<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
-							<div class="modal-body">
-								<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
-								<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
-							</div>
-							<div class="modal-footer">
-								<button class="btn btn-secondary" type="button"
-									data-dismiss="modal">취소</button>
-								<c:if test="${bookHeldItem.available < 2 }">
-								<input type="submit" class="btn btn-warning closeRefresh" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
-								</c:if>
-								<input type="submit" class="btn btn-danger closeRefresh" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
-							</div>
-							</form>
-						</div>
-					</div>
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">도서 정보를 삭제 또는 폐기하시겠습니까?</h5>
+					<button class="close" type="button" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
 				</div>
+				<form name="book_held_delete" method="post">
+					<input type="hidden" name="localIdBarcode" value="${bookHeldItem.localIdBarcode}"/>
+					<input type="hidden" name="bookHeldId" value="${bookHeldItem.id}"/>
+					<div class="modal-body">
+						<div>기록삭제는 도서정보를 모두 삭제합니다.(복구불가능)</div>
+						<div>폐기는 해당 도서의 바코드번호, 복본기호 등만을 삭제하여 기록은 남기지만 이용가능한 도서에서 제외됩니다.</div>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-secondary" type="button"
+							data-dismiss="modal">취소</button>
+						<c:if test="${bookHeldItem.available < 2 }">
+						<input type="submit" class="btn btn-warning" value="폐기" formaction="${pageContext.request.contextPath}/book/book_held_discard_ok.do"/>
+						</c:if>
+						<input type="submit" class="btn btn-danger" value="기록삭제" formaction="${pageContext.request.contextPath}/book/book_held_delete_ok.do"/>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 <%@ include file="/WEB-INF/inc/script-common.jsp"%>
 <script type="text/javascript">
 		$(function() {

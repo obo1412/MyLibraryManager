@@ -43,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gaimit.helper.ApiHelper;
 import com.gaimit.helper.AuthorCode;
 import com.gaimit.helper.FileInfo;
+import com.gaimit.helper.PageHelper;
 /*import com.gaimit.helper.FileInfo;*/
 import com.gaimit.helper.UploadHelper;
 import com.gaimit.helper.Util;
@@ -66,6 +67,9 @@ public class RegBook {
 	
 	@Autowired
 	WebHelper web;
+	
+	@Autowired
+	PageHelper page;
 	
 	@Autowired
 	Util util;
@@ -107,11 +111,11 @@ public class RegBook {
 			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
 		}
 		
-		String regChk = web.getString("straightReg");
+		/*String regChk = web.getString("straightReg");
 		String regCheckBox = "";
 		if(regChk!=null) {
 			regCheckBox = "checked";
-		}
+		}*/
 		
 		Book country = new Book();
 		
@@ -126,6 +130,12 @@ public class RegBook {
 		
 		//국가 목록 조회
 		List<Book> countryList = null;
+		
+		List<BookHeld> regTodayList = null;
+		
+		//페이지를 위한 파라미터
+		int nowPage = web.getInt("page", 1);
+		int totalCount = 0;
 		
 		//barcode 호출
 		try {
@@ -156,14 +166,26 @@ public class RegBook {
 			}
 			
 			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
-		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		
-		//직전에 등록된 도서를 확인하기 위한 목록
-		List<BookHeld> regTodayList = null;
-		try {
+			
+			totalCount = bookHeldService.selectRegTodayBookCountForPage(bookHeld);
+			page.pageProcess(nowPage, totalCount, 10, 5);
+			bookHeld.setLimitStart(page.getLimitStart());
+			bookHeld.setListCount(page.getListCount());
+			
+			//직전에 등록된 도서를 확인하기 위한 목록
 			regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+			if(regTodayList != null) {
+				for(int i=0; i<regTodayList.size(); i++) {
+					String classCode = regTodayList.get(i).getClassificationCode();
+					classCode = util.getFloatClsCode(classCode);
+					if(classCode != null&&!"".equals(classCode)) {
+						float classCodeFloat = Float.parseFloat(classCode);
+						int classCodeInt = (int) (classCodeFloat);
+						String classCodeColor = util.getColorKDC(classCodeInt);
+						regTodayList.get(i).setClassCodeColor(classCodeColor);
+					}
+				}
+			}
 		} catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
@@ -173,10 +195,114 @@ public class RegBook {
 		model.addAttribute("newBarcode", newBarcode);
 		model.addAttribute("barcodeInit", barcodeInit);
 		model.addAttribute("regTodayList", regTodayList);
-		
-		model.addAttribute("regCheckBox", "checked");
+		model.addAttribute("page", page);
+		model.addAttribute("pageDefUrl", "/book/reg_book.do");
 
 		return new ModelAndView("book/reg_book");
+	}
+	
+	//바로 등록 체크 유지를 위한 같은 내용의 별도의 페이지
+	@RequestMapping(value = "/book/reg_book_regChked.do", method = {RequestMethod.GET, RequestMethod.POST})
+	public ModelAndView regBookRegChked(Locale locale, Model model) {
+		
+		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		web.init();
+		
+		/** 로그인 여부 검사 */
+		// 로그인중인 회원 정보 가져오기
+		Manager loginInfo = (Manager) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+		}
+		
+		/*String regChk = web.getString("straightReg");
+		String regCheckBox = "";
+		if(regChk!=null) {
+			regCheckBox = "checked";
+		}*/
+		
+		Book country = new Book();
+		
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
+		
+		int lastEmptyLocalBarcode = 0;
+		BookHeld lastLocalBarcode = new BookHeld();
+		String barcodeInit = "";
+		String newBarcode = "";
+		int barcodeInitCount = 0;
+		
+		//국가 목록 조회
+		List<Book> countryList = null;
+		
+		List<BookHeld> regTodayList = null;
+		
+		//페이지를 위한 파라미터
+		int nowPage = web.getInt("page", 1);
+		int totalCount = 0;
+		
+		//barcode 호출
+		try {
+			//국가 목록 조회
+			countryList = bookService.selectCountryListOnly(country);
+			
+			//바코드 헤드 검사
+			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
+			//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
+			if(lastLocalBarcode != null) {
+				barcodeInit = lastLocalBarcode.getLocalIdBarcode();
+				barcodeInit = util.strExtract(barcodeInit);
+				//바코드말머리가 있다면 말머리의 길이를 구한다.
+				// *말머리의 길이로 mapper에서 바코드 select함
+				barcodeInitCount = barcodeInit.length();
+			}
+			//바코드 말머리의 길이를 bookHeld에 주입
+			bookHeld.setBarcodeInitCount(barcodeInitCount);
+			
+			//바코드 번호가 1번인지 검사
+			int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
+			//1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록
+			//1이 아니면 1로 바코드 등록
+			if(firstBarcode == 1 ) {
+				lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
+			} else {
+				lastEmptyLocalBarcode = 1;
+			}
+			
+			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
+			
+			totalCount = bookHeldService.selectRegTodayBookCountForPage(bookHeld);
+			page.pageProcess(nowPage, totalCount, 10, 5);
+			bookHeld.setLimitStart(page.getLimitStart());
+			bookHeld.setListCount(page.getListCount());
+			
+			//직전에 등록된 도서를 확인하기 위한 목록
+			regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+			if(regTodayList != null) {
+				for(int i=0; i<regTodayList.size(); i++) {
+					String classCode = regTodayList.get(i).getClassificationCode();
+					if(classCode != null) {
+						float classCodeFloat = Float.parseFloat(classCode);
+						int classCodeInt = (int) (classCodeFloat);
+						String classCodeColor = util.getColorKDC(classCodeInt);
+						regTodayList.get(i).setClassCodeColor(classCodeColor);
+					}
+				}
+			}
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		
+		model.addAttribute("countryList", countryList);
+		model.addAttribute("newBarcode", newBarcode);
+		model.addAttribute("barcodeInit", barcodeInit);
+		model.addAttribute("regTodayList", regTodayList);
+		model.addAttribute("page", page);
+		model.addAttribute("pageDefUrl", "/book/reg_book_regChked.do");
+
+		return new ModelAndView("book/reg_book_regChked");
 	}
 	
 	
@@ -795,7 +921,7 @@ public class RegBook {
 		return web.redirect(web.getRootPath() + "/book/reg_book_batch.do", "도서 일괄 등록이 완료되었습니다.");
 	}
 	
-	/** 도서 등록 페이지 */
+	/** ajax 저자코드 생성 */
 	@ResponseBody
 	@RequestMapping(value = "/book/author_code.do", method = RequestMethod.POST)
 	public void makeAuthorCode(Locale locale, Model model,

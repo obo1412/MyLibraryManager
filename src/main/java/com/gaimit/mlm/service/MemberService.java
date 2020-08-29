@@ -59,6 +59,11 @@ public interface MemberService {
 	public List<Member> getMemberListByLibAndName(Member member) throws Exception;
 	
 	/**
+	 * 도서 대출을 위한 회원 검색
+	 */
+	public List<Member> selectMemberListForBorrow(Member member) throws Exception;
+	
+	/**
 	 * 회원수 조회(아이디)
 	 * @param member - 회원 id 개수 조회
 	 * @throws Exception
@@ -79,7 +84,7 @@ public interface MemberService {
 	 * @return 회원정보
 	 * @throws Exception
 	 */
-	/*public Member selectLoginInfo(Member member) throws Exception;*/
+	public Member selectLoginInfoMember(Member member) throws Exception;
 	
 	/**
 	 * 비밀번호 변경

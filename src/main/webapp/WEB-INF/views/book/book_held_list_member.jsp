@@ -28,10 +28,10 @@
 </head>
 
 <body>
-	<%@ include file="/WEB-INF/inc/topbar.jsp"%>
+	<%@ include file="/WEB-INF/inc/topbar_member.jsp"%>
 
 	<div id="wrapper">
-		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
+		<%@ include file="/WEB-INF/inc/sidebar_left_member.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
 
@@ -61,25 +61,12 @@
 											value="${keyword}" autofocus/> <span class="input-group-append">
 											<button class="btn btn-success btn-sm" type="submit">
 												<i class='fas fa-search'></i>
-											</button> <a href="${pageContext.request.contextPath}/book/reg_book.do"
-											class="btn btn-primary btn-sm">도서 추가</a>
+											</button>
 										</span>
 									</div>
 								</form>
 							</div>
-							
-							<div class="float-right form-inline">
-								<select name="yearOptionBookHeldList" id="yearOptionBookHeldList" class="form-control form-control-sm">
-									<option value="">전체목록</option>
-									<fmt:formatDate value="${currDate}" pattern="yyyy" var="yearStart" />
-									<c:forEach begin="0" end="10" var="pastYear" step="1">
-										<option value="<c:out value='${yearStart-pastYear}'/>">
-											<c:out value='${yearStart-pastYear}'/>
-										</option>
-									</c:forEach>
-								</select>
-								<button class="btn btn-sm btn-secondary" onclick="clickedBookHeldListToExcel()">도서목록 엑셀변환</button>
-							</div>
+
 						</div>
 
 						<!-- 조회결과를 출력하기 위한 표 -->
@@ -191,44 +178,6 @@
 	
 	<script type="text/javascript">
 	
-		function clickedBookHeldListToExcel() {
-			var targetYear = document.getElementById('yearOptionBookHeldList').value;
-			
-			$.ajax({
-				url: "${pageContext.request.contextPath}/book/book_held_list_to_excel.do",
-				type: 'POST',
-				data: {
-					targetYear
-				},
-				/* dataType: "json", */
-				success: function(data) {
-					console.log('도서목록 엑셀 변환: '+data.rt);
-					console.log('파일 경로: '+data.filePath);
-					
-					var uploadFolderPath = data.filePath.substring(data.filePath.lastIndexOf("upload"));
-					console.log('업로드폴더까지 경로:'+uploadFolderPath);
-					var downloadPath = "/files/"+uploadFolderPath;
-					var fileName = data.filePath.substring(data.filePath.lastIndexOf("/")+1).split("?")[0];
-					var xhr = new XMLHttpRequest();
-						xhr.responseType = 'blob';
-						xhr.onload = function() {
-							var link = document.createElement('a');
-							link.href = window.URL.createObjectURL(xhr.response); //xhr.response is a blob
-							link.download = fileName;
-							link.style.display = 'none';
-							document.body.appendChild(link);
-							link.click();
-							delete link;
-						};
-						xhr.open('POST', downloadPath);
-						xhr.setRequestHeader('Content-type', 'application/json');
-						xhr.send();
-				}
-				,error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				}
-			});
-		};
 	</script>
 </body>
 </html>

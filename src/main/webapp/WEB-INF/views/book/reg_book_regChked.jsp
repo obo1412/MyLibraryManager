@@ -55,7 +55,7 @@
 										<label for='search-book-info'>도서 검색</label>
 										<div class="form-group form-inline ml-5 classStraightReg">
 											<input type="checkbox" class="classStraightReg form-control"
-												id="chkBoxStraightReg" name="straightReg" value="reg" />
+												id="chkBoxStraightReg" name="straightReg" value="reg" checked/>
 											<label for="chkBoxStraightReg">바로등록</label>
 										</div>
 									</div>
@@ -222,14 +222,14 @@
 								<div class="form-inline mb-1">
 									<div class="form-group col-md-12">
 										<div class="col-md-2">
-											<label for='itemPage' class="control-label">페이지</label>
+											<label for='page' class="control-label">페이지</label>
 										</div>
 										<div class="col-md-4">
 											<c:set var="viewPage" value="${jsonAladin.item[0].subInfo.itemPage}" />
 											<c:if test="${not empty itemPage}">
 												<c:set var="viewPage" value="${itemPage}" />
 											</c:if>
-											<input type="text" name="itemPage" id="itemPage" class="form-control form-control-sm input-clear"
+											<input type="text" name="page" id="page" class="form-control form-control-sm input-clear"
 												value="${viewPage}" />
 										</div>
 										<div class="col-md-2">
@@ -479,10 +479,7 @@
 
 								<div class="form-group">
 									<div class="offset-md-5 col-md-6">
-										<button type="submit" class="btn btn-primary" id="btnRegSbm"
-											formaction="${pageContext.request.contextPath}/book/reg_book_ok.do">
-											도서등록하기
-										</button>
+										<button type="submit" class="btn btn-primary" formaction="${pageContext.request.contextPath}/book/reg_book_ok.do">도서등록하기</button>
 										<input type="button" class="btn btn-danger" onclick="clearInput()" value="다시작성" />
 									</div>
 								</div>
@@ -584,7 +581,7 @@
 								</c:choose>
 							</tbody>
 						</table>
-						<%@ include file="/WEB-INF/inc/common_pagination_bottom.jsp"%>
+					<%@ include file="/WEB-INF/inc/common_pagination_bottom.jsp"%>
 				</div>
 				<!-- 등록된 도서 card 끝-->
 			</div>
@@ -692,14 +689,6 @@
 		}
 		
 		document.getElementById('search-book-info').focus();
-		
-		var curBookTitle = document.getElementById('bookTitle').value;
-		var curAuthor = document.getElementById('author').value;
-		var curClsCode = document.getElementById('classificationCode').value;
-		
-		if(curBookTitle && curAuthor && curClsCode){
-			document.getElementById('btnRegSbm').focus();
-		}
 	};
 </script>
 </html>

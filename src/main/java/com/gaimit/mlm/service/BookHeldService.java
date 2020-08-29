@@ -15,6 +15,14 @@ public interface BookHeldService {
 	public List<BookHeld> getBookHeldList(BookHeld bookHeld) throws Exception;
 	
 	/**
+	 * 엑셀 추출을 위한 도서목록 리스트
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public List<BookHeld> selectBookHeldListToExcel(BookHeld bookHeld) throws Exception;
+	
+	/**
 	 * 
 	 * @param bookHeld
 	 * @return
@@ -22,6 +30,13 @@ public interface BookHeldService {
 	 */
 	public List<BookHeld> getRegTodayBookHeldList(BookHeld bookHeld) throws Exception;
 	
+	/**
+	 * 오늘 등록된 도서 전체수 구하기 페이지네이션을 위해서
+	 * @param bookHeld
+	 * @return
+	 * @throws Exception
+	 */
+	public int selectRegTodayBookCountForPage(BookHeld bookHeld) throws Exception;
 	/**
 	 * 
 	 * @param book id_book

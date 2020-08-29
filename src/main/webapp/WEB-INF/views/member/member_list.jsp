@@ -13,6 +13,18 @@
 <title>회원 목록</title>
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
+
+<style>
+	table { 
+		table-layout: fixed;
+	}
+	
+	tr > td {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+</style>
 </head>
 
 <body>
@@ -51,14 +63,14 @@
 						<table class="table table-sm">
 							<thead>
 								<tr>
-									<th class="info text-center">번호</th>
-									<th class="info text-center">이름</th>
-									<th class="info text-center">생년월일</th>
-									<th class="info text-center">연락처</th>
-									<th class="info text-center">이메일</th>
-									<th class="info text-center">회원등급</th>
-									<th class="info text-center">대여제한(권)</th>
-									<th class="info text-center">대여기한(일)</th>
+									<th class="table-info text-center" style="width:30px;">번호</th>
+									<th class="table-info text-center" style="width:50px;">이름</th>
+									<th class="table-info text-center" style="width:60px;">생년월일</th>
+									<th class="table-info text-center" style="width:70px;">연락처</th>
+									<th class="table-info text-center" style="width:100px;">이메일</th>
+									<th class="table-info text-center" style="width:50px;">회원등급</th>
+									<th class="table-info text-center" style="width:50px;">대출제한(권)</th>
+									<th class="table-info text-center" style="width:50px;">대출기한(일)</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -67,7 +79,7 @@
 										<c:forEach var="item" items="${list}" varStatus="status">
 											<tr>
 												<td class="text-center">${page.indexLast - status.index}</td>
-												<td><c:url var="readUrl" value="/member/member_view.do">
+												<td class="text-center"><c:url var="readUrl" value="/member/member_view.do">
 														<c:param name="memberId" value="${item.id}" />
 													</c:url>
 													<a href="${readUrl}" onclick="window.open(this.href, '_blank','width=400,height=650,scrollbars=yes');return false;">

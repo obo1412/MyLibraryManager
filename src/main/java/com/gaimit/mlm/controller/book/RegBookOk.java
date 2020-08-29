@@ -88,7 +88,7 @@ public class RegBookOk {
 		String publisher = web.getString("publisher");
 		String pubDate = web.getString("pubDate");
 		String bookCateg = web.getString("bookCateg");
-		int page = web.getInt("page");
+		int page = web.getInt("itemPage");
 		int price = web.getInt("price");
 		String bookOrNot = web.getString("bookOrNot");
 		int purOrDon = web.getInt("purOrDon");
@@ -177,22 +177,16 @@ public class RegBookOk {
 		bookHeld.setBookSize(bookSize);
 		bookHeld.setClassificationCode(classificationCode);
 		bookHeld.setAdditionalCode(additionalCode);
+		//권차기호에 영문 섞인거 예외처리
+		volumeCode = util.getNumVolumeCode(volumeCode);
 		bookHeld.setVolumeCode(volumeCode);
+		
 		bookHeld.setImageLink(bookCover);
 		bookHeld.setDescription(bookDesc);
 		bookHeld.setAvailable(1);
 		
 		bookHeld.setIdCountry(idCountry);
 		
-		
-		String viewBarcodeInit = util.strExtract(newBarcode);
-		int viewBarNum = util.numExtract(newBarcode);
-		
-		if(newBarcode.length() != 8) {
-			return web.redirect(null, "바코드를 8자리로 맞추어 주세요.");
-		} else if(viewBarcodeInit.length() > 3 ) {
-			return web.redirect(null, "바코드 머리 글자수는 3자리 이하여야 합니다.");
-		}
 		
 		//바코드 번호 생성을 위한 변수 선언
 		int lastEmptyLocalBarcode = 0; //바코드 번호 빈자리 
@@ -214,11 +208,7 @@ public class RegBookOk {
 			}
 			/*바코드 말머리의 길이를 bookHeld에 주입*/
 			bookHeld.setBarcodeInitCount(barcodeInitCount);
-			//바코드 뒤 숫자 중복검사를 위하여 값 주입
-			bookHeld.setNewBarcodeForDupCheck(viewBarNum);
-			//위 viewBarNum를 중복검사 변수로 사용.
-			//중복되는 번호가 있다면 impl 단계에서 예외처리
-			bookHeldService.selectDupCheckLocalBarcode(bookHeld);
+			
 			
 			/*바코드 번호가 1번인지 검사*/
 			int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
@@ -233,22 +223,35 @@ public class RegBookOk {
 			//위 비어있는 바코드 번호를 솔팅index에 주입
 			bookHeld.setSortingIndex(lastEmptyLocalBarcode);
 			
+			//새로 불러온 바코드번호 DB상 비어있는 값.
+			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
+			
+			String viewBarcodeInit = util.strExtract(newBarcode);
+			int viewBarNum = util.numExtract(newBarcode);
+			
+			if(newBarcode.length() != 8) {
+				return web.redirect(null, "바코드를 8자리로 맞추어 주세요.");
+			} else if(viewBarcodeInit.length() > 3 ) {
+				return web.redirect(null, "바코드 머리 글자수는 3자리 이하여야 합니다.");
+			}
+			
+			//바코드 뒤 숫자 중복검사를 위하여 값 주입
+			bookHeld.setNewBarcodeForDupCheck(viewBarNum);
+			//위 viewBarNum를 중복검사 변수로 사용.
+			//중복되는 번호가 있다면 impl 단계에서 예외처리
+			bookHeldService.selectDupCheckLocalBarcode(bookHeld);
+			
 			/*뷰페이지에서 넘어온 바코드 숫자와 ok컨트롤러에서 조사한 바코드 뒤숫자가
 			 * 같지 않으면, 콜백 발생. */
-			if(viewBarNum != lastEmptyLocalBarcode) {
+			/*if(viewBarNum != lastEmptyLocalBarcode) {
 				return web.redirect(null, "최신 바코드 번호가 일치하지 않습니다.");
-			}
-		} catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
-		}
-		/* 바코드 호출 끝 */
-		
-		/*소문자 바코드를 대문자로 변환*/
-		newBarcode = newBarcode.toUpperCase();
-		bookHeld.setLocalIdBarcode(newBarcode);
-		
-		
-		try {
+			}*/
+			
+			//소문자 바코드를 대문자로 변환
+			newBarcode = newBarcode.toUpperCase();
+			bookHeld.setLocalIdBarcode(newBarcode);
+			/* 바코드 호출 끝*/
+	
 			int checkBookTable= bookHeldService.selectBookCount(bookHeld);
 			if (checkBookTable > 0) {
 				//id_book을 받아오기 위한 객체
@@ -328,6 +331,7 @@ public class RegBookOk {
 		//model.addAttribute("brwList", list);
 
 		/** (9) 가입이 완료되었으므로 메인페이지로 이동 */
-		return web.redirect(web.getRootPath() + "/book/reg_book.do", "도서 등록이 완료되었습니다.");
+		//"도서 등록이 완료되었습니다."
+		return web.redirect(web.getRootPath() + "/book/reg_book.do", null);
 	}
 }
