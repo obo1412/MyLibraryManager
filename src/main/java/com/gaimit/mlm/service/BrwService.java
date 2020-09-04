@@ -155,4 +155,28 @@ public interface BrwService {
 	 */
 	public List<Borrow> selectBorrowBookCountThisMonth(Borrow borrow) throws Exception;
 	
+	
+	/**
+	 * bookHeldId로 도서 대출 상태 조회
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public Borrow selectBorrowItemByBookHeldId(Borrow borrow) throws Exception;
+	
+	/**
+	 * 대출을 위한 도서관의 회원 목록 조회
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Borrow> selectMemberListForBorrow(Borrow borrow) throws Exception;
+	
+	/**
+	 * 회원key값으로 회원 조회, 도서 반납 후 회원정보 업데이트를 위하여.
+	 * @param borrow
+	 * @return
+	 * @throws Exception
+	 */
+	public Borrow selectMemberItemByMemberId(Borrow borrow) throws Exception;
 }

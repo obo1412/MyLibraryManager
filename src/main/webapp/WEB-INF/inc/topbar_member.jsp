@@ -81,7 +81,7 @@
 					<div class="dropdown-menu dropdown-menu-right"
 						aria-labelledby="alertsDropdown">
 						<a class="dropdown-item"
-							href="${pageContext.request.contextPath}/member/logout.do">로그
+							href="${pageContext.request.contextPath}/member/logout_member.do">로그
 							아웃</a> <a class="dropdown-item"
 							href="${pageContext.request.contextPath}/member/edit.do">회원정보
 							수정</a>

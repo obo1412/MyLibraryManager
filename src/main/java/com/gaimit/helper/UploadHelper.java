@@ -35,7 +35,7 @@ public class UploadHelper {
 	public String tempDir = null;
 	
 	public UploadHelper(String homeDir) {
-		this.fileDir = homeDir + "/upload";
+		this.fileDir = homeDir + "/upload/finebook4";
 		this.tempDir = fileDir + "/temp";
 	}
 
@@ -54,7 +54,136 @@ public class UploadHelper {
 	public Map<String, String> getParamMap() {
 		return this.paramMap;
 	}
+	
+	// 경로를 변경하기 위하여 만든 데이터 전송
+	public void multipartRequest(String libDir) throws Exception {
+		/** JSP 내장객체를 담고 있는 Spring의 객체를 통해서 내장객체 획득하기 */
+		// --> import org.springframework.web.context.request.RequestContextHolder;
+		// --> import org.springframework.web.context.request.ServletRequestAttributes;
+		ServletRequestAttributes requestAttr 
+			= (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		HttpServletRequest request = requestAttr.getRequest();
+		
+		/** multipart로 전송되었는지 여부 검사 */
+		// --> import org.apache.commons.fileupload.servlet.ServletFileUpload
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 
+		if (!isMultipart) {
+			// 전송된 데이터가 없으므로 강제 예외 발생.
+			throw new Exception();
+		}
+
+		/** 폴더의 존재 여부 체크해서 생성하기 */
+		fileDir = fileDir + libDir;
+		// import java.io.File
+		File uploadDirFile = new File(fileDir);
+		if (!uploadDirFile.exists()) {
+			uploadDirFile.mkdirs();
+		}
+
+		File tempDirFile = new File(tempDir);
+		if (!tempDirFile.exists()) {
+			tempDirFile.mkdirs();
+		}
+
+		/** 업로드가 수행될 임시 폴더 연결 */
+		// --> import org.apache.commons.fileupload.disk.DiskFileItemFactory
+		DiskFileItemFactory factory = new DiskFileItemFactory();
+		factory.setRepository(tempDirFile);
+
+		/** 업로드 시작 */
+		ServletFileUpload upload = new ServletFileUpload(factory);
+		// UTF-8 처리 지정
+		upload.setHeaderEncoding("UTF-8");
+		// 최대 파일 크기 --> 20M
+		upload.setSizeMax(20 * 1024 * 1024);
+		// 실제 업로드를 수행하여 파일 및 파라미터들을 얻기
+		List<FileItem> items = upload.parseRequest(request);
+
+		// items에 저장 데이터가 분류될 컬렉션들 할당하기
+		fileList = new ArrayList<FileInfo>();
+		paramMap = new HashMap<String, String>();
+
+		/** 업로드 된 파일의 정보 처리 */
+		for (int i = 0; i < items.size(); i++) {
+			// 전송된 정보 하나를 추출한다.
+			// import org.apache.commons.fileupload.FileItem
+			FileItem f = items.get(i);
+
+			if (f.isFormField()) {
+				/** 파일 형식의 데이터가 아닌 경우 --> paramMap에 정보 분류 */
+				String key = f.getFieldName();
+				// value를 UTF-8 형식으로 취득한다.
+				String value = f.getString("UTF-8");
+
+				// 이미 동일한 키값이 map안에 존재한다면? --> checkbox
+				if (paramMap.containsKey(key)) {
+					// 기존의 값 뒤에 콤마(,)를 추가해서 값을 병합한다.
+					String new_value = paramMap.get(key) + "," + value;
+					paramMap.put(key, new_value);
+				} else {
+					// 그렇지 않다면 키와 값을 신규로 추가한다.
+					paramMap.put(key, value);
+				}
+
+			} else {
+				/** 파일 형식의 데이터인 경우 --> fileList에 정보 분류 */
+				
+				/** 1) 파일의 정보를 추출한다 */
+				String orginName = f.getName(); 		// 파일의 원본 이름
+				String contentType = f.getContentType();// 파일 형식
+				long fileSize = f.getSize(); 			// 파일 사이즈
+
+				// 파일 사이즈가 없다면 조건으로 돌아간다.
+				if (fileSize < 1) {
+					continue;
+				}
+
+				// 파일이름에서 확장자만 추출
+				String ext = orginName.substring(orginName.lastIndexOf("."));
+
+				/** 2) 동일한 이름의 파일이 존재하는지 검사한다. */
+				// 웹 서버에 저장될 이름을 "현재의 Timestamp+확장자(ext)"로 지정 (중복저장 우려)
+				String fileName = System.currentTimeMillis() + ext;
+				// 저장된 파일 정보를 담기 위한 File객체
+				File uploadFile = null;
+				// 중복된 이름의 파일이 존재할 경우 index값을 1씩 증가하면서 뒤에 덧붙인다.
+				int index = 0;
+				
+				// 일단 무한루프
+				while (true) {
+					// 업로드 파일이 저장될 폴더 + 파일이름으로 파일객체를 생성한다.
+					uploadFile = new File(uploadDirFile, fileName);
+
+					// 동일한 이름의 파일이 없다면 반복 중단.
+					if (!uploadFile.exists()) {
+						break;
+					}
+
+					// 그렇지 않다면 파일이름에 index값을 적용하여 이름 변경
+					fileName = System.currentTimeMillis() + (++index) + ext;
+				} // end while
+
+				// 최종적으로 구성된 파일객체를 사용해서
+				// 임시 폴더에 존재하는 파일을 보관용 폴더에 복사하고, 임시파일 삭제
+				f.write(uploadFile);
+				f.delete();
+
+				/** 3) 파일 정보 분류 처리 */
+				// 생성된 정보를 Beans의 객체로 설정해서 컬렉션에 저장한다.
+				// --> 이 정보는 추후 파일의 업로드 내역을 DB에 저장할 때 사용된다.
+				FileInfo info = new FileInfo();
+				info.setOrginName(orginName);
+				info.setFileDir(fileDir);
+				info.setFileName(fileName);
+				info.setContentType(contentType);
+				info.setFileSize(fileSize);
+
+				fileList.add(info);
+			} // end if
+		} // end for
+	}
+	
 	/**
 	 * Multipart로 전송된 데이터를 판별하여 파일리스트와 텍스트 파라미터를 분류한다.
 	 * @throws Exception

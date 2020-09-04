@@ -101,7 +101,7 @@ public class LoginOkMember {
 			movePage = web.getRootPath() + "/index.do";
 		}*/
 
-		return web.redirect(web.getRootPath() + "/index_login_member.do", null);
+		return web.redirect(web.getRootPath() + "/book/book_held_list_member.do", null);
 	}
 
 }

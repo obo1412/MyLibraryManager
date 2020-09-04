@@ -24,10 +24,14 @@
 			text-overflow: ellipsis;
 			white-space: nowrap;
 		}
+		
+		@media screen and (max-width:600px) {
+			.mobile-hide {display: none;}
+		}
 	</style>
 </head>
 
-<body>
+<body class="sidebar-toggled">
 	<%@ include file="/WEB-INF/inc/topbar_member.jsp"%>
 
 	<div id="wrapper">
@@ -44,7 +48,7 @@
 						<div style='margin: 10px auto;'>
 							<div class="float-left">
 								<form method='get'
-									action='${pageContext.request.contextPath}/book/book_held_list.do'
+									action='${pageContext.request.contextPath}/book/book_held_list_member.do'
 									style="width: 300px;">
 									<div class="input-group input-group-sm">
 										<span class="input-group-prepend">
@@ -76,15 +80,16 @@
 									<th class="info text-center" style="width:50px;">번호</th>
 									<th class="info text-center" style="width:120px;">도서명</th>
 									<th class="info text-center" style="width:70px;">저자명</th>
-									<th class="info text-center" style="width:70px;">출판사</th>
-									<th class="info text-center" style="width:70px;">출판일</th>
-									<th class="info text-center" style="width:90px;">ISBN13</th>
-									<th class="info text-center" style="width:80px;">청구기호</th>
-									<th class="info text-center" style="width:80px;">등록일</th>
-									<th class="info text-center" style="width:60px;">등록번호</th>
-									<th class="info text-center" style="width:60px;">권차기호</th>
-									<th class="info text-center" style="width:60px;">복본기호</th>
-									<th class="info text-center" style="width:30px;">색상</th>
+									<th class="info text-center" style="width:70px;">상태</th>
+									<th class="info text-center mobile-hide" style="width:70px;">출판사</th>
+									<th class="info text-center mobile-hide" style="width:70px;">출판일</th>
+									<th class="info text-center mobile-hide" style="width:90px;">ISBN13</th>
+									<th class="info text-center mobile-hide" style="width:80px;">청구기호</th>
+									<th class="info text-center mobile-hide" style="width:80px;">등록일</th>
+									<th class="info text-center mobile-hide" style="width:60px;">등록번호</th>
+									<th class="info text-center mobile-hide" style="width:60px;">권차기호</th>
+									<th class="info text-center mobile-hide" style="width:60px;">복본기호</th>
+									<th class="info text-center mobile-hide" style="width:30px;">색상</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -92,24 +97,27 @@
 									<c:when test="${fn:length(bookHeldList) > 0}">
 										<c:forEach var="item" items="${bookHeldList}" varStatus="status">
 											<tr>
-												<td class="text-center">${page.indexLast - status.index}</td>
-												<td class="text-center" style="white-space:nowrap; text-overflow:ellipsis;">
+												<td class="text-center">
 													<c:url var="viewUrl"
-														value="/book/book_held_edit.do">
+														value="/book/book_held_view_member.do">
 														<c:param name="localIdBarcode"
 															value="${item.localIdBarcode}" />
 															<c:param name="bookHeldId"
 															value="${item.id}" />
-													</c:url> <a href="${viewUrl}"
-													onclick="window.open(this.href, '_blank','width=550,height=800,scrollbars=yes');return false;">${item.title}</a>
+													</c:url>
+													<a href="${viewUrl}" onclick="window.open(this.href, '_blank','width=550,height=800,scrollbars=yes');return false;">
+														${page.indexLast - status.index}
+													</a>
 												</td>
-												<td class="text-center">${item.writer}</td>
-												<td class="text-center">${item.publisher}</td>
+												<td class="text-center" data-toggle="tooltip" data-placement="top" title="${item.title}">${item.title}</td>
+												<td class="text-center" data-toggle="tooltip" data-placement="top" title="${item.writer}">${item.writer}</td>
+												<td class="text-center text-danger" data-toggle="tooltip" data-placement="top" title="${item.brwStatus}">${item.brwStatus}</td>
+												<td class="text-center mobile-hide" data-toggle="tooltip" data-placement="top" title="${item.publisher}">${item.publisher}</td>
 												<fmt:parseDate var="parsePubDate" value="${item.pubDate}" pattern="yyyy-MM-dd"/>
 												<fmt:formatDate var="pubDate" value="${parsePubDate}" pattern="yyyy-MM-dd" />
-												<td class="text-center">${pubDate}</td>
-												<td class="text-center">${item.isbn13}</td>
-												<td class="text-center">
+												<td class="text-center mobile-hide">${pubDate}</td>
+												<td class="text-center mobile-hide">${item.isbn13}</td>
+												<td class="text-center mobile-hide">
 													<div>
 														<c:if test="${not empty item.additionalCode}">${item.additionalCode} </c:if>
 													</div>
@@ -126,9 +134,9 @@
 														<c:if test="${item.copyCode ne '0'}">C${item.copyCode} </c:if>
 													</div>
 												</td>
-												<td class="text-center">${item.regDate}</td>
-												<td class="text-center">${item.localIdBarcode}</td>
-												<td class="text-center">
+												<td class="text-center mobile-hide">${item.regDate}</td>
+												<td class="text-center mobile-hide">${item.localIdBarcode}</td>
+												<td class="text-center mobile-hide">
 													<c:choose>
 														<c:when test="${not empty item.volumeCode}">
 															V${item.volumeCode}
@@ -140,13 +148,13 @@
 												</td>
 												<c:choose>
 													<c:when test="${item.copyCode eq 0}">
-														<td class="text-center">-</td>
+														<td class="text-center mobile-hide">-</td>
 													</c:when>
 													<c:otherwise>
-														<td class="text-center">C${item.copyCode}</td>
+														<td class="text-center mobile-hide">C${item.copyCode}</td>
 													</c:otherwise>
 												</c:choose>
-												<td class="text-center">
+												<td class="text-center mobile-hide">
 													<div style="margin:auto; width:30px; min-height:15px; background-color:${item.classCodeColor}"></div>
 												</td>
 											</tr>
@@ -177,7 +185,10 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 	
 	<script type="text/javascript">
-	
+		$(function () {
+		  $('[data-toggle="tooltip"]').tooltip()
+		});
+		
 	</script>
 </body>
 </html>

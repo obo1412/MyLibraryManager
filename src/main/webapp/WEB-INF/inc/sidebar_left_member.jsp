@@ -41,7 +41,7 @@
 </head>
 
 <!-- Sidebar -->
-		<ul class="sidebar navbar-nav">
+		<ul class="sidebar navbar-nav toggled">
 			<li class="nav-item dropdown"><a
 				class="nav-link dropdown-toggle" href="#" id="bookDropdown"
 				role="button" data-toggle="dropdown" aria-haspopup="true"

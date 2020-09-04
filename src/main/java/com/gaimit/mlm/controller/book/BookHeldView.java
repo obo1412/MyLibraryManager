@@ -25,6 +25,7 @@ import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.WebHelper;
 
 import com.gaimit.mlm.model.Manager;
+import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.ManagerService;
@@ -93,6 +94,51 @@ public class BookHeldView {
 		model.addAttribute("bookHeldItem", bookHeldItem);
 		
 		return new ModelAndView("book/book_held_view");
+	}
+	
+	/** 도서 상세 정보 */
+	@RequestMapping(value = "/book/book_held_view_member.do", method = RequestMethod.GET)
+	public ModelAndView viewBookMember(Locale locale, Model model) {
+		
+		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		web.init();
+		
+		int idLib = 0;
+		
+		/** 로그인 여부 검사 */
+		// 로그인중인 회원 정보 가져오기
+		Member loginInfo = (Member) web.getSession("loginInfo");
+		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
+		if (loginInfo == null) {
+			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
+		} else {
+			idLib = loginInfo.getIdLib();
+		}
+		
+		String barcodeBook = web.getString("localIdBarcode");
+		int bookHeldId = web.getInt("bookHeldId");
+		
+		// 파라미터를 저장할 Beans
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(idLib);
+		bookHeld.setLocalIdBarcode(barcodeBook);
+		bookHeld.setId(bookHeldId);
+		
+		/** 3) Service를 통한 SQL 수행 */
+		// 조회 결과를 저장하기 위한 객체
+		BookHeld bookHeldItem = new BookHeld();
+		try {
+			bookHeldItem = bookHeldService.getBookHelditem(bookHeld);
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		
+		/** 4) View 처리하기 */
+		// 조회 결과를 View에게 전달한다.
+		model.addAttribute("bookHeldItem", bookHeldItem);
+		
+		return new ModelAndView("book/book_held_view_member");
 	}
 	
 	/** 도서 정보 수정 */

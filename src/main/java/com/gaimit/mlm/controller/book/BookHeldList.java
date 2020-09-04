@@ -32,9 +32,11 @@ import com.gaimit.helper.PageHelper;
 import com.gaimit.helper.Util;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BookHeld;
+import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.BookHeldService;
+import com.gaimit.mlm.service.BrwService;
 import com.gaimit.mlm.service.ManagerService;
 
 @Controller
@@ -56,6 +58,9 @@ public class BookHeldList {
 	
 	@Autowired
 	BookHeldService bookHeldService;
+	
+	@Autowired
+	BrwService brwService;
 	
 	/** 도서 목록 페이지 */
 	@RequestMapping(value = "/book/book_held_list.do", method = RequestMethod.GET)
@@ -169,6 +174,9 @@ public class BookHeldList {
 		BookHeld bookHeld = new BookHeld();
 		bookHeld.setLibraryIdLib(idLib);
 		
+		Borrow borrow = new Borrow();
+		borrow.setIdLibBrw(idLib);
+		
 		// 검색어 파라미터 받기 + Beans 설정
 		int searchOpt = web.getInt("searchOpt");
 		String keyword = web.getString("keyword", "");
@@ -211,13 +219,10 @@ public class BookHeldList {
 			bookHeldList = bookHeldService.getBookHeldList(bookHeld);
 			if(bookHeldList != null) {
 				for(int i=0; i<bookHeldList.size(); i++) {
-					String classCode = bookHeldList.get(i).getClassificationCode();
-					classCode = util.getFloatClsCode(classCode);
-					if(classCode != null&&!"".equals(classCode)) {
-						float classCodeFloat = Float.parseFloat(classCode);
-						int classCodeInt = (int) (classCodeFloat);
-						String classCodeColor = util.getColorKDC(classCodeInt);
-						bookHeldList.get(i).setClassCodeColor(classCodeColor);
+					int bookHeldId = bookHeldList.get(i).getId();
+					borrow.setBookHeldId(bookHeldId);
+					if(brwService.selectBorrowItemByBookHeldId(borrow)!=null) {
+						bookHeldList.get(i).setBrwStatus("대출중");
 					}
 				}
 			}

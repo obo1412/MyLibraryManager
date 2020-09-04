@@ -13,6 +13,7 @@
 <head>
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 	<style type="text/css">
+		
 		@media ( min-width : 768px) {
 			.upsideCard {
 				max-width: 500px;
@@ -76,8 +77,8 @@
 								<label for='search-name' class="col-md-3 float-right">회원
 									검색</label>
 								<div class="input-group input-group-sm col-md-9">
-									<input type="text" name="search-name" id="search-keyword"
-										class="form-control korean-first" placeholder="회원정보(이름, 전화번호, 회원번호)를 입력해주세요" value="${name}" />
+									<input type="text" name="search-name" id="search-keyword" onKeyDown="searchMemberEnterKeyDown()"
+										class="form-control korean-first" placeholder="회원정보(이름, 전화번호, 회원번호)를 입력해주세요" value="" />
 									<span class="input-group-append">
 										<button class="btn btn-sm btn-warning" id="btn-search-mbr"
 											onclick="clickedSearchMember()">
@@ -101,23 +102,23 @@
 									</tr>
 								</thead>
 								<tbody class="searchMemberListClass">
-									
+									<tr>
+										<td colspan="5" class="text-center"
+											style="line-height: 30px;">조회된 회원 정보가 없습니다.</td>
+									</tr>
 								</tbody>
 							</table>
 						</div>
 
 						<!-- 회원정보, 도서정보 수집 시작 -->
-						<form class="form-horizontal" name="myform" method="post"
-							action="${pageContext.request.contextPath}/book/brw_book_ok.do">
 
-							<input type="hidden" name="memberId" id="memberId"
-								value="${memberId}" />
+						<input type="hidden" name="memberId" id="memberId" value="" />
 
 						<div class="card mt-2 mb-2" style="width: 100%;">
               <div class="row no-gutters" style="width:100%; height:100%;">
-                <div class="col-4 w-25 rounded" style="background-color: grey; display:flex;">
-                  <div class="rounded" style="width:90%; height:90%; margin:auto; background-color: white;">
-                  	<img src="" class="card-img" style="margin:auto;">
+                <div class="col-4 w-25 rounded" style="background-color:grey; display:flex;">
+                  <div class="rounded" style="width:90%; height:80%; margin:auto; background-color: white; display:flex;">
+                  		<img src="" id="profileImg" class="card-img" style="margin:auto;">
                   </div>
                 </div>
                 <div class="col-8" style="height: 100%; font-size: 14px;">
@@ -136,80 +137,55 @@
                         <td colspan="2" id="brwMemberCode">-</td>
                       </tr>
                      </table>
-                     <table class="table table-sm table-striped table-bordered mb-0">
+                     <table class="table table-sm table-striped table-bordered mb-1">
                       <tbody class="text-center">
                         <tr>
-                          <th>대출한도</th>
+                          <th>대출권수</th>
                           <th>대출중</th>
                           <th>대출가능</th>
                         </tr>
                         <tr>
                           <td id="brwMemberBrwLimit">0</td>
-                          <td id="brwMemberBrwing">0</td>
+                          <td id="brwMemberBrwNow">0</td>
                           <td id="brwMemberBrwPsb">0</td>
                         </tr>
                       </tbody>
+                    </table>
+                    <table class="table table-sm table-bordered mb-0">
+                    	<tbody>
+                    		<tr>
+                    			<td id="memberNotice">
+                    				-
+                    			</td>
+                    			<td style='display:none;'>
+                    				<!-- value가 block이면 도서 대출 제한 -->
+                    				<input type="hidden" id="blockBrw" value="block" />
+                    			</td>
+                    		</tr>
+                    	</tbody>
                     </table>
                   </div>
                 </div>
               </div>
             </div><!-- 회원정보 전체 -->
-							
-							<div class="col-md-12 mb-3" style="font-size:14px;">
-								<c:choose>
-								<c:when test="${overDueCount > 0}">
-									<p class="bg-danger text-white">${overDueCount}권의 연체중인 도서가 존재합니다.</p>
-								</c:when>
-								<c:when test="${restrictDate ne null}">
-									<fmt:parseDate var="rstDate" value="${restrictDate}" pattern="yyyy-MM-dd" />
-									<fmt:formatDate var="viewRstDate" value="${rstDate}" pattern="yyyy-MM-dd" />
-									<p class="bg-danger text-white">${viewRstDate}까지 도서 대출이 제한됩니다.</p>
-								</c:when>
-								<c:when test="${(name eq null)||(name eq '')}">
-									<p> </p>
-								</c:when>
-								<c:otherwise>
-									<p class="bg-success text-white">대출 가능 회원입니다.</p>
-								</c:otherwise>
-								</c:choose>
-							</div>
 
-							<div class="form-inline mb-2">
-								<div class="form-group col-md-12">
-									<label for='barcodeBook' class="col-md-4">도서등록번호</label>
-									<div class="input-group input-group-sm col-md-7">
-										<span class="input-group-prepend"> <input type="button"
-											value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
-											onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
-										</span> <input type="text" name="barcodeBook" id="barcodeBook"
-											class="form-control" placeholder="or 직접 입력" />
+							<div class="form-group form-inline mb-1">
+								<label for='barcodeBook' class="col-3" style="font-size:12px;">도서등록번호</label>
+								<div class="input-group input-group-sm col-9">
+									<span class="input-group-prepend">
+										<input type="button"
+										value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
+										onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
+									</span>
+									<input type="text" name="barcodeBook" id="barcodeBook"
+										class="form-control" placeholder="or 직접 입력" onKeyDown="brwBookEnterKeyDown()" />
+									<div class="input-group-append">
+										<button onclick="clickedBrwBook()" class="btn btn-primary">도서대출</button>
+										<!-- <button onclick="resetMemberBoard()" class="btn btn-danger">취소</button> -->
 									</div>
 								</div>
 							</div>
-
-							<div class="form-group">
-								<!-- 	<label for='grade' class="col-md-12">회원 등급</label> -->
-								<div class="col-md-12">
-									<input type="hidden" name="grade" id="grade"
-										class="form-control" value="${grade}" />
-								</div>
-							</div>
-
-							<div class="form-group">
-								<!-- <label for='dateLimit' class="col-md-12">대여기한</label> -->
-								<div class="col-md-12">
-									<input type="hidden" name="dateLimit" id="dateLimit"
-										class="form-control" value="${dateLimit}" />
-								</div>
-							</div>
-
-							<div class="form-group">
-								<div class="offset-md-7 col-md-5">
-									<button type="submit" class="btn btn-primary">제출</button>
-									<button type="reset" class="btn btn-danger">취소</button>
-								</div>
-							</div>
-						</form>
+							
 						<!-- 회원정보, 도서정보 끝 -->
 					</div>
 					<!-- card body 끝 -->
@@ -223,37 +199,36 @@
 						</h6>
 					</div>
 					<div class="card-body">
-						<form class="form-horizontal" name="search-mbr-form"
-							id="search-mbr-form" method="post"
-							action="${pageContext.request.contextPath}/book/return_book_ok.do">
-							<div class="form-group form-inline">
-								<label for='barcodeBookRtn' class="col-md-3">도서 검색</label>
-								<div class="input-group input-group-sm col-md-9">
-									<input type="text" name="barcodeBookRtn" id="barcodeBookRtn"
-										class="form-control" placeholder="도서바코드를 입력해주세요"
-										value="${barcodeBook}" /> <span class="input-group-append">
-										<button class="btn btn-warning btn-sm" id="btn-search-mbr"
-											type="submit">반납</button>
-									</span>
-								</div>
+						<div class="form-group form-inline">
+							<label for='barcodeBookRtn' class="col-md-3">도서 검색</label>
+							<div class="input-group input-group-sm col-md-9">
+								<input type="text" name="barcodeBookRtn" id="barcodeBookRtn"
+									class="form-control" placeholder="도서바코드를 입력해주세요" onKeyDown="rtnBookEnterKeyDown()"
+									value="" /> <span class="input-group-append">
+									<button class="btn btn-warning btn-sm" id="btn-search-mbr"
+										onclick="clickedReturnBook()">
+										반납
+									</button>
+								</span>
 							</div>
-						</form>
+						</div>
 						<!-- 도서 검색폼 -->
 
 						<div class="table-responsive">
-							<table class="table table-sm">
-								<tbody>
+							<table class="table table-sm table-fixed">
+								<thead>
+									<tr>
+										<th class="table-info text-center" style="width:30%;">도서명</th>
+										<th class="table-info text-center" style="width:20%;">등록번호</th>
+										<th class="table-info text-center" style="width:20%;">대출일</th>
+										<th class="table-info text-center" style="width:20%;">반납일</th>
+										<th class="table-info text-center" style="width:10%;">상태</th>
+									</tr>
+								</thead>
+								<tbody class="returnRmnListClass">
 									<c:choose>
 										<c:when test="${fn:length(brwRmnList) > 0}">
-											<thead>
-												<tr>
-													<th class="table-info text-center">도서제목</th>
-													<th class="table-info text-center">등록번호</th>
-													<th class="table-info text-center">대출일</th>
-													<th class="table-info text-center">반납일</th>
-													<th class="table-info text-center">상태</th>
-												</tr>
-											</thead>
+											
 											<c:forEach var="item" items="${brwRmnList}"
 												varStatus="status">
 												<tr>
@@ -309,7 +284,7 @@
 										<c:otherwise>
 											<tr>
 												<td colspan="8" class="text-center"
-													style="line-height: 30px;">조회된 도서 및 회원 정보가 없습니다.</td>
+													style="line-height: 30px;">조회된 도서 정보가 없습니다.</td>
 											</tr>
 										</c:otherwise>
 									</c:choose>
@@ -334,66 +309,18 @@
 									<tr>
 										<th class="info text-center" style="width:20px;">번호</th>
 										<th class="info text-center" style="width:20px;">상태</th>
-										<th class="info text-center" style="width:40px;">이름</th>
+										<th class="info text-center" style="width:30px;">이름</th>
 										<th class="info text-center" style="width:40px;">연락처</th>
 										<th class="info text-center" style="width:30px;">회원등급</th>
-										<th class="info text-center" style="width:50px;">도서명</th>
-										<th class="info text-center" style="width:40px;">도서등록번호</th>
+										<th class="info text-center" style="width:60px;">도서명</th>
+										<th class="info text-center" style="width:34px;">도서등록번호</th>
 										<th class="info text-center" style="width:40px;">반납예정일</th>
-										<th class="info text-center" style="width:60px;">대출일</th>
-										<th class="info text-center" style="width:60px;">반납일</th>
+										<th class="info text-center" style="width:40px;">대출일</th>
+										<th class="info text-center" style="width:40px;">반납일</th>
 									</tr>
 								</thead>
-								<tbody>
-									<c:choose>
-										<c:when test="${fn:length(brwListToday) > 0}">
-											<c:forEach var="item" items="${brwListToday}" varStatus="status">
-												<tr>
-													<td class="text-center">${status.count}</td>
-													<c:choose>
-														<c:when
-															test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
-															<c:set var="state" value="대출" />
-															<c:set var="classBtn" value="btn btn-warning" />
-														</c:when>
-														<c:otherwise>
-															<c:set var="state" value="반납" />
-															<c:set var="classBtn" value="btn btn-primary" />
-														</c:otherwise>
-													</c:choose>
-													<td class="text-center ${classBtn}"
-														style="font-size: 12px;">${state}</td>
-													<td class="text-center">${item.name}</td>
-													<td class="text-center">${item.phone}</td>
-													<td class="text-center">${item.gradeName}</td>
-													<td class="text-center">${item.titleBook}</td>
-													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center"><fmt:parseDate var="dueDate" value="${item.dueDateBrw}"
-															pattern="yyyy-MM-dd" /> <fmt:formatDate
-															var="dViewDate" value="${dueDate}"
-															pattern="yyyy-MM-dd" /> ${dViewDate}</td>
-													<td class="text-center"><fmt:parseDate var="formDate"
-															value="${item.startDateBrw}"
-															pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
-															var="viewDate" value="${formDate}"
-															pattern="yyyy-MM-dd HH:mm:ss" /> ${viewDate}</td>
-														<c:set var="delay" value="" />
-													<c:if test="${item.dueDateBrw < item.endDateBrw}">
-														<c:set var="delay" value="text-danger" />
-													</c:if>
-													<td class="text-center ${delay}">
-														${item.endDateBrw}
-													</td>
-												</tr>
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<tr>
-												<td colspan="8" class="text-center"
-													style="line-height: 100px;">조회된 데이터가 없습니다.</td>
-											</tr>
-										</c:otherwise>
-									</c:choose>
+								<tbody class="brwListDdayClass">
+									
 								</tbody>
 							</table>
 						</div>
@@ -411,72 +338,364 @@
 	<!-- wrapper 끝 -->
 
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
+	<%@ include file="/WEB-INF/inc/korToEng.jsp"%>
 
 
 
 	<script type="text/javascript">
-		$(function() {
+		window.onload = function() {
 			/* 페이지 호출시 회원검색에 포커싱 */
 			document.getElementById('search-keyword').focus();
-
-			/* 멤버id와 이름, 전화번호가 채워졌을시, 도서바코드로 focusing 함수*/
-			var chkMemberId = document.getElementById('name').value;
-			if (chkMemberId) {
-				document.getElementById('barcodeBook').focus();
-			}
-
-		});
+			
+			$('[data-toggle="tooltip"]').tooltip();
+			
+			selectBrwListDday();
+			
+		};
 		
+		//반납 버튼 엔터
+		function rtnBookEnterKeyDown() {
+			if(event.keyCode==13){
+				clickedReturnBook();
+			}
+		};
+		//반납 버튼 클릭
+		function clickedReturnBook() {
+			var barcodeBookRtnVal = document.getElementById('barcodeBookRtn').value;
+			barcodeBookRtnVal = convertKorToEng(barcodeBookRtnVal);
+			document.getElementById('barcodeBookRtn').value = barcodeBookRtnVal;
+			//컨트롤러쪽과도 변수명 통일을 위해서 생성.
+			var barcodeBookRtn = barcodeBookRtnVal;
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/return_book_ok.do",
+				type:'POST',
+				data: {
+					barcodeBookRtn
+				},
+				success: function(data) {
+					if(data.rt != 'OK') {
+						alert(data.rt);
+					} else {
+						document.getElementById('barcodeBookRtn').value = null;
+						//도서 반납 처리 후, 오늘의 대출/반납 현황 업데이트
+						selectBrwListDday();
+						//도서 반납 처리 후, 해당 회원의 남아있는 대출 도서 조회
+						selectBrwRmnListByMemberId(data.memberId);
+						//도서 반납 처리 후, 해당 회원 정보 업데이트
+						brwPickMember(data.memberId);
+						
+						document.getElementById('barcodeBookRtn').focus();
+					}
+				}
+			});
+		}
+		
+		//해당 회원의 남아있는 도서 대출 목록 조회
+		function selectBrwRmnListByMemberId(memberId) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/brw_remain_list_member.do",
+				type:'GET',
+				data: {
+					memberId
+				},
+				success: function(data) {
+					if(data.rt != 'OK') {
+						alert(data.rt);
+					} else {
+						//다른 회원을 선택했을 경우 비워야함.
+						var tbody = document.querySelector('.returnRmnListClass');
+						tbody.innerHTML = '';
+						var brwRmnList = data.brwRmnList;
+						if(brwRmnList.length>0){
+							for(var i=0; i<brwRmnList.length; i++){
+								var row = tbody.insertRow();
+								for(var j=0; j<5; j++){
+									cell = row.insertCell(j);
+									cell.classList.add('text-center');
+								}
+								var children = row.childNodes;
+								children[0].innerText = brwRmnList[i].title;
+								children[1].innerText = brwRmnList[i].localIdBarcode;
+								children[2].innerText = dateFormChange(brwRmnList[i].startDateBrw);
+								children[3].innerText = dateFormChange(brwRmnList[i].endDateBrw);
+								children[4].innerText = '';
+							}
+						}
+					}
+				}
+			});
+		}
+		
+		//반납 날짜 비교를 위한 오늘 날짜
+		var today = new Date();
+		//날짜 포멧 변경(yyyy-MM-dd)을 위한 함수
+		function dateFormChange(d) {
+			var result = null;
+			if(d != null && d != '') {
+				var date = new Date(d);
+				var year = date.getFullYear();
+				var month = date.getMonth()+1;
+				month = month > 10 ? month : '0'+month;
+				var day = date.getDate();
+				day = day > 10 ? day : '0'+day;
+				result = year+'-'+month+'-'+day;
+			}
+			return result;
+		};
+		
+		//해당 일의 대출/반납 목록
+		function selectBrwListDday(day) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/brw_list_D_day.do",
+				type:'GET',
+				data: {
+					
+				},
+				success: function(data) {
+					if(data.rt != 'OK') {
+						alert(data.rt);
+					} else {
+						console.log(data.brwListDday);
+						var brwListDday = data.brwListDday;
+						var tbody = document.querySelector('.brwListDdayClass');
+						tbody.innerHTML = "";
+						if(brwListDday.length>0) {
+							for(var i=0; i<brwListDday.length; i++){
+								var row = tbody.insertRow();
+								for(var j=0; j<10; j++){
+									cell = row.insertCell(j);
+									cell.classList.add('text-center');
+								}
+								var children = row.childNodes;
+								children[0].innerText = i+1;
+								if(brwListDday[i].endDateBrw == null || brwListDday[i].endDateBrw == ''){
+									children[1].innerHTML = "<button class='btn btn-sm btn-warning' style='font-size:12px;'>대출";
+								} else {
+									children[1].innerHTML = "<button class='btn btn-sm btn-primary' style='font-size:12px;'>반납";
+								}
+								children[2].innerText = brwListDday[i].name;
+								children[3].innerText = brwListDday[i].phone;
+								children[4].innerText = brwListDday[i].gradeName;
+								children[5].innerText = brwListDday[i].title;
+								children[6].innerText = brwListDday[i].localIdBarcode;
+								var dueDate = new Date(brwListDday[i].dueDateBrw);
+								if(dueDate < today) {
+									children[7].style.color = 'red';
+								}
+								children[7].innerText = dateFormChange(brwListDday[i].dueDateBrw);
+								children[8].innerText = dateFormChange(brwListDday[i].startDateBrw);
+								children[9].innerText = dateFormChange(brwListDday[i].endDateBrw);
+							}
+						}
+					}
+				}
+			});
+		};
+		
+		//회원 목록 검색 엔터
+		function searchMemberEnterKeyDown() {
+			if(event.keyCode==13){
+				clickedSearchMember();
+			}
+		};
+		//회원 목록 검색
 		function clickedSearchMember() {
-			const searchKeyword = document.getElementById('search-keyword').value;
+			const searchKeywordValue = document.getElementById('search-keyword').value;
+			console.log(searchKeywordValue);
 			
 			$.ajax({
 				url: "${pageContext.request.contextPath}/book/brw_search_member.do",
 				type:'POST',
 				data: {
-					searchKeyword
+					searchKeywordValue
 				},
 				success: function(data) {
-					var memberList = data.memberList;
-					var tbody = document.querySelector('.searchMemberListClass');
-					if(memberList.length>0) {
-						tbody.innerHTML = "";
-						console.log(memberList);
-						for(var i=0; i<memberList.length; i++){
-							tbody.innerHTML +=
-								"<tr class='srchedMember'>"
-									+ "<td class='text-center'><button class='pick-member btn btn-sm btn-secondary'>" + memberList[i].name
-									+ "<td class='text-center'>" + memberList[i].phone
-									+ "<td class='text-center'>" + memberList[i].gradeName
-									+ "<td class='text-center'>" + memberList[i].brwLimit
-									+ "<td class='text-center'>" + memberList[i].dateLimit
-								+"</tr>";
+					if(data.memberList != null){
+						var memberList = data.memberList;
+						var tbody = document.querySelector('.searchMemberListClass');
+						var memberNotice = document.getElementById('memberNotice');
+						if(memberList.length>0) {
+							tbody.innerHTML = "";
+							for(var i=0; i<memberList.length; i++){
+								tbody.innerHTML +=
+									"<tr class='srchedMember'>"
+										+ "<td class='text-center'><button class='pick-member btn btn-sm btn-secondary' style='font-size:12px'>" + memberList[i].name
+										+ "<td class='text-center' data-toggle='tooltip' data-placement='top' title='"+memberList[i].phone+"'>" + memberList[i].phone
+										+ "<td class='text-center'>" + memberList[i].gradeName
+										+ "<td class='text-center'>" + memberList[i].brwLimit
+										+ "<td class='text-center'>" + memberList[i].dateLimit
+										+ "<td style='display:none;'>" + memberList[i].id
+										+ "<td style='display:none;'>" + memberList[i].barcodeMbr
+										+ "<td style='display:none;'>" + memberList[i].brwNow
+										+ "<td style='display:none;'>" + memberList[i].profileImg
+									+"</tr>";
+							}
+							
+							if(memberList.length==1){
+								var memberId = memberList[0].id;
+								if(memberList[0].profileImg != null) {
+									var profileImgDir = '/files/'+memberList[0].profileImg.substring(memberList[0].profileImg.lastIndexOf("upload"));
+									document.getElementById('profileImg').src = profileImgDir;
+								} else {
+									document.getElementById('profileImg').src = '/files/upload/finebook4/no-image.png';
+								}
+								
+								document.getElementById('memberId').value = memberList[0].id;
+								document.getElementById('brwMemberName').innerText = memberList[0].name;
+								document.getElementById('brwMemberPhone').innerText = memberList[0].phone;
+								document.getElementById('brwMemberCode').innerText = memberList[0].barcodeMbr;
+								document.getElementById('brwMemberBrwLimit').innerText = memberList[0].brwLimit;
+								document.getElementById('brwMemberBrwNow').innerText = memberList[0].brwNow;
+								var brwPsb = memberList[0].brwLimit - memberList[0].brwNow;
+								document.getElementById('brwMemberBrwPsb').innerText = brwPsb;
+								
+								
+								brwPickMember(memberId);
+								//회원이 로딩되면 도서등록번호에 포커싱
+								document.getElementById('barcodeBook').focus();
+							}
+						} else {
+							tbody.innerHTML = "";
 						}
-						if(memberList.length==1){
-							document.getElementById('memberId').value = memberList[0].id;
-							document.getElementById('brwMemberName').innerText = memberList[0].name;
-							document.getElementById('brwMemberPhone').innerText = memberList[0].phone;
-							document.getElementById('brwMemberCode').innerText = memberList[0].barcodeMbr;
-							document.getElementById('brwMemberBrwLimit').innerText = memberList[0].brwLimit;
-						}
+					} else {
+						
 					}
-				},
-				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 				}
 			});
 		};
 		
+		//목록 중 회원 선택
 		const pickMember = document.querySelector('.searchMemberListClass');
-		
 		pickMember.addEventListener('click', (e) => {
 			if(e.target.classList.contains('pick-member')){
-				console.log(e.target.parentNode.parentNode);
+				var parentRow = e.target.parentNode.parentNode;
+				var children = parentRow.childNodes;
+				var memberId = children[5].innerText;
+				if(children[8].innerText != 'null'){
+					var profileImgDir = '/files/'+children[8].innerText.substring(children[8].innerText.lastIndexOf("upload"));
+					document.getElementById('profileImg').src = profileImgDir;
+				} else {
+					document.getElementById('profileImg').src = '/files/upload/finebook4/no-image.png';
+				}
+				
+				document.getElementById('memberId').value = memberId;
+				document.getElementById('brwMemberName').innerText = children[0].innerText;
+				document.getElementById('brwMemberPhone').innerText = children[1].innerText;
+				document.getElementById('brwMemberCode').innerText = children[6].innerText
+				document.getElementById('brwMemberBrwLimit').innerText = children[3].innerText;
+				document.getElementById('brwMemberBrwNow').innerText = children[7].innerText
+				var brwPsb = children[3].innerText - children[7].innerText;
+				document.getElementById('brwMemberBrwPsb').innerText = brwPsb;
+				
+				brwPickMember(memberId);
+				//회원이 로딩되면 도서등록번호에 포커싱
+				selectBrwRmnListByMemberId(memberId);
+				document.getElementById('barcodeBook').focus();
 			}
 		});
 		
+		//회원선택시 선택된 회원 정보 보이기
+		function brwPickMember(memberId) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/brw_pick_member.do",
+				type:'POST',
+				data: {
+					memberId
+				},
+				success: function(data) {
+					var memberItem = data.memberItem;
+					if(memberItem.profileImg != null && memberItem.profileImg != ''){
+						var profileImgDir = '/files/'+memberItem.profileImg.substring(memberItem.profileImg.lastIndexOf("upload"));
+						document.getElementById('profileImg').src = profileImgDir;
+					} else {
+						document.getElementById('profileImg').src = '/files/upload/finebook4/no-image.png';
+					}
+					document.getElementById('memberId').value = memberId;
+					document.getElementById('brwMemberName').innerText = memberItem.name;
+					document.getElementById('brwMemberPhone').innerText = memberItem.phone;
+					document.getElementById('brwMemberCode').innerText = memberItem.barcodeMbr;
+					document.getElementById('brwMemberBrwLimit').innerText = memberItem.brwLimit;
+					var brwLimit = document.getElementById('brwMemberBrwLimit').innerText;
+					var brwNow = data.brwNow;
+					document.getElementById('brwMemberBrwNow').innerText = brwNow;
+					var brwPsb = brwLimit - brwNow;
+					document.getElementById('brwMemberBrwPsb').innerText = brwPsb;
+					
+					/* var brwPsb = document.getElementById('brwMemberBrwPsb').innerText; */
+					var memberNotice = document.getElementById('memberNotice');
+					var blockBrw = document.getElementById('blockBrw');
+					blockBrw.value = 'block';
+					memberNotice.innerText = '';
+					memberNotice.style.color = 'red';
+					if(data.overDueCount > 0 && data.restrictDate != null) {
+						memberNotice.innerText = data.overDueCount+'권 연체중/대출제한일:'+data.restrictDate;
+					} else if(data.restrictDate != null) {
+						memberNotice.innerText = '대출제한일:'+data.restrictDate;
+					} else if(data.overDueCount > 0) {
+						memberNotice.innerText = data.overDueCount+'권 연체중';
+					} else if(brwPsb<=0) {
+						memberNotice.innerText = '더이상 대출할 수 없습니다.';
+					} else {
+						memberNotice.style.color = 'black';
+						memberNotice.innerText = '대출가능한 회원입니다.';
+						blockBrw.value = '';
+					}
+				}
+			});
+		};
 		
+		//대출 제한 회원 해제
+		const memberNotice = document.getElementById('memberNotice');
+		memberNotice.addEventListener("dblclick", (e)=> {
+			e.target.style.color ='black';
+			var blockBrw = document.getElementById('blockBrw');
+			if(blockBrw.value == 'block') {
+				blockBrw.value = '';
+			}
+		});
 		
+		//도서 대출 엔터키
+		function brwBookEnterKeyDown() {
+			if(event.keyCode==13){
+				clickedBrwBook();
+			}
+		};
+		//도서 대출 처리
+		function clickedBrwBook() {
+			var memberId = document.getElementById('memberId').value;
+			var barcodeVal = document.getElementById('barcodeBook').value;
+			barcodeVal = convertKorToEng(barcodeVal);
+			document.getElementById('barcodeBook').value = barcodeVal;
+			//컨트롤러쪽과도 변수명 통일을 위해서 생성.
+			var barcodeBook = barcodeVal;
+			
+			var blockBrw = document.getElementById('blockBrw').value;
+			if(blockBrw == 'block') {
+				alert('대출이 제한된 회원입니다.');
+			} else {
+				$.ajax({
+					url: "${pageContext.request.contextPath}/book/brw_book_ok.do",
+					type:'POST',
+					data: {
+						memberId,
+						barcodeBook
+					},
+					success: function(data) {
+						if(data.rt != 'OK') {
+							alert(data.rt);
+						} else {
+							document.getElementById('barcodeBook').value = null;
+							//도서 대출 처리 후, 회원정보테이블 업데이트
+							brwPickMember(memberId);
+							//도서 대출 처리 후, 오늘 대출/반납 현황 업데이트
+							selectBrwListDday();
+							//도서 대출 처리 후, 해당 회원의 대출 도서 목록 조회
+							selectBrwRmnListByMemberId(memberId);
+						}
+					}
+				});
+			}
+		};
 		
 	</script>
 </body>

@@ -88,23 +88,6 @@
 		ORDER BY id ASC
 	</select>
 	
-	<!-- 도서 대출을 위한 회원 검색 -->
-	<select id="selectMemberListForBorrow" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
-		SELECT
-			id, m.id_lib, m.name, phone, g.grade_id, barcode_mbr, grade_name,
-			brw_limit, date_limit
-		FROM member m
-		INNER JOIN member_grade g ON m.grade_id = g.grade_id
-		WHERE m.id_lib=#{idLib}
-			AND status = 1
-			AND (
-				(name LIKE concat('%', #{name}, '%'))
-				OR (barcode_mbr LIKE concat('%', #{name}, '%'))
-				OR (phone LIKE concat('%', #{name}, '%'))
-			)
-		ORDER BY id ASC
-	</select>
-	
 	<!-- 일련번호에 의한 회원정보 조회 -->
 	<select id="selectMember" parameterType="com.gaimit.mlm.model.Member" resultMap="member">
 		SELECT

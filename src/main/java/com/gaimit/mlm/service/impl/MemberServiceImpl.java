@@ -152,17 +152,6 @@ public class MemberServiceImpl implements MemberService {
 		}
 		return result;
 	}
-	
-	@Override
-	public List<Member> selectMemberListForBorrow(Member member) throws Exception {
-		List<Member> result = null;
-		try {
-			result = sqlSession.selectList("MemberMapper.selectMemberListForBorrow", member);
-		} catch (Exception e) {
-			throw new Exception("데이터 조회에 실패했습니다.");
-		}
-		return result;
-	}
 
 	@Override
 	public int getMemberCount(Member member) throws Exception {

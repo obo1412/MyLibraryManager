@@ -10,6 +10,7 @@ public class Borrow extends BookHeld {
 	private String dueDateBrw;
 	private String restrictDateBrw;
 	private int CountIdBrw;
+	private int brwNow;
 	
 	public int getIdBrw() {
 		return idBrw;
@@ -64,6 +65,12 @@ public class Borrow extends BookHeld {
 	}
 	public void setCountIdBrw(int countIdBrw) {
 		CountIdBrw = countIdBrw;
+	}
+	public int getBrwNow() {
+		return brwNow;
+	}
+	public void setBrwNow(int brwNow) {
+		this.brwNow = brwNow;
 	}
 	@Override
 	public String toString() {

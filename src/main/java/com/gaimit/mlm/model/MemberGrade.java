@@ -1,6 +1,6 @@
 package com.gaimit.mlm.model;
 
-public class MemberGrade extends Library{
+public class MemberGrade extends Manager{
 	private int gradeId;
 	private String gradeName;
 	private int brwLimit;

@@ -166,7 +166,7 @@ public class BrwServiceImpl implements BrwService {
 				throw new NullPointerException();
 			}
 		} catch (NullPointerException e) {
-			throw new Exception("이미 대출 중인 도서 입니다.");
+			throw new Exception("이미 대출중인 도서입니다.");
 		} catch (Exception e) {
 			logger.error(e.getLocalizedMessage());
 			throw new Exception("도서 대출 중복검사에 실패했습니다.");
@@ -306,6 +306,41 @@ public class BrwServiceImpl implements BrwService {
 			result = sqlSession.selectList("BorrowMapper.selectBorrowBookCountThisMonth", borrow);
 		} catch (Exception e) {
 			throw new Exception("이번 달 도서 대출 통계 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public Borrow selectBorrowItemByBookHeldId(Borrow borrow) throws Exception {
+		Borrow result = null;
+		try {
+			result = sqlSession.selectOne("BorrowMapper.selectBorrowItemByBookHeldId", borrow);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("도서대출 조회(BookHeldId)에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public List<Borrow> selectMemberListForBorrow(Borrow borrow) throws Exception {
+		List<Borrow> result = null;
+		try {
+			result = sqlSession.selectList("BorrowMapper.selectMemberListForBorrow", borrow);
+		} catch (Exception e) {
+			throw new Exception("도서 대출을 위한 회원 목록 조회에 실패했습니다.");
+		}
+		return result;
+	}
+
+	@Override
+	public Borrow selectMemberItemByMemberId(Borrow borrow) throws Exception {
+		Borrow result = null;
+		try {
+			result = sqlSession.selectOne("BorrowMapper.selectMemberItemByMemberId", borrow);
+		} catch (Exception e) {
+			logger.error(e.getLocalizedMessage());
+			throw new Exception("회원키 값으로 회원 조회에 실패했습니다.(도서 반납 처리 이후 절차)");
 		}
 		return result;
 	}

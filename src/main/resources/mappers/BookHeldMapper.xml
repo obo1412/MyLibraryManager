@@ -88,7 +88,8 @@
 		<!-- INNER JOIN book b ON h.book_id_book = b.id_book -->
 		LEFT OUTER JOIN book_country c ON h.id_country= c.id_country
 		WHERE library_id_lib=#{libraryIdLib} AND (available = 0 OR available = 1)
-			<if test="(title != null) || (writer != null)
+		<choose>
+			<when test="(title != null) || (writer != null)
 							|| (publisher != null) || (nameCountry != null)">
 				AND (
 					<if test="title != null">
@@ -108,8 +109,12 @@
 							OR (name_country LIKE concat('%', #{name_country}, '%'))
 					</if>
 				)
-			</if>
-		ORDER BY id DESC
+				ORDER BY volume_code*1 DESC, title DESC
+			</when>
+			<otherwise>
+				ORDER BY id DESC
+			</otherwise>
+		</choose>
 		LIMIT #{limitStart}, #{listCount}
 	</select>
 	

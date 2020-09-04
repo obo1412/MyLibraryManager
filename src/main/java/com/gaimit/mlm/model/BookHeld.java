@@ -41,6 +41,11 @@ public class BookHeld extends Book{
 	
 	private int classCodeHead;
 	private String classCodeColor;
+	
+	//도서 대출 여부를 확인하기 위한 변수
+	//model에만 존재
+	private String brwStatus;
+	
 	public int getId() {
 		return id;
 	}
@@ -256,6 +261,12 @@ public class BookHeld extends Book{
 	}
 	public void setClassCodeColor(String classCodeColor) {
 		this.classCodeColor = classCodeColor;
+	}
+	public String getBrwStatus() {
+		return brwStatus;
+	}
+	public void setBrwStatus(String brwStatus) {
+		this.brwStatus = brwStatus;
 	}
 	
 	

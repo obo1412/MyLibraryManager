@@ -67,13 +67,15 @@ public class JoinOk {
 		} else {
 			idLib = loginInfo.getIdLibMng();
 		}
-
+		
+		String memberImgDir = "/memberImg/libNo"+idLib;
+		
 		/** (4) 파일이 포함된 POST 파라미터 받기 */
 		// <form>태그 안에 <input type="file">요소가 포함되어 있고,
 		// <form>태그에 enctype="multipart/form-data"가 정의되어 있는 경우
 		// WebHelper의 getString()|getInt() 메서드는 더 이상 사용할 수 없게 된다.
 		try {
-			upload.multipartRequest();
+			upload.multipartRequest(memberImgDir);
 		} catch (Exception e) {
 			return web.redirect(null, "multipart 데이터가 아닙니다.");
 		}

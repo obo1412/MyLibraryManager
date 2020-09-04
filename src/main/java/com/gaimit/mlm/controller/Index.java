@@ -17,12 +17,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.gaimit.helper.PageHelper;
+import com.gaimit.helper.Util;
 import com.gaimit.helper.WebHelper;
 import com.gaimit.mlm.model.BbsDocument;
+import com.gaimit.mlm.model.BookHeld;
 import com.gaimit.mlm.model.Borrow;
 import com.gaimit.mlm.model.Manager;
 import com.gaimit.mlm.model.Member;
 import com.gaimit.mlm.service.BbsDocumentService;
+import com.gaimit.mlm.service.BookHeldService;
 import com.gaimit.mlm.service.BrwService;
 
 @Controller
@@ -37,21 +41,29 @@ public class Index {
 	WebHelper web;
 	
 	@Autowired
+	PageHelper page;
+	
+	@Autowired
+	Util util;
+	
+	@Autowired
 	BbsDocumentService bbsDocumentService;
 	
 	@Autowired
-	BrwService brwService; 
+	BrwService brwService;
+	
+	@Autowired
+	BookHeldService bookHeldService;
 	
 	@RequestMapping(value= {"/", "/index.do"})
 	public ModelAndView doRun(Locale locale, Model model,
 			HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		web.init();
-		
-		Manager loginInfo = (Manager) web.getSession("loginInfo");
+
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
-		if (loginInfo != null) {
-			return web.redirect(web.getRootPath() + "/index_login.do", null);
+		if (web.getSession("loginInfo") != null) {
+			return web.redirect(null, null);
 		}
 		
 		/** (3) 각 게시판 종류별로 최근 게시물을 조회한다. */
@@ -132,14 +144,57 @@ public class Index {
 			return web.redirect(web.getRootPath() + "/index.do", null);
 		}
 		
+		BookHeld bookHeld = new BookHeld();
+		bookHeld.setLibraryIdLib(loginInfo.getIdLib());
+		
+		// 현재 페이지 번호에 대한 파라미터 받기
+		int nowPage = web.getInt("page", 1);
+		
+		/** 2) 페이지 번호 구현하기 */
+		// 전체 데이터 수 조회하기
+		int totalCount = 0;
 		try {
-			
-		}catch (Exception e) {
+			totalCount = bookHeldService.selectBookCountForPage(bookHeld);
+		}  catch (Exception e) {
 			return web.redirect(null, e.getLocalizedMessage());
 		}
 		
+		// 페이지 번호에 대한 연산 수행 후 조회조건값 지정을 위한 Beans에 추가하기
+		page.pageProcess(nowPage, totalCount, 10, 5);
+		bookHeld.setLimitStart(page.getLimitStart());
+		bookHeld.setListCount(page.getListCount());
+		//bookHeld.setCurrentListIndex(page.getIndexStart());
+		
+		/** 3) Service를 통한 SQL 수행 */
+		// 조회 결과를 저장하기 위한 객체
+		List<BookHeld> bookHeldList = null;
+		try {
+			bookHeldList = bookHeldService.getBookHeldList(bookHeld);
+			if(bookHeldList != null) {
+				for(int i=0; i<bookHeldList.size(); i++) {
+					String classCode = bookHeldList.get(i).getClassificationCode();
+					classCode = util.getFloatClsCode(classCode);
+					if(classCode != null&&!"".equals(classCode)) {
+						float classCodeFloat = Float.parseFloat(classCode);
+						int classCodeInt = (int) (classCodeFloat);
+						String classCodeColor = util.getColorKDC(classCodeInt);
+						bookHeldList.get(i).setClassCodeColor(classCodeColor);
+					}
+				}
+			}
+		} catch (Exception e) {
+			return web.redirect(null, e.getLocalizedMessage());
+		}
+		
+		/** 4) View 처리하기 */
+		// 조회 결과를 View에게 전달한다.
+		model.addAttribute("bookHeldList", bookHeldList);
+		model.addAttribute("page", page);
+		model.addAttribute("pageDefUrl", "/book/book_held_list_member.do");
+		
 		// "/WEB-INF/views/index.jsp"파일을 View로 사용한다.
-		return new ModelAndView("index_login_member");
+		/*return new ModelAndView("index_login_member");*/
+		return new ModelAndView("book/book_held_list_member");
 	}
 	
 	
