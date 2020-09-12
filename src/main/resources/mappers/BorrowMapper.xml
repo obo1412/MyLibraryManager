@@ -14,10 +14,9 @@
 		<result property="dueDateBrw" column="due_date_brw"/>
 		
 		<result property="countIdBrw" column="count_id_brw"/>
-		
 		<result property="restrictDateBrw" column="restrict_date_brw"/>
-		
 		<result property="brwNow" column="brw_now"/>
+		<result property="pickDateBrw" column="pick_date_brw"/>
 		
 		<!-- member beans -->
 		<result property="name" column="name"/>
@@ -125,7 +124,17 @@
 		<!-- INNER JOIN book b ON b.id_book = h.book_id_book -->
 		INNER JOIN member m ON r.id_member_brw = m.id
 		INNER JOIN member_grade g ON m.grade_id = g.grade_id
-		WHERE id_lib_brw = #{idLibBrw} AND (start_date_brw &gt; curdate() OR end_date_brw &gt; curdate())
+		WHERE id_lib_brw = #{idLibBrw}
+		<choose>
+			<when test="pickDateBrw==null || pickDateBrw==''">
+				AND ((start_date_brw &gt; curdate() OR end_date_brw &gt; curdate())
+			</when>
+			<otherwise>
+				AND (((start_date_brw &gt; #{pickDateBrw} AND start_date_brw &lt; #{pickDateBrw} + INTERVAL 1 DAY)
+					OR (end_date_brw &gt; #{pickDateBrw} AND end_date_brw &lt; #{pickDateBrw} + INTERVAL 1 DAY))
+			</otherwise>
+		</choose> 
+				OR IF((end_date_brw IS NULL OR end_date_brw =''),due_date_brw &lt; curdate(),''))
 		ORDER BY id_brw ASC
 	</select>
 	
@@ -138,10 +147,14 @@
 		FROM borrow r
 		INNER JOIN book_held h on r.book_held_id = h.id
 		INNER JOIN member m on r.id_member_brw = m.id
-		WHERE id_lib_brw=#{idLibBrw} AND (end_date_brw is NULL OR end_date_brw = '')
-		AND local_id_barcode=#{localIdBarcode}
-		ORDER BY start_date_brw ASC
+		WHERE id_lib_brw=#{idLibBrw} AND local_id_barcode=#{localIdBarcode}
+		<!-- AND (end_date_brw is NULL OR end_date_brw = '') -->
+		<!-- returnCancel 기능을 위해서, 위 조건 삭제 -->
+		ORDER BY start_date_brw DESC
+		LIMIT 1
 	</select>
+	<!-- 분기하자, 반납처리를 위한 데이터 조회 1개
+	반납취소 처리를 위한 데이터 조회 1개로 중간에 꼬일 수가 있을 듯. -->
 	
 	<!-- ReturnBookOk.java - 도서반납 후 해당 멤버의 나머지 대출중인 도서 조회
 		getBorrowListByMbrId -->
@@ -166,14 +179,19 @@
 		SET end_date_brw=now()
 		WHERE id_lib_brw=#{idLibBrw} AND book_held_id=#{bookHeldId}
 			AND (end_date_brw is NULL OR end_date_brw = '')
+			AND id_brw=#{idBrw}
+			<!-- 필수 개중요 헷갈리지말자, idBrw 없으면 bookHeldid 전부다 수정됨 -->
 	</update>
 	
 	<!-- ReturnCancelBookOk.java - 책반납 업데이트 -->
 	<update id="updateCancelBorrowEndDate" parameterType="com.gaimit.mlm.model.Borrow">
 		UPDATE borrow r
-		INNER JOIN book_held h on r.book_held_id = h.id
+		<!-- INNER JOIN book_held h on r.book_held_id = h.id -->
 		SET end_date_brw = NULL
-		WHERE id_lib_brw=#{idLibBrw} AND local_id_barcode=#{localIdBarcode} AND id_brw=#{idBrw}
+		WHERE id_lib_brw=#{idLibBrw} AND book_held_id=#{bookHeldId}
+			AND (end_date_brw IS NOT NULL AND end_date_brw != '')
+			AND id_brw=#{idBrw}
+			<!-- 필수 개중요 헷갈리지말자, idBrw 없으면 bookHeldid 전부다 수정됨 -->
 	</update>
 	
 	<select id="selectBorrowRtnd" parameterType="com.gaimit.mlm.model.Borrow" resultMap="borrow">

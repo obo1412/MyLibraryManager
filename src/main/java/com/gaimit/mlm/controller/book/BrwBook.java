@@ -236,6 +236,10 @@ public class BrwBook {
 			/*return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");*/
 		}
 		
+		String pickDate = web.getString("pickDate","");
+		//날짜 형식을 yyyy-MM-dd로 맞춰서 자바스크립트로 보냄.
+		//날짜 형식이 맞지 않으면, 쿼리에서 비교할 수가 없어서 데이터 안나옴.
+		
 		Borrow borrow = new Borrow();
 		// 이름에다가 그냥 검색 키워드 다 넣고, 이름으로 전화번호, 회원번호 검색
 		borrow.setIdLibBrw(loginInfo.getIdLibMng());
@@ -243,6 +247,11 @@ public class BrwBook {
 		List<Borrow> brwListDday = null;
 		
 		try {
+			//pickDate가 있다면, Date형식에 지정날짜를 넣고 borrow에 set
+			if(pickDate!=null&&!"".equals(pickDate)) {
+				borrow.setPickDateBrw(pickDate);
+			}
+			
 			brwListDday = brwService.selectBorrowListToday(borrow);
 		} catch (Exception e) {
 			web.printJsonRt(e.getLocalizedMessage());

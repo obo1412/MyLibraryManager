@@ -11,6 +11,9 @@ public class Borrow extends BookHeld {
 	private String restrictDateBrw;
 	private int CountIdBrw;
 	private int brwNow;
+	//오늘 대출/반납 판에, 선택된 날짜를 받는 변수
+	private String pickDateBrw;
+	
 	
 	public int getIdBrw() {
 		return idBrw;
@@ -71,6 +74,12 @@ public class Borrow extends BookHeld {
 	}
 	public void setBrwNow(int brwNow) {
 		this.brwNow = brwNow;
+	}
+	public String getPickDateBrw() {
+		return pickDateBrw;
+	}
+	public void setPickDateBrw(String pickDateBrw) {
+		this.pickDateBrw = pickDateBrw;
 	}
 	@Override
 	public String toString() {

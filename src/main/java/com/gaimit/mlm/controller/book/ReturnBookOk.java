@@ -219,88 +219,63 @@ public class ReturnBookOk {
 		}
 	}
 	
-	@RequestMapping(value = "/book/return_cancel_book_ok.do", method = {RequestMethod.GET, RequestMethod.POST})
-	public ModelAndView RtnCancelBook(Locale locale, Model model, HttpServletRequest request,
-			HttpServletResponse response) {
+	/** 도서 반납 처리 비동기 */
+	@ResponseBody
+	@RequestMapping(value = "/book/return_book_cancel.do", method = RequestMethod.POST)
+	public void rtnBookCancel(Locale locale, Model model,
+			HttpServletRequest request, HttpServletResponse response) {
 		
-		/** 1) WebHelper 초기화 및 파라미터 처리 */
+		try {
+			request.setCharacterEncoding("utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		response.setCharacterEncoding("utf-8");
+		response.setContentType("application/json");
+		
 		web.init();
-		
-		int idLib = 0;
-		
 		/** 로그인 여부 검사 */
 		// 로그인중인 회원 정보 가져오기
 		Manager loginInfo = (Manager) web.getSession("loginInfo");
 		// 로그인 중이 아니라면 이 페이지를 동작시켜서는 안된다.
 		if (loginInfo == null) {
-			/*web.printJsonRt("로그인 정보가 명확하지 않습니다. 다시 로그인 해주세요.");*/
-			return web.redirect(web.getRootPath() + "/index.do", "로그인 후에 이용 가능합니다.");
-		} else {
-			idLib = loginInfo.getIdLibMng();
+			web.printJsonRt("로그인 후 이용 가능합니다.");
 		}
 		
-		String barcodeBookRtnCancle = web.getString("barcodeBookRtnCancle");
-		int idBrw = web.getInt("idBrw");
-		int idMemberBrw = web.getInt("idMemberBrw", 0);
-		String name = web.getString("name", "");
-		String phone = web.getString("phone", "");
-		int brwLimit = web.getInt("brwLimit", 0);
+		String barcodeBookRtn = web.getString("barcodeBookRtn","");
 		
-		//멤버가 현재 대여중인 도서 권수
-		int brwNow = 0;
-		//앞으로 대여가능한 도서 권수
-		int brwPsb = 0;
+		if("".equals(barcodeBookRtn)) {
+			web.printJsonRt("반납하시려는 도서등록번호를 입력하세요.");
+		}
 		
-		Borrow brw = new Borrow();
-		brw.setIdLibBrw(idLib);
-		brw.setLocalIdBarcode(barcodeBookRtnCancle);
-		brw.setIdBrw(idBrw);
-		brw.setIdMemberBrw(idMemberBrw);
-		// 아래 멤버id(회원id)로 검색에 사용할 객체 생성 아직미구현
-		List<Borrow> brwRmnList = null;
-		List<Borrow> brwListToday = null;
+		Borrow borrow = new Borrow();
+		borrow.setIdLibBrw(loginInfo.getIdLibMng());
+		borrow.setLocalIdBarcode(barcodeBookRtn);
 		
-		//미반납 연체
-		int overDueCount = 0;
-		//반납된 연체 기간이 남아있을 경우
-		Borrow overDueDate = new Borrow();
-		String restrictDate = null;
-		
+		int memberId = 0;
 		
 		try {
-			brwService.updateCancelBorrowEndDate(brw);
-			//책으로 검색 시작 => 그 책을 빌린 회원id로 더 빌려간 책이 없는지 확인.
-			brwNow = brwService.selectBrwBookCountByMemberId(brw);
-			brwRmnList = brwService.getBorrowListByMbrId(brw);
-			//오늘 대출/반납 도서 조회
-			brwListToday = brwService.selectBorrowListToday(brw);
-			
-			//연체 제한 정보 호출
-			//update 이후에 실행문 호출
-			overDueCount = brwService.selectOverDueCountByMemberId(brw);
-			overDueDate = brwService.selectRestrictDate(brw);
-			if(overDueDate != null) {
-				restrictDate = overDueDate.getRestrictDateBrw();
-			}
-			
-		}  catch (Exception e) {
-			return web.redirect(null, e.getLocalizedMessage());
+			brwService.getBorrowCountByBarcodeBook(borrow);
+			borrow = brwService.getBorrowItemByBarcodeBook(borrow);
+			brwService.updateCancelBorrowEndDate(borrow);
+			memberId = borrow.getIdMemberBrw();
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());
 		}
-		// 대출가능 권수 계산
-		brwPsb = brwLimit - brwNow;
 		
-		model.addAttribute("memberId", idMemberBrw);
-		model.addAttribute("name", name);
-		model.addAttribute("phone", phone);
-		model.addAttribute("brwLimit", brwLimit);
-		model.addAttribute("brwNow", brwNow);
-		model.addAttribute("brwPsb", brwPsb);
-		model.addAttribute("brwListToday", brwListToday);
-		model.addAttribute("brwRmnList", brwRmnList);
-		model.addAttribute("overDueCount", overDueCount);
-		model.addAttribute("restrictDate", restrictDate);
+		// --> import java.util.HashMap;
+		// --> import java.util.Map;
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("rt", "OK");
+		data.put("memberId", memberId);
 		
-		return new ModelAndView("book/brw_book");
+		// --> import com.fasterxml.jackson.databind.ObjectMapper;
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			mapper.writeValue(response.getWriter(), data);
+		} catch (Exception e) {
+			web.printJsonRt(e.getLocalizedMessage());
+		}
 	}
 	
 	

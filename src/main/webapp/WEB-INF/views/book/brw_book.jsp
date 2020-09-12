@@ -20,7 +20,7 @@
 				float: left;
 				width: 49%;
 				margin-right: 0.2em;
-				min-height: 480px;
+				min-height: 520px;
 			}
 			.bottomCard {
 				float: left;
@@ -80,7 +80,7 @@
 									<input type="text" name="search-name" id="search-keyword" onKeyDown="searchMemberEnterKeyDown()"
 										class="form-control korean-first" placeholder="회원정보(이름, 전화번호, 회원번호)를 입력해주세요" value="" />
 									<span class="input-group-append">
-										<button class="btn btn-sm btn-warning" id="btn-search-mbr"
+										<button class="btn btn-sm btn-secondary" id="btn-search-mbr"
 											onclick="clickedSearchMember()">
 											<i class="fas fa-search"></i>
 										</button>
@@ -125,15 +125,24 @@
                   <div class="card-body">
                     <table class="table table-sm table-bordered mb-1">
                       <tr>
-                        <th scope="row" class="text-center table-secondary">이름</th>
+                        <th scope="row" class="text-center table-secondary"
+                        	style="width:90px;">
+                        	이름
+                        </th>
                         <td colspan="2" id="brwMemberName">-</td>
                       </tr>
                       <tr>
-                        <th scope="row" class="text-center table-secondary">연락처</th>
+                        <th scope="row" class="text-center table-secondary"
+                        	style="width:90px;">
+                        	연락처
+                        </th>
                         <td colspan="2" id="brwMemberPhone">-</td>
                       </tr>
                       <tr>
-                        <th scope="row" class="text-center table-secondary">회원번호</th>
+                        <th scope="row" class="text-center table-secondary"
+                        	style="width:90px;">
+                        	회원번호
+                        </th>
                         <td colspan="2" id="brwMemberCode">-</td>
                       </tr>
                      </table>
@@ -174,7 +183,7 @@
 								<div class="input-group input-group-sm col-9">
 									<span class="input-group-prepend">
 										<input type="button"
-										value="검색" class="btn btn-sm btn-warning fas fa-search english-first"
+										value="검색" class="btn btn-sm btn-secondary fas fa-search english-first"
 										onclick="window.open('${pageContext.request.contextPath}/book/book_held_list_popup.do', '_blank', 'width=750,height=700,scrollbars=yes')" />
 									</span>
 									<input type="text" name="barcodeBook" id="barcodeBook"
@@ -205,7 +214,7 @@
 								<input type="text" name="barcodeBookRtn" id="barcodeBookRtn"
 									class="form-control" placeholder="도서바코드를 입력해주세요" onKeyDown="rtnBookEnterKeyDown()"
 									value="" /> <span class="input-group-append">
-									<button class="btn btn-warning btn-sm" id="btn-search-mbr"
+									<button class="btn btn-sm btn-secondary" id="btn-search-mbr"
 										onclick="clickedReturnBook()">
 										반납
 									</button>
@@ -218,76 +227,15 @@
 							<table class="table table-sm table-fixed">
 								<thead>
 									<tr>
-										<th class="table-info text-center" style="width:30%;">도서명</th>
+										<th class="table-info text-center" style="width:25%;">도서명</th>
 										<th class="table-info text-center" style="width:20%;">등록번호</th>
 										<th class="table-info text-center" style="width:20%;">대출일</th>
 										<th class="table-info text-center" style="width:20%;">반납일</th>
-										<th class="table-info text-center" style="width:10%;">상태</th>
+										<th class="table-info text-center" style="width:15%;">상태</th>
 									</tr>
 								</thead>
-								<tbody class="returnRmnListClass">
-									<c:choose>
-										<c:when test="${fn:length(brwRmnList) > 0}">
-											
-											<c:forEach var="item" items="${brwRmnList}"
-												varStatus="status">
-												<tr>
-													<td class="text-center">${item.titleBook}</td>
-													<td class="text-center">${item.localIdBarcode}</td>
-													<td class="text-center">
-													<fmt:parseDate var="formDate"
-															value="${item.startDateBrw}"
-															pattern="yyyy-MM-dd HH:mm:ss" /> <fmt:formatDate
-															var="viewDate" value="${formDate}"
-															pattern="yyyy-MM-dd HH:mm:ss" /> ${viewDate}</td>
-													<td class="text-center">${item.endDateBrw}</td>
-													<td class="text-center"><c:choose>
-															<c:when
-																test="${item.endDateBrw eq null || item.endDateBrw eq ''}">
-																<c:set var="rtnBtnState" value="반납" />
-																<c:set var="classRtnBtn" value="btn btn-warning btn-sm" />
-																<c:if test="${currentDate > item.dueDateBrw}">
-																	<c:set var="rtnBtnState" value="연체" />
-																	<c:set var="classRtnBtn" value="btn btn-danger btn-sm text-white" />
-																</c:if>
-																<c:url var="rtnUrl" value="/book/return_book_ok.do">
-																	<c:param name="barcodeBookRtn"
-																		value="${item.localIdBarcode}" />
-																	<c:param name="idBrw" value="${item.idBrw}" />
-																	<c:param name="idMemberBrw" value="${item.idMemberBrw}" />
-																	<c:param name="name" value="${item.name}" />
-																	<c:param name="phone" value="${item.phone}" />
-																	<c:param name="brwLimit" value="${item.brwLimit}" />
-																</c:url>
-															</c:when>
-															<c:otherwise>
-																<c:set var="rtnBtnState" value="취소" />
-																<c:set var="classRtnBtn" value="btn btn-primary btn-sm" />
-																<c:url var="rtnUrl"
-																	value="/book/return_cancel_book_ok.do">
-																	<c:param name="barcodeBookRtnCancle"
-																		value="${item.localIdBarcode}" />
-																	<c:param name="idBrw" value="${item.idBrw}" />
-																	<c:param name="idMemberBrw" value="${item.idMemberBrw}" />
-																	<c:param name="name" value="${item.name}" />
-																	<c:param name="phone" value="${item.phone}" />
-																	<c:param name="brwLimit" value="${item.brwLimit}" />
-																</c:url>
-															</c:otherwise>
-														</c:choose>
-														<button class="return-book ${classRtnBtn}"
-															onclick="location.href='${rtnUrl}'">
-															${rtnBtnState}</button></td>
-												</tr>
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<tr>
-												<td colspan="8" class="text-center"
-													style="line-height: 30px;">조회된 도서 정보가 없습니다.</td>
-											</tr>
-										</c:otherwise>
-									</c:choose>
+								<tbody class="returnRmnListClass" style="font-size:12px;">
+									
 								</tbody>
 							</table>
 						</div>
@@ -299,7 +247,9 @@
 
 				<div class="card mb-3 bottomCard">
 					<div class="card-header">
-						<h4 class='pull-left'>오늘의 대출/반납 현황</h4>
+						<h4 class='pull-left'>
+							<span id="banner-pick-day-id">오늘의</span> 대출/반납 현황
+						</h4>
 					</div>
 					<div class="card-body">
 						<!-- 조회결과를 출력하기 위한 표 -->
@@ -340,18 +290,42 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 	<%@ include file="/WEB-INF/inc/korToEng.jsp"%>
 
-
-
 	<script type="text/javascript">
 		window.onload = function() {
 			/* 페이지 호출시 회원검색에 포커싱 */
 			document.getElementById('search-keyword').focus();
 			
-			$('[data-toggle="tooltip"]').tooltip();
-			
 			selectBrwListDday();
 			
 		};
+		
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		});
+		
+		//오늘의 대출/반납 현황에서 회원선택을 위한 클릭.
+		function clickedStatusOnDdayBoard(memberId) {
+			//해당인원을 선택했을때 선택된 회원 타겟팅
+			brwPickMember(memberId);
+			//해당 회원 대출중인 도서 목록
+			selectBrwRmnListByMemberId(memberId);
+			
+		};
+		
+		//반납리스트에 상태버튼 클릭시 동작 함수 반납/취소
+		function clickedReturnOrCancelThisBook() {
+			var parentRow = event.target.parentNode.parentNode;
+			var children = parentRow.childNodes;
+			var barcodeBookRtn = children[1].innerText;
+			var endDateBrw = children[3].innerText;
+			if(endDateBrw==null||endDateBrw==''){
+				//반납시간이 비어있으면, 반납 처리
+				clickedReturnBook(barcodeBookRtn);
+			} else {
+				//반납시간이 비어있지 않으면, 취소 처리
+				clickedReturnCancelBook(barcodeBookRtn);
+			}
+		}
 		
 		//반납 버튼 엔터
 		function rtnBookEnterKeyDown() {
@@ -360,14 +334,44 @@
 			}
 		};
 		//반납 버튼 클릭
-		function clickedReturnBook() {
-			var barcodeBookRtnVal = document.getElementById('barcodeBookRtn').value;
-			barcodeBookRtnVal = convertKorToEng(barcodeBookRtnVal);
-			document.getElementById('barcodeBookRtn').value = barcodeBookRtnVal;
-			//컨트롤러쪽과도 변수명 통일을 위해서 생성.
-			var barcodeBookRtn = barcodeBookRtnVal;
+		function clickedReturnBook(barcodeBookRtn) {
+			if(barcodeBookRtn==null||barcodeBookRtn==''){
+				var barcodeBookRtnVal = document.getElementById('barcodeBookRtn').value;
+				barcodeBookRtnVal = convertKorToEng(barcodeBookRtnVal);
+				document.getElementById('barcodeBookRtn').value = barcodeBookRtnVal;
+				//컨트롤러쪽과도 변수명 통일을 위해서 생성.
+				barcodeBookRtn = barcodeBookRtnVal;
+			}
+			//매개변수가 존재하지 않으면 위 if 조건 거친 후 반납 바코드 주입
+			//매개변수가 존재하면 그냥 바로 아래 ajax 실행
 			$.ajax({
 				url: "${pageContext.request.contextPath}/book/return_book_ok.do",
+				type:'POST',
+				data: {
+					barcodeBookRtn
+				},
+				success: function(data) {
+					if(data.rt != 'OK') {
+						alert(data.rt);
+					} else {
+						document.getElementById('barcodeBookRtn').value = null;
+						//도서 반납 처리 후, 오늘의 대출/반납 현황 업데이트
+						selectBrwListDday();
+						//도서 반납 처리 후, 해당 회원의 남아있는 대출 도서 조회
+						selectBrwRmnListByMemberId(data.memberId);
+						//도서 반납 처리 후, 해당 회원 정보 업데이트
+						brwPickMember(data.memberId);
+						
+						document.getElementById('barcodeBookRtn').focus();
+					}
+				}
+			});
+		}
+		
+		//반납 취소 버튼 클릭시 작동 함수
+		function clickedReturnCancelBook(barcodeBookRtn) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/return_book_cancel.do",
 				type:'POST',
 				data: {
 					barcodeBookRtn
@@ -404,22 +408,48 @@
 					} else {
 						//다른 회원을 선택했을 경우 비워야함.
 						var tbody = document.querySelector('.returnRmnListClass');
+						var row = null;
 						tbody.innerHTML = '';
 						var brwRmnList = data.brwRmnList;
 						if(brwRmnList.length>0){
 							for(var i=0; i<brwRmnList.length; i++){
-								var row = tbody.insertRow();
+								//반복할 필요 없는 변수 처리
+								var btn = document.createElement('button');
+								btn.classList.add('btn');
+								btn.classList.add('btn-sm');
+								btn.setAttribute('onclick','clickedReturnOrCancelThisBook()');
+								//반복할 필요 없는 변수 처리 끝
+								row = tbody.insertRow();
 								for(var j=0; j<5; j++){
 									cell = row.insertCell(j);
 									cell.classList.add('text-center');
 								}
 								var children = row.childNodes;
+								children[0].setAttribute('data-toggle','tooltip');
+								children[0].setAttribute('data-placement','top');
+								children[0].setAttribute('title',brwRmnList[i].title);
 								children[0].innerText = brwRmnList[i].title;
 								children[1].innerText = brwRmnList[i].localIdBarcode;
 								children[2].innerText = dateFormChange(brwRmnList[i].startDateBrw);
 								children[3].innerText = dateFormChange(brwRmnList[i].endDateBrw);
-								children[4].innerText = '';
+								var endDateBrw = brwRmnList[i].endDateBrw;
+								if(endDateBrw!=null&&endDateBrw!=''){
+									btn.classList.remove('btn-warning');
+									btn.classList.add('btn-primary');
+									btn.innerHTML = '반납됨';
+								} else {
+									btn.classList.remove('btn-primary');
+									btn.classList.add('btn-warning');
+									btn.innerHTML = '대출중';
+								}
+								children[4].appendChild(btn);
 							}
+						} else {
+							row = tbody.insertRow();
+							cell = row.insertCell(0);
+							cell.classList.add('text-center');
+							cell.setAttribute('colspan','5');
+							cell.innerText = '조회된 대출중 도서가 없습니다.'
 						}
 					}
 				}
@@ -427,7 +457,9 @@
 		}
 		
 		//반납 날짜 비교를 위한 오늘 날짜
-		var today = new Date();
+		//달력에 today 변수가 이미 존재함,
+		//today변수는 달력의 날짜를 누르면 그 값이 그 누른 날짜로 바뀜.
+		var todayCompare = new Date();
 		//날짜 포멧 변경(yyyy-MM-dd)을 위한 함수
 		function dateFormChange(d) {
 			var result = null;
@@ -435,21 +467,21 @@
 				var date = new Date(d);
 				var year = date.getFullYear();
 				var month = date.getMonth()+1;
-				month = month > 10 ? month : '0'+month;
+				month = month > 9 ? month : '0'+month;
 				var day = date.getDate();
-				day = day > 10 ? day : '0'+day;
+				day = day > 9 ? day : '0'+day;
 				result = year+'-'+month+'-'+day;
 			}
 			return result;
 		};
 		
 		//해당 일의 대출/반납 목록
-		function selectBrwListDday(day) {
+		function selectBrwListDday(pickDate) {
 			$.ajax({
 				url: "${pageContext.request.contextPath}/book/brw_list_D_day.do",
 				type:'GET',
 				data: {
-					
+					pickDate
 				},
 				success: function(data) {
 					if(data.rt != 'OK') {
@@ -467,19 +499,26 @@
 									cell.classList.add('text-center');
 								}
 								var children = row.childNodes;
+								var dueDate = new Date(brwListDday[i].dueDateBrw);
 								children[0].innerText = i+1;
 								if(brwListDday[i].endDateBrw == null || brwListDday[i].endDateBrw == ''){
-									children[1].innerHTML = "<button class='btn btn-sm btn-warning' style='font-size:12px;'>대출";
+									if(dueDate < todayCompare) {
+										children[1].innerHTML = "<button class='btn btn-sm btn-danger' style='font-size:12px;'>연체";
+									} else {
+										children[1].innerHTML = "<button class='btn btn-sm btn-warning' style='font-size:12px;'>대출";
+									}
 								} else {
 									children[1].innerHTML = "<button class='btn btn-sm btn-primary' style='font-size:12px;'>반납";
 								}
+								children[1].setAttribute('onclick', "clickedStatusOnDdayBoard("+brwListDday[i].idMemberBrw+")");
 								children[2].innerText = brwListDday[i].name;
+								children[2].setAttribute('onclick', "popUpMemberView("+brwListDday[i].idMemberBrw+")");
 								children[3].innerText = brwListDday[i].phone;
 								children[4].innerText = brwListDday[i].gradeName;
 								children[5].innerText = brwListDday[i].title;
 								children[6].innerText = brwListDday[i].localIdBarcode;
-								var dueDate = new Date(brwListDday[i].dueDateBrw);
-								if(dueDate < today) {
+								children[6].setAttribute('onclick',"popUpBookHeldView("+brwListDday[i].bookHeldId+")");
+								if(dueDate < todayCompare) {
 									children[7].style.color = 'red';
 								}
 								children[7].innerText = dateFormChange(brwListDday[i].dueDateBrw);
@@ -491,6 +530,20 @@
 				}
 			});
 		};
+		
+		//회원 상세 정보 보기
+		function popUpMemberView(memberId) {
+			var url = "${pageContext.request.contextPath}/member/member_view.do?memberId="+memberId;
+			window.open(url, '_blank', 'width=400,height=650,scrollbars=yes');
+			return false;
+		}
+		
+		//도서 상세 정보 보기
+		function popUpBookHeldView(bookHeldId) {
+			var url = "${pageContext.request.contextPath}/book/book_held_view.do?bookHeldId="+bookHeldId;
+			window.open(url, '_blank', 'width=550,height=800,scrollbars=yes');
+			
+		}
 		
 		//회원 목록 검색 엔터
 		function searchMemberEnterKeyDown() {
@@ -603,42 +656,46 @@
 					memberId
 				},
 				success: function(data) {
-					var memberItem = data.memberItem;
-					if(memberItem.profileImg != null && memberItem.profileImg != ''){
-						var profileImgDir = '/files/'+memberItem.profileImg.substring(memberItem.profileImg.lastIndexOf("upload"));
-						document.getElementById('profileImg').src = profileImgDir;
+					if(data.rt != 'OK'){
+						alert(data.rt);
 					} else {
-						document.getElementById('profileImg').src = '/files/upload/finebook4/no-image.png';
-					}
-					document.getElementById('memberId').value = memberId;
-					document.getElementById('brwMemberName').innerText = memberItem.name;
-					document.getElementById('brwMemberPhone').innerText = memberItem.phone;
-					document.getElementById('brwMemberCode').innerText = memberItem.barcodeMbr;
-					document.getElementById('brwMemberBrwLimit').innerText = memberItem.brwLimit;
-					var brwLimit = document.getElementById('brwMemberBrwLimit').innerText;
-					var brwNow = data.brwNow;
-					document.getElementById('brwMemberBrwNow').innerText = brwNow;
-					var brwPsb = brwLimit - brwNow;
-					document.getElementById('brwMemberBrwPsb').innerText = brwPsb;
-					
-					/* var brwPsb = document.getElementById('brwMemberBrwPsb').innerText; */
-					var memberNotice = document.getElementById('memberNotice');
-					var blockBrw = document.getElementById('blockBrw');
-					blockBrw.value = 'block';
-					memberNotice.innerText = '';
-					memberNotice.style.color = 'red';
-					if(data.overDueCount > 0 && data.restrictDate != null) {
-						memberNotice.innerText = data.overDueCount+'권 연체중/대출제한일:'+data.restrictDate;
-					} else if(data.restrictDate != null) {
-						memberNotice.innerText = '대출제한일:'+data.restrictDate;
-					} else if(data.overDueCount > 0) {
-						memberNotice.innerText = data.overDueCount+'권 연체중';
-					} else if(brwPsb<=0) {
-						memberNotice.innerText = '더이상 대출할 수 없습니다.';
-					} else {
-						memberNotice.style.color = 'black';
-						memberNotice.innerText = '대출가능한 회원입니다.';
-						blockBrw.value = '';
+						var memberItem = data.memberItem;
+						if(memberItem.profileImg != null && memberItem.profileImg != ''){
+							var profileImgDir = '/files/'+memberItem.profileImg.substring(memberItem.profileImg.lastIndexOf("upload"));
+							document.getElementById('profileImg').src = profileImgDir;
+						} else {
+							document.getElementById('profileImg').src = '/files/upload/finebook4/no-image.png';
+						}
+						document.getElementById('memberId').value = memberId;
+						document.getElementById('brwMemberName').innerText = memberItem.name;
+						document.getElementById('brwMemberPhone').innerText = memberItem.phone;
+						document.getElementById('brwMemberCode').innerText = memberItem.barcodeMbr;
+						document.getElementById('brwMemberBrwLimit').innerText = memberItem.brwLimit;
+						var brwLimit = document.getElementById('brwMemberBrwLimit').innerText;
+						var brwNow = data.brwNow;
+						document.getElementById('brwMemberBrwNow').innerText = brwNow;
+						var brwPsb = brwLimit - brwNow;
+						document.getElementById('brwMemberBrwPsb').innerText = brwPsb;
+						
+						/* var brwPsb = document.getElementById('brwMemberBrwPsb').innerText; */
+						var memberNotice = document.getElementById('memberNotice');
+						var blockBrw = document.getElementById('blockBrw');
+						blockBrw.value = 'block';
+						memberNotice.innerText = '';
+						memberNotice.style.color = 'red';
+						if(data.overDueCount > 0 && data.restrictDate != null) {
+							memberNotice.innerText = data.overDueCount+'권 연체중/대출제한일:'+dateFormChange(data.restrictDate);
+						} else if(data.restrictDate != null) {
+							memberNotice.innerText = '대출제한일:'+dateFormChange(data.restrictDate);
+						} else if(data.overDueCount > 0) {
+							memberNotice.innerText = data.overDueCount+'권 연체중';
+						} else if(brwPsb<=0) {
+							memberNotice.innerText = '더이상 대출할 수 없습니다.';
+						} else {
+							memberNotice.style.color = 'black';
+							memberNotice.innerText = '대출가능한 회원입니다.';
+							blockBrw.value = '';
+						}
 					}
 				}
 			});

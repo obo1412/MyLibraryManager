@@ -394,8 +394,23 @@
         }
         e.target.classList.add('dDay');
         curPickDay.activeDTag = e.target;
-
-        console.log(pickYear+'-'+pickMonth+'-'+e.target.textContent);
+				
+        var pickDay = pickYear+'-'+pickMonth+'-'+e.target.textContent;
+        var pickDate = new Date(pickDay);
+        console.log(pickDay);
+        console.log(pickDate);
+        
+        var bannerPickDay = document.getElementById('banner-pick-day-id');
+        if(bannerPickDay!=null){
+        	bannerPickDay.innerText = dateFormChange(pickDay);
+        }
+        
+        //대출 반납 페이지에 대출 반납 현황 호출
+        if(document.querySelector('.brwListDdayClass')!=null){
+        	var pickDateForm = dateFormChange(pickDate);
+        	console.log(pickDateForm);
+        	selectBrwListDday(pickDateForm);
+        }
       }
     });
 </script>

@@ -74,9 +74,9 @@ public class UploadHelper {
 		}
 
 		/** 폴더의 존재 여부 체크해서 생성하기 */
-		fileDir = fileDir + libDir;
+		String fileDirCustom = fileDir + libDir;
 		// import java.io.File
-		File uploadDirFile = new File(fileDir);
+		File uploadDirFile = new File(fileDirCustom);
 		if (!uploadDirFile.exists()) {
 			uploadDirFile.mkdirs();
 		}
@@ -174,7 +174,7 @@ public class UploadHelper {
 				// --> 이 정보는 추후 파일의 업로드 내역을 DB에 저장할 때 사용된다.
 				FileInfo info = new FileInfo();
 				info.setOrginName(orginName);
-				info.setFileDir(fileDir);
+				info.setFileDir(fileDirCustom);
 				info.setFileName(fileName);
 				info.setContentType(contentType);
 				info.setFileSize(fileSize);

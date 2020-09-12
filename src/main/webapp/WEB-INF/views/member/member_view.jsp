@@ -79,7 +79,7 @@
 									<c:choose>
 										<c:when test="${memberItem.profileImg ne null}">
 											<img style="width:100px; height:133px;" 
-												src="http://nuts.i234.me:7070/files/upload/${profileName}" alt="profileImg"/>
+												src="/files/upload/finebook4/memberImg/libNo${memberItem.idLib}/${profileName}" alt="profileImg"/>
 										</c:when>
 										<c:otherwise>
 											프로필 사진이 없습니다.
@@ -89,7 +89,7 @@
 						</tr>
 						<tr>
 							<th class="table-info text-center">RF-UID</th>
-							<td>C${memberItem.rfUid}</td>
+							<td>${memberItem.rfUid}</td>
 						</tr>
 						<tr>
 							<th class="table-info text-center">등급이름</th>

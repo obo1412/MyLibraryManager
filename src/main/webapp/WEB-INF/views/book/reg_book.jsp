@@ -40,7 +40,7 @@
 		<%@ include file="/WEB-INF/inc/sidebar_left.jsp"%>
 		<div id="content-wrapper">
 			<div class="container-fluid">
-				<div class="card mb-3" style="float:left; min-width:800px; max-width:1000px; height:750px;">
+				<div class="card mb-3" style="float:left; min-width:700px; max-width:800px; min-height:780px;">
 					<div class="card-header" style="height:50px;">
 						<h4>도서 등록하기</h4>
 					</div>
@@ -86,6 +86,7 @@
 							<form class="form-horizontal info-section" name="myform"
 								method="post">
 
+							<div class="makeAtc">
 								<div class="form-inline mb-1">
 									<div class="form-group col-md-12">
 										<c:set var="viewTitle" value="${jsonAladin.item[0].title}" />
@@ -95,7 +96,7 @@
 										<label for='bookTitle' class="col-md-2 control-label">도서명</label>
 										<div class="col-md-10">
 											<input type="text" name="bookTitle" id="bookTitle"
-												class="makeAtc form-control form-control-sm input-clear" style="width: 97.5%;"
+												class="form-control form-control-sm input-clear" style="width: 97.5%;"
 												placeholder="도서 제목" value="${viewTitle}" />
 										</div>
 									</div>
@@ -110,7 +111,7 @@
 										<label for='author' class="col-md-2 control-label">저자명</label>
 										<div class="col-md-4">
 											<input type="text" name="author" id="author"
-												class="makeAtc form-control form-control-sm input-clear" value="${viewAuthor}" />
+												class="form-control form-control-sm input-clear" value="${viewAuthor}" />
 										</div>
 
 										<label for='authorCode' class="col-md-2 control-label">저자기호</label>
@@ -120,6 +121,7 @@
 										</div>
 									</div>
 								</div>
+							</div>
 
 								<div class="form-inline mb-1">
 									<div class="form-group col-md-12">
@@ -349,7 +351,7 @@
 								</div>
 
 								<div class='form-horizontal'>
-									<div class="form-group col-md-11">
+									<div class="form-group col-11" style="margin:auto; margin-bottom:14px;">
 										<label for='bookDesc' class="col-md-4">도서 설명</label>
 
 										<div class="form-inline">
@@ -443,7 +445,7 @@
 															<c:choose>
 																<c:when test="${not empty jsonSeoji.docs[0].VOL}">
 																	<div>
-																		${jsonSeoji.docs[0].VOL}
+																		V${jsonSeoji.docs[0].VOL}
 																	</div>
 																</c:when>
 																<c:otherwise>
@@ -478,7 +480,7 @@
 
 
 								<div class="form-group">
-									<div class="offset-md-5 col-md-6">
+									<div class="text-center">
 										<button type="submit" class="btn btn-primary" id="btnRegSbm"
 											formaction="${pageContext.request.contextPath}/book/reg_book_ok.do">
 											도서등록하기
@@ -486,9 +488,6 @@
 										<input type="button" class="btn btn-danger" onclick="clearInput()" value="다시작성" />
 									</div>
 								</div>
-								<%-- <div class="col-md-6">${xmlClassNoArray[0]}/
-									${xmlClassNoArray[1]}/ ${xmlClassNoArray[2]}/
-									${jsonSeoji.docs[0].EA_ADD_CODE}</div> --%>
 							</form>
 							<!-- 회원정보, 도서정보 끝 -->
 						</div>
@@ -499,7 +498,7 @@
 				</div>
 				<!-- card 끝 -->
 				<!-- 등록된 도서 card -->
-				<div class="card-body" style="float:left; max-width:600px; max-height:700px; overflow-y:auto;">
+				<div class="card-body" style="float:left; max-width:700px; max-height:700px; overflow-y:auto;">
 					<table class="table table-sm">
 							<thead>
 								<tr>
@@ -519,7 +518,12 @@
 									<c:when test="${fn:length(regTodayList) > 0}">
 										<c:forEach var="item" items="${regTodayList}" varStatus="status">
 											<tr>
-												<td class="text-center">${item.sortingIndex}</td>
+												<td style="display:none;">${item.id}</td>
+												<td class="text-center">
+													<button class="btn btn-sm btn-info" onclick="copyBeforeBookInfo()">
+														${item.sortingIndex}
+													</button>
+												</td>
 												<td class="text-center"><c:url var="viewUrl"
 														value="/book/book_held_edit.do">
 														<c:param name="localIdBarcode"
@@ -598,6 +602,46 @@
 	<%@ include file="/WEB-INF/inc/script-common.jsp"%>
 </body>
 <script type="text/javascript">
+
+	function copyBeforeBookInfo() {
+		var parentTr = event.target.parentNode.parentNode;
+		var childrenTd = parentTr.childNodes;
+		var bookHeldId = childrenTd[1].innerText;
+		
+		if(bookHeldId!=null&&bookHeldId!=''){
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/copy_before_book_info.do",
+				type: 'POST',
+				data: {
+					bookHeldId
+				},
+				/* dataType: "json", */
+				success: function(data) {
+					if(data.rt!='OK'){
+						alert(data.rt);
+					} else {
+						var bookHeld = data.bookHeld;
+						document.getElementById('bookTitle').value = bookHeld.title;
+						document.getElementById('author').value = bookHeld.writer;
+						document.getElementById('authorCode').value = bookHeld.authorCode;
+						document.getElementById('classificationCode').value = bookHeld.classificationCode;
+						document.getElementById('additionalCode').value = bookHeld.additionalCode;
+						document.getElementById('volumeCode').value = bookHeld.volumeCode;
+						/* document.getElementById('copyCode').value = bookHeld.copyCode; */
+						document.getElementById('bookCateg').value = bookHeld.category;
+						document.getElementById('publisher').value = bookHeld.publisher;
+						document.getElementById('pubDate').value = bookHeld.pubDate;
+						document.getElementById('itemPage').value = bookHeld.page;
+						document.getElementById('price').value = bookHeld.price;
+						document.getElementById('isbn13').value = bookHeld.isbn13;
+						document.getElementById('isbn10').value = bookHeld.isbn10;
+						document.getElementById('bookSize').value = bookHeld.bookSize;
+						document.getElementById('bookDesc').value = bookHeld.description;
+					}
+				}
+			});
+		}
+	}
 	
 	$(function() {
 		/* 페이지로딩시 바로 실행 구문 */
@@ -619,10 +663,10 @@
 		window.open(url, '_blank', 'width=800,height=600,scrollbars=yes');
 	};
 	
-	
-	$("#additionalCode").change(function() {
-		var thisCode = document.getElementById('additionalCode').value;
-		document.getElementById('summaryAdditionalCode').innerHTML = thisCode;
+	const thisAddiCode = document.getElementById('additionalCode');
+	thisAddiCode.addEventListener('change', (e) => {
+		var thisAddiCodeVal = thisAddiCode.value;
+		document.getElementById('summaryAdditionalCode').innerHTML = thisAddiCodeVal
 	});
 	
 	$("#classificationCode").change(function() {
@@ -654,30 +698,38 @@
 		}
 	});
 	
-	$(".makeAtc").on("propertychange change keyup paste input", function() {
+	const makeAtc = document.querySelector('.makeAtc');
+	makeAtc.addEventListener('change', function(){
+		makeAuthorCode();
+	});
+	
+	function makeAuthorCode() {
 		var thisIsbn = document.getElementById('search-book-info').value;
 		var thisTitle = document.getElementById('bookTitle').value;
 		var thisAuthor = document.getElementById('author').value;
 		var atcout = null;
 		
-		$.ajax({
-			url: "${pageContext.request.contextPath}/book/author_code.do",
-			type: 'POST',
-			data: {
-				thisIsbn,
-				thisTitle,
-				thisAuthor
-			},
-			/* dataType: "json", */
-			success: function(data) {
-				document.getElementById('authorCode').value = data.result;
-				document.getElementById('copyCode').value = data.copyCode;
-			}
-			,error:function(request,status,error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
-		});
-	});
+		if(thisTitle!=null&&thisAuthor!=null) {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/book/author_code.do",
+				type: 'POST',
+				data: {
+					thisIsbn,
+					thisTitle,
+					thisAuthor
+				},
+				/* dataType: "json", */
+				success: function(data) {
+					if(data.rt != 'OK') {
+						alert(data.rt);
+					} else {
+						document.getElementById('authorCode').value = data.result;
+						document.getElementById('copyCode').value = data.copyCode;
+					}
+				}
+			});
+		}
+	};
 	
 	$(".classStraightReg").on("click", function(e) {
 		document.getElementById('search-book-info').focus();
