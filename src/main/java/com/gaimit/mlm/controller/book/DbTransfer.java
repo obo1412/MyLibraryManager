@@ -16,7 +16,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -423,6 +426,13 @@ public class DbTransfer {
 			publisherIdx = Integer.parseInt(publisherIdxStr);
 		}
 		
+		String pubDateYearCol = getKey(colH, "pubDateYear");
+		int pubDateYearIdx = -1;
+		if(pubDateYearCol != null) {
+			String pubDateYearIdxStr = pubDateYearCol.substring(pubDateYearCol.length()-1, pubDateYearCol.length());
+			pubDateYearIdx = Integer.parseInt(pubDateYearIdxStr);
+		}
+		
 		String rfIdCol = getKey(colH, "rfId");
 		int rfIdIdx = -1; //데이터 이관 선택되지 않았을 경우 음수
 		if(rfIdCol != null) {
@@ -482,6 +492,17 @@ public class DbTransfer {
 		
 		/*System.out.println("col.get길이 "+col.get("col0").length);*/
 		
+		
+		/*SimpleDateFormat format1 = new SimpleDateFormat("yyyy");
+		SimpleDateFormat formatToStr = new SimpleDateFormat("yyyy-01-01");
+		
+		// if(pubDateIdx >= 0) 문 안에서 동작, string을 date로 그 이후 다시 date를 string으로
+		String dateStr = null;
+		if(pubDateVal != null && !"".equals(pubDateVal)) {
+			Date dateForm = format1.parse(col.get("col"+pubDateIdx)[i]);
+			dateStr = formatToStr.format(dateForm);
+		}*/
+		
 		try {
 			for(int i=0; i<col.get("col0").length; i++) {
 				BookHeld bookHeld = new BookHeld();
@@ -489,11 +510,24 @@ public class DbTransfer {
 				BookHeld callIdBook = null;
 				bookHeld.setLibraryIdLib(loginInfo.getIdLibMng());
 				
+				//book table
 				bookHeld.setTitleBook(col.get("col"+titleIdx)[i]);
 				bookHeld.setWriterBook(col.get("col"+authorIdx)[i]);
+				//bookHeld table
+				bookHeld.setTitle(col.get("col"+titleIdx)[i]);
+				bookHeld.setWriter(col.get("col"+authorIdx)[i]);
 				//check페이지에서 select선택이 안되었을 경우, 선택지는 음수 값을 가진다.
 				if(publisherIdx >= 0) {
+					
+					//book table
 					bookHeld.setPublisherBook(col.get("col"+publisherIdx)[i]);
+					//bookHeld Table
+					bookHeld.setPublisher(col.get("col"+publisherIdx)[i]);
+				}
+				if(pubDateYearIdx >= 0) {
+					String pubDateYearVal = col.get("col"+pubDateYearIdx)[i];
+					//북헬드 테이블
+					bookHeld.setPubDateYear(pubDateYearVal);
 				}
 				if(rfIdIdx >= 0) {
 					bookHeld.setRfId(col.get("col"+rfIdIdx)[i]);
@@ -501,13 +535,14 @@ public class DbTransfer {
 				if(regDateIdx >= 0) {
 					bookHeld.setRegDate(col.get("col"+regDateIdx)[i]);
 				}
-				int price = 0;
+				float price = 0;
 				if(priceIdx >= 0) {
 					if(!(col.get("col"+priceIdx)[i]).equals("")) {
-						price = Integer.parseInt(col.get("col"+priceIdx)[i]);
+						price = Float.parseFloat(col.get("col"+priceIdx)[i]);
 					}
 				}
 				bookHeld.setPriceBook(price);
+				bookHeld.setPrice(price);
 				
 				//청구기호 처리 시작
 				if(callNumberIdx >= 0) {

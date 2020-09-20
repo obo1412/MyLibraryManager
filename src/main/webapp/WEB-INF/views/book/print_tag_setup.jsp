@@ -86,7 +86,15 @@
 								style="display:block; width:300px;"/>
 							<span style="padding-left:100px;">
 								<input type="radio" name="tagType"
-									id="tag_roll_default" value="10" checked />Roll_Printer
+									id="tag_roll_default" value="10" />Roll_Printer
+							</span>
+						</label>
+						<label>
+							<img class="tagImg" src="${pageContext.request.contextPath}/assets/img/tagRollOpt1.PNG"
+								style="display:block; width:300px;"/>
+							<span style="padding-left:100px;">
+								<input type="radio" name="tagType"
+									id="tag_roll_default" value="11" checked />Roll_opt1
 							</span>
 						</label>
 					</div>
@@ -228,7 +236,7 @@
 		});
 	};
 	
-	function openPopup() {		
+	function openPopup() {
 		var tagT = 0;
 		tagT = $('input:radio[name=tagType]:checked').val();
 		

@@ -7,7 +7,7 @@ public class Book extends Member{
 	private String categoryBook;
 	private String publisherBook;
 	private String pubDateBook;
-	private int priceBook;
+	private float priceBook;
 	private String isbn10Book;
 	private String isbn13Book;
 	private String descriptionBook;
@@ -59,10 +59,11 @@ public class Book extends Member{
 	public void setPubDateBook(String pubDateBook) {
 		this.pubDateBook = pubDateBook;
 	}
-	public int getPriceBook() {
+	
+	public float getPriceBook() {
 		return priceBook;
 	}
-	public void setPriceBook(int priceBook) {
+	public void setPriceBook(float priceBook) {
 		this.priceBook = priceBook;
 	}
 	public String getIsbn10Book() {

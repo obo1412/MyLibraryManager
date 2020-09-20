@@ -10,7 +10,8 @@ public class BookHeld extends Book{
 	private String writer;
 	private String publisher;
 	private String pubDate;
-	private int price;
+	private String pubDateYear;
+	private float price;
 	private String isbn10;
 	private String isbn13;
 	private String category;
@@ -41,6 +42,7 @@ public class BookHeld extends Book{
 	
 	private int classCodeHead;
 	private String classCodeColor;
+	private String classCodeSection;
 	
 	//도서 대출 여부를 확인하기 위한 변수
 	//model에만 존재
@@ -88,10 +90,17 @@ public class BookHeld extends Book{
 	public void setPubDate(String pubDate) {
 		this.pubDate = pubDate;
 	}
-	public int getPrice() {
+	public String getPubDateYear() {
+		return pubDateYear;
+	}
+	public void setPubDateYear(String pubDateYear) {
+		this.pubDateYear = pubDateYear;
+	}
+	
+	public float getPrice() {
 		return price;
 	}
-	public void setPrice(int price) {
+	public void setPrice(float price) {
 		this.price = price;
 	}
 	public String getIsbn10() {
@@ -261,6 +270,12 @@ public class BookHeld extends Book{
 	}
 	public void setClassCodeColor(String classCodeColor) {
 		this.classCodeColor = classCodeColor;
+	}
+	public String getClassCodeSection() {
+		return classCodeSection;
+	}
+	public void setClassCodeSection(String classCodeSection) {
+		this.classCodeSection = classCodeSection;
 	}
 	public String getBrwStatus() {
 		return brwStatus;

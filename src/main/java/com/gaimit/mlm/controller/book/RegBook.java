@@ -128,6 +128,9 @@ public class RegBook {
 		String newBarcode = "";
 		int barcodeInitCount = 0;
 		
+		//라벨 색상 관련 객체, 나중에 수정할거다.
+		BookHeld clsCodeColorCW = new BookHeld();
+		
 		//국가 목록 조회
 		List<Book> countryList = null;
 		
@@ -181,7 +184,18 @@ public class RegBook {
 					if(classCode != null&&!"".equals(classCode)) {
 						float classCodeFloat = Float.parseFloat(classCode);
 						int classCodeInt = (int) (classCodeFloat);
-						String classCodeColor = util.getColorKDC(classCodeInt);
+						
+						//원본
+						/*String classCodeColor = util.getColorKDC(classCodeInt);
+						regTodayList.get(i).setClassCodeColor(classCodeColor);*/
+						//아래와 같이 변경
+						String classCodeColor = "";
+						if(loginInfo.getIdLibMng()==4) {
+							clsCodeColorCW = util.getChangWonColorKDC(classCodeInt);
+							classCodeColor = clsCodeColorCW.getClassCodeColor();
+						} else {
+							classCodeColor = util.getColorKDC(classCodeInt);
+						}
 						regTodayList.get(i).setClassCodeColor(classCodeColor);
 					}
 				}

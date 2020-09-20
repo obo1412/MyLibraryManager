@@ -466,6 +466,10 @@ public class SearchBook {
 			bookHeld.setListCount(page.getListCount());
 			
 			regTodayList = bookHeldService.getRegTodayBookHeldList(bookHeld);
+			
+			//라벨 색상 관련 객체, 나중에 수정할거다.
+			BookHeld clsCodeColorCW = new BookHeld();
+			
 			if(regTodayList != null) {
 				for(int i=0; i<regTodayList.size(); i++) {
 					String classCode = regTodayList.get(i).getClassificationCode();
@@ -473,7 +477,17 @@ public class SearchBook {
 					if(classCode != null&&!"".equals(classCode)) {
 						float classCodeFloat = Float.parseFloat(classCode);
 						int classCodeInt = (int) (classCodeFloat);
-						String classCodeColor = util.getColorKDC(classCodeInt);
+						//원본
+						/*String classCodeColor = util.getColorKDC(classCodeInt);
+						regTodayList.get(i).setClassCodeColor(classCodeColor);*/
+						//아래와 같이 변경
+						String classCodeColor = "";
+						if(loginInfo.getIdLibMng()==4) {
+							clsCodeColorCW = util.getChangWonColorKDC(classCodeInt);
+							classCodeColor = clsCodeColorCW.getClassCodeColor();
+						} else {
+							classCodeColor = util.getColorKDC(classCodeInt);
+						}
 						regTodayList.get(i).setClassCodeColor(classCodeColor);
 					}
 				}

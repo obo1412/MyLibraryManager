@@ -10,6 +10,7 @@
 <style type="text/css">
 	.card-body {
 		font-size: 11pt;
+		white-space: nowrap;
 	}
 	
 	table { 
@@ -143,8 +144,23 @@
 											<c:if test="${not empty additionalCode}">
 												<c:set var="viewAddCode" value="${additionalCode}" />
 											</c:if>
-											<input type="text" name="additionalCode" id="additionalCode"
+											<c:choose>
+												<c:when test="${loginInfo.idLibMng eq 4}">
+													<select name="additionalCode" id="additionalCode"
+														class="form-control form-control-sm">
+														<option value="" selected>-선택-</option>
+														<option value="재단">재단</option>
+														<option value="국외문화재 현황자료">국외문화재 현황자료</option>
+														<option value="연속간행물">연속간행물</option>
+														<option value="경매도록">경매도록</option>
+														<option value="大">大</option>
+													</select>
+												</c:when>
+												<c:otherwise>
+													<input type="text" name="additionalCode" id="additionalCode"
 												class="form-control form-control-sm input-clear" value="${viewAddCode}" placeholder="유(유아), 아(아동)" />
+												</c:otherwise>
+											</c:choose>
 										</div>
 									</div>
 								</div>
@@ -303,14 +319,7 @@
 								
 								<div class="form-inline mb-1">
 									<div class="form-group col-md-12">
-										<div class="col-md-2">
-											<label for='rfId' class="control-label">RF ID</label>
-										</div>
-										<div class="col-md-4">
-											<input type="text" name="rfId" id="rfId"
-												class="form-control form-control-sm input-clear" placeholder="RF ID"
-												value="" />
-										</div>
+										
 										<div class="col-md-2">
 											<label for='bookSize' class="control-label">도서크기</label>
 										</div>
@@ -319,6 +328,16 @@
 												class="form-control form-control-sm input-clear" placeholder="Book Size"
 												value="${bookSize}" />
 										</div>
+									
+										<div class="col-md-2">
+											<label for='rfId' class="control-label">RF ID</label>
+										</div>
+										<div class="col-md-4">
+											<input type="text" name="rfId" id="rfId"
+												class="form-control form-control-sm input-clear" placeholder="RF ID"
+												value="" />
+										</div>
+										
 									</div>
 								</div>
 
@@ -330,7 +349,7 @@
 											<select name="idCountry" class="form-control form-control-sm">
 												<c:forEach var="country" items="${countryList}">
 													<c:set var="choice_country" value="" />
-													<c:if test="${country.nameCountry == '대한민국'}">
+													<c:if test="${country.nameCountry == '미지정'}">
 														<c:set var="choice_country" value="selected" />
 													</c:if>
 													<option value="${country.idCountry}" ${choice_country}>
@@ -750,7 +769,8 @@
 		var curClsCode = document.getElementById('classificationCode').value;
 		
 		if(curBookTitle && curAuthor && curClsCode){
-			document.getElementById('btnRegSbm').focus();
+			/* document.getElementById('btnRegSbm').focus(); */
+			document.getElementById('rfId').focus();
 		}
 	};
 </script>

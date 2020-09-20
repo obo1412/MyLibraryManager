@@ -15,6 +15,10 @@
 
 <%@ include file="/WEB-INF/inc/head.jsp"%>
 	<style>
+		.card {
+			max-width: 1500px;
+		}
+	
 		table { 
 			table-layout: fixed;
 		}
@@ -87,7 +91,7 @@
 							<thead>
 								<tr>
 									<th class="info text-center" style="width:50px;">번호</th>
-									<th class="info text-center" style="width:120px;">도서명</th>
+									<th class="info text-center" style="width:250px;">도서명</th>
 									<th class="info text-center" style="width:70px;">저자명</th>
 									<th class="info text-center" style="width:70px;">출판사</th>
 									<th class="info text-center" style="width:70px;">출판일</th>

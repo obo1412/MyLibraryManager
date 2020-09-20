@@ -65,6 +65,7 @@ label {
 																<option value="title">도서명</option>
 																<option value="author">저자명</option>
 																<option value="publisher">출판사</option>
+																<option value="pubDateYear">발행연도</option>
 																<option value="regDate">등록일</option>
 																<option value="callNumber">청구기호</option>
 																<option value="price">가격</option>

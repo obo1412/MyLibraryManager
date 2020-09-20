@@ -189,51 +189,55 @@ public class RegBookOk {
 		
 		
 		//바코드 번호 생성을 위한 변수 선언
-		int lastEmptyLocalBarcode = 0; //바코드 번호 빈자리 
+		/*int lastEmptyLocalBarcode = 0; //바코드 번호 빈자리 
 		BookHeld lastLocalBarcode = new BookHeld(); //바코드 헤드를 위한 마지막 바코드 참조
 		String barcodeInit = ""; 
-		int barcodeInitCount = 0;
+		int barcodeInitCount = 0;*/
 		
 		//barcode 호출
 		try {
-			/*바코드 헤드 검사*/
+			//바코드 직접 기입시, 직접 기입한 바코드로 등록하기 위해서.
+			
+			/*//바코드 헤드 검사
 			lastLocalBarcode = bookHeldService.selectLastLocalBarcode(bookHeld);
-			/*바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다*/
+			//바코드 헤드가 null 이 아니면 최종값이 있다는 것 그 헤드를 사용하면 된다
 			if(lastLocalBarcode != null) {
 				barcodeInit = lastLocalBarcode.getLocalIdBarcode();
 				barcodeInit = util.strExtract(barcodeInit);
-				/*바코드말머리가 있다면 말머리의 길이를 구한다.
-				 *말머리의 길이로 mapper에서 바코드 select함*/
+				//바코드말머리가 있다면 말머리의 길이를 구한다.
+				//말머리의 길이로 mapper에서 바코드 select함
 				barcodeInitCount = barcodeInit.length();
 			}
-			/*바코드 말머리의 길이를 bookHeld에 주입*/
-			bookHeld.setBarcodeInitCount(barcodeInitCount);
+			//바코드 말머리의 길이를 bookHeld에 주입
+			bookHeld.setBarcodeInitCount(barcodeInitCount);*/
 			
 			
-			/*바코드 번호가 1번인지 검사*/
-			int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);
-			/*1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록*/
-			/*1이 아니면 1로 바코드 등록*/
-			if(firstBarcode == 1 ) {
+			//바코드 번호가 1번인지 검사
+			/*int firstBarcode = bookHeldService.selectFirstLocalBarcode(bookHeld);*/
+			//1번이면, 중간에 비어 있는 바코드 숫자로 바코드 등록
+			//1이 아니면 1로 바코드 등록
+			/*if(firstBarcode == 1 ) {
 				lastEmptyLocalBarcode = bookHeldService.selectEmptyLocalBarcode(bookHeld);
 			} else {
 				lastEmptyLocalBarcode = 1;
-			}
+			}*/
 			
 			//위 비어있는 바코드 번호를 솔팅index에 주입
-			bookHeld.setSortingIndex(lastEmptyLocalBarcode);
+			/*bookHeld.setSortingIndex(lastEmptyLocalBarcode);*/
 			
 			//새로 불러온 바코드번호 DB상 비어있는 값.
-			newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);
+			/*newBarcode = util.makeStrLength(8, barcodeInit, lastEmptyLocalBarcode);*/
 			
-			String viewBarcodeInit = util.strExtract(newBarcode);
+			/*String viewBarcodeInit = util.strExtract(newBarcode);*/
 			int viewBarNum = util.numExtract(newBarcode);
 			
-			if(newBarcode.length() != 8) {
+			bookHeld.setSortingIndex(viewBarNum);
+			
+			/*if(newBarcode.length() != 8) {
 				return web.redirect(null, "바코드를 8자리로 맞추어 주세요.");
 			} else if(viewBarcodeInit.length() > 3 ) {
 				return web.redirect(null, "바코드 머리 글자수는 3자리 이하여야 합니다.");
-			}
+			}*/
 			
 			//바코드 뒤 숫자 중복검사를 위하여 값 주입
 			bookHeld.setNewBarcodeForDupCheck(viewBarNum);

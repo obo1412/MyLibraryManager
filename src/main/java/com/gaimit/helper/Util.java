@@ -1,5 +1,7 @@
 package com.gaimit.helper;
 
+import com.gaimit.mlm.model.BookHeld;
+
 /**
  * 기본적인 공통 기능들을 묶어 놓은 클래스
  */
@@ -144,6 +146,45 @@ public class Util {
 			result = "#6A0888";
 		} else {
 			result = "#BDBDBD";
+		}
+		return result;
+	}
+	
+	public BookHeld getChangWonColorKDC(int code) {
+		BookHeld  result = new BookHeld();
+		if(code == 0) {
+			result.setClassCodeColor("#18248A");
+			result.setClassCodeSection("총류");
+		} else if(code >= 100 && code < 200) {
+			result.setClassCodeColor("#F9BF2D");
+			result.setClassCodeSection("철학");
+		} else if(code >= 200 && code < 300) {
+			result.setClassCodeColor("#E50136");
+			result.setClassCodeSection("종교");
+		} else if(code >= 300 && code < 400) {
+			result.setClassCodeColor("#000000");
+			result.setClassCodeSection("사회과학");
+		} else if(code >= 400 && code < 500) {
+			result.setClassCodeColor("#00834A");
+			result.setClassCodeSection("자연과학");
+		} else if(code >= 500 && code < 600) {
+			result.setClassCodeColor("#6F6D72");
+			result.setClassCodeSection("기술과학");
+		} else if(code >= 600 && code < 700) {
+			result.setClassCodeColor("#D50078");
+			result.setClassCodeSection("예술");
+		} else if(code >= 700 && code < 800) {
+			result.setClassCodeColor("#0A95CE");
+			result.setClassCodeSection("언어");
+		} else if(code >= 800 && code < 900) {
+			result.setClassCodeColor("#EA5503");
+			result.setClassCodeSection("문학");
+		} else if(code >= 900 && code < 1000) {
+			result.setClassCodeColor("#4CA634");
+			result.setClassCodeSection("역사");
+		} else {
+			result.setClassCodeColor("#FFFFFF");
+			result.setClassCodeSection("미분류");
 		}
 		return result;
 	}

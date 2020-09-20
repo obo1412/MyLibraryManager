@@ -25,6 +25,7 @@
 		<result property="writer" column="writer"/>
 		<result property="publisher" column="publisher"/>
 		<result property="pubDate" column="pub_date"/>
+		<result property="pubDateYear" column="pub_date_year"/>
 		<result property="price" column="price"/>
 		<result property="isbn10" column="isbn10"/>
 		<result property="isbn13" column="isbn13"/>
@@ -265,7 +266,7 @@
 	<insert id="insertBookHeld" parameterType="com.gaimit.mlm.model.BookHeld" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO book_held (
 			library_id_lib, book_id_book,
-			title, writer, publisher, pub_date, price,
+			title, writer, publisher, pub_date, pub_date_year, price,
 			isbn10, isbn13, category, book_shelf, description,
 			reg_date, edit_date,
 			local_id_barcode, sorting_index, purchased_or_donated, available,
@@ -275,7 +276,7 @@
 			id_country
 		) VALUES (
 			#{libraryIdLib}, #{bookIdBook},
-			#{title}, #{writer}, #{publisher}, #{pubDate}, #{price},
+			#{title}, #{writer}, #{publisher}, #{pubDate}, #{pubDateYear}, #{price},
 			#{isbn10}, #{isbn13}, #{category}, #{bookShelf}, #{description},
 			<choose>
 				<when test="regDate != null">

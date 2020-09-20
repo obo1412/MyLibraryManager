@@ -182,8 +182,14 @@ public class PrintTag {
 				} else {
 					int classHead1 = classCodeInt/100;
 					int classCodeHead = classHead1 * 100;
-					bookHeldList.get(i).setClassCodeHead(classCodeHead);
-					bookHeldList.get(i).setClassCodeColor(util.getColorKDC(classCodeHead));
+					if(tagType == 11) {
+						bookHeldList.get(i).setClassCodeHead(classHead1);
+						bookHeldList.get(i).setClassCodeColor(util.getChangWonColorKDC(classCodeHead).getClassCodeColor());
+						bookHeldList.get(i).setClassCodeSection(util.getChangWonColorKDC(classCodeHead).getClassCodeSection());
+					} else {
+						bookHeldList.get(i).setClassCodeHead(classCodeHead);
+						bookHeldList.get(i).setClassCodeColor(util.getColorKDC(classCodeHead));
+					}
 				}
 				
 				//QR코드 생성
@@ -219,6 +225,8 @@ public class PrintTag {
 			movePage = "opt2";
 		} else if(tagType == 10) {
 			movePage = "roll_default";
+		} else if(tagType == 11) {
+			movePage = "roll_opt1";
 		}
 		return new ModelAndView("book/print_tag_"+ movePage);
 	}

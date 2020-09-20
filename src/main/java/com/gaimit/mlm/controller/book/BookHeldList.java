@@ -122,6 +122,10 @@ public class BookHeldList {
 		/** 3) Service를 통한 SQL 수행 */
 		// 조회 결과를 저장하기 위한 객체
 		List<BookHeld> bookHeldList = null;
+		
+		//라벨 색상 관련 객체, 나중에 수정할거다.
+		BookHeld clsCodeColorCW = new BookHeld();
+		
 		try {
 			bookHeldList = bookHeldService.getBookHeldList(bookHeld);
 			if(bookHeldList != null) {
@@ -131,7 +135,16 @@ public class BookHeldList {
 					if(classCode != null&&!"".equals(classCode)) {
 						float classCodeFloat = Float.parseFloat(classCode);
 						int classCodeInt = (int) (classCodeFloat);
-						String classCodeColor = util.getColorKDC(classCodeInt);
+						//원본
+						/*String classCodeColor = util.getColorKDC(classCodeInt);
+						bookHeldList.get(i).setClassCodeColor(classCodeColor);*/
+						String classCodeColor = "";
+						if(loginInfo.getIdLibMng()==4) {
+							clsCodeColorCW = util.getChangWonColorKDC(classCodeInt);
+							classCodeColor = clsCodeColorCW.getClassCodeColor();
+						} else {
+							classCodeColor = util.getColorKDC(classCodeInt);
+						}
 						bookHeldList.get(i).setClassCodeColor(classCodeColor);
 					}
 				}
