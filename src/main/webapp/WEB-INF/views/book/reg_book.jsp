@@ -686,6 +686,8 @@
 	thisAddiCode.addEventListener('change', (e) => {
 		var thisAddiCodeVal = thisAddiCode.value;
 		document.getElementById('summaryAdditionalCode').innerHTML = thisAddiCodeVal
+		document.getElementById('rfId').focus();
+		
 	});
 	
 	$("#classificationCode").change(function() {
@@ -773,5 +775,7 @@
 			document.getElementById('rfId').focus();
 		}
 	};
+	
+
 </script>
 </html>
